@@ -1,0 +1,131 @@
+<template>
+    <el-form :inline=true :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+                <el-form-item label="关机" prop="shutDown">
+                    <el-input v-model="ruleForm.shutDown">></el-input>
+                </el-form-item>
+                <el-form-item label="主页" prop="index">
+                    <el-input v-model="ruleForm.index"></el-input>
+                </el-form-item>
+                <el-form-item label="聚焦输入框" prop="inputFoots">
+                    <el-input v-model="ruleForm.inputFoots"></el-input>
+                </el-form-item>
+                <el-form-item label="销售状态" prop="salesStatus">
+                    <el-input v-model="ruleForm.salesStatus"></el-input>
+                </el-form-item>
+                <el-form-item label="向上" prop="currentRowUp">
+                    <el-input v-model="ruleForm.currentRowUp" :disabled=true></el-input>
+                </el-form-item>
+                <el-form-item label="向下" prop="currentRowDown">
+                    <el-input v-model="ruleForm.currentRowDown" :disabled=true></el-input>
+                </el-form-item>
+                <el-form-item label="删除" prop="deleteGoods">
+                    <el-input v-model="ruleForm.deleteGoods"></el-input>
+                </el-form-item>
+                <el-form-item label="总清" prop="emptyOrder">
+                    <el-input v-model="ruleForm.emptyOrder"></el-input>
+                </el-form-item>
+                <el-form-item label="商品数量" prop="goodsNumber">
+                    <el-input v-model="ruleForm.goodsNumber"></el-input>
+                </el-form-item>
+                <el-form-item label="挂单取单" prop="pushPullOrder">
+                    <el-input v-model="ruleForm.pushPullOrder"></el-input>
+                </el-form-item>
+                <el-form-item label="支付" prop="pay">
+                    <el-input v-model="ruleForm.pay"></el-input>
+                </el-form-item>
+                <el-form-item label="添加商品" prop="addGoods">
+                    <el-input v-model="ruleForm.addGoods"></el-input>
+                </el-form-item>
+                <br>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+    </el-form>
+</template>
+
+<script>
+import store from '@/store'
+const Keyboard = store.state.settings.Keyboard
+export default {
+  name: 'Keyboard',
+  data() {
+    return {
+      ruleForm: Keyboard,
+      rules: {
+        shutDown: [
+          { required: true, message: '关机快捷键不允许为空', trigger: 'blur' }
+        ],
+        index: [
+          { required: true, message: '主页快捷键不允许为空', trigger: 'blur' }
+        ],
+        inputFoots: [
+          { required: true, message: '聚焦快捷键不允许为空', trigger: 'blur' }
+        ],
+        salesStatus: [
+          { required: true, message: '销售状态快捷键不允许为空', trigger: 'blur' }
+        ],
+        currentRowUp: [
+          { required: true, message: '向上快捷键不允许为空', trigger: 'blur' }
+        ],
+        currentRowDown: [
+          { required: true, message: '向下快捷键不允许为空', trigger: 'blur' }
+        ],
+        deleteGoods: [
+          { required: true, message: '删除商品快捷键不允许为空', trigger: 'blur' }
+        ],
+        emptyOrder: [
+          { required: true, message: '总清快捷键不允许为空', trigger: 'blur' }
+        ],
+        goodsNumber: [
+          { required: true, message: '商品数量快捷键不允许为空', trigger: 'blur' }
+        ],
+        pushPullOrder: [
+          { required: true, message: '挂单取单快捷键不允许为空', trigger: 'blur' }
+        ],
+        pay: [
+          { required: true, message: '支付快捷键不允许为空', trigger: 'blur' }
+        ],
+        addGoods: [
+          { required: true, message: '添加商品可以条形码可以自编码', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  computed: {
+  },
+  created() {
+    this.initKeyboard()
+  },
+  methods: {
+    initKeyboard() {
+      if (!Keyboard.currentRowUp) {
+        Keyboard.currentRowUp = 'up'
+      }
+      if (!Keyboard.currentRowDown) {
+        Keyboard.currentRowDown = 'down'
+      }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('settings/changeSetting', { key: 'Keyboard', value: this[formName] })
+          this.$message({
+            type: 'success',
+            message: '保存成功'
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+</style>
