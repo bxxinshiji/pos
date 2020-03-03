@@ -28,8 +28,9 @@ export default {
         { name: '盘点商品', key: '2', label: 'inventory' },
         { name: '修改密码', key: '3', label: 'password' },
         { name: '系统配置', key: '4', label: 'config' },
-        { name: '暂离退出', key: '7', label: 'out' },
-        { name: '结账退出', key: '8', label: 'accounts' },
+        { name: '暂离退出', key: '6', label: 'out' },
+        { name: '结账退出', key: '7', label: 'accounts' },
+        { name: '退出软件', key: '8', label: 'quit' },
         { name: '关机', key: '9', label: 'off' }
       ]
     }
@@ -59,6 +60,9 @@ export default {
           break
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
+          break
+        case 'quit':
+          this.$electron.remote.app.quit()
           break
         default:
           console.log('功能暂时无法实现')
@@ -127,6 +131,9 @@ export default {
   }
   .off{
     background: @el-danger;
+  }
+  .quit{
+    background: #455A64;
   }
   .accounts{
     background: #e17055;
