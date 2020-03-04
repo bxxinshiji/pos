@@ -1,11 +1,11 @@
 
-const SQL2000SQL = import('@/sql2000/model/vip_card')
+const SQL2000OrderSQL = import('@/sql2000/model/order')
 
 //  结账
-export function Settle(pay) {
+export function Settle() {
   return new Promise((resolve, reject) => {
-    SQL2000SQL.then(sql => {
-      sql.default.Pay(pay.code, pay.amount * 0.01).then(response => {
+    SQL2000OrderSQL.then(sql => {
+      sql.default.SettleOrder().then(response => {
         resolve(response)
       }).catch(error => {
         reject(error)

@@ -204,6 +204,37 @@ const order = {
         reject(error)
       })
     })
+  },
+  SettleOrder() { // 结账订单
+    return new Promise(async(resolve, reject) => {
+      if (!store.state.healthy.isSql2000) {
+        reject(Error('服务器断开！！(SQL2000服务器断开)'))
+      }
+      pool.DB.query('',
+        { type: Sequelize.QueryTypes.SELECT }
+      ).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+    //     select @mdStrs = ' Update a set a.JzDate = ''' + convert(varchar(30), @mJzDate, 121) +''',a.ZfTag=b.ZfTag
+    //     from tXsTranItem a, '+ @mTranTableName +' b
+    //     where a.SaleItemNo = b.SaleItemNo and(a.JzDate is Null or a.JzDate = '''') '
+    //     Exec(@mdStrs)
+    //     if @@error <> 0  GOTO Return_Failure
+
+    //     select @mdStrs = ' Update a set a.JzDate = '''+convert(varchar(30), @mJzDate, 121)+'''
+    //                        from tXsPluItem a, '+ @mPluTableName +' b
+    //                        where a.SaleItemNo = b.SaleItemNo and a.PageNo = b.PageNo and a.LnNo = b.LnNo and
+    //                              (a.JzDate is Null or a.JzDate = '''') '
+    //     Exec(@mdStrs)
+    // if @@error <> 0  GOTO Return_Failure
+
+    //       select @mdStrs = ' Update a set a.JzDate = '''+convert(varchar(30), @mJzDate, 121)+'''
+    //                          from tXsSkItem a, '+ @mSkTableName +' b
+    //                          where a.SaleItemNo = b.SaleItemNo and a.SkNo = b.SkNo and
+    //                                (a.JzDate is Null or a.JzDate = '''') '
   }
 }
 export default order
