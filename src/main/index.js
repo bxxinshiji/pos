@@ -55,6 +55,12 @@ function createWindow() {
   })
   mainWindow.webContents.openDevTools()
 }
+// 获取单实例锁
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  // 如果获取失败，说明已经有实例在运行了，直接退出
+  app.quit()
+}
 
 app.on('ready', createWindow)
 
