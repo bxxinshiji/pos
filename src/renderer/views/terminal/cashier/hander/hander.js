@@ -81,7 +81,7 @@ const hander = {
   },
   // 清空订单
   emptyOrder(self) {
-    self.$confirm('此操作将情况全部商品, 是否继续?', '提示', {
+    self.$confirm('此操作将情空全部商品, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -101,7 +101,23 @@ const hander = {
   },
   // 销售状态 销货|退货
   salesStatus(self) {
-    self.order.type = !self.order.type
+    const type = !self.order.type ? '销货' : '退货'
+    self.$confirm('进入【' + type + '】状态, 是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      self.order.type = !self.order.type
+      self.$message({
+        type: 'success',
+        message: '进入' + type + '状态'
+      })
+    }).catch(() => {
+      self.$message({
+        type: 'info',
+        message: '取消进入' + type + '状态'
+      })
+    })
   },
   shutDown(self) { // 关机
     self.$confirm('关闭计算机 是否继续?', '提示', {
