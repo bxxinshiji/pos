@@ -50,7 +50,7 @@
             </el-row>
           </span>
           <div v-else>
-            <span>1</span>
+            <span>待录入商品</span>
           </div>
         </el-col>
         <el-col :span="8">

@@ -109,7 +109,6 @@ export default {
   },
   mounted() {
     this.usernameFocus()
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
   },
   methods: {
     usernameFocus() {

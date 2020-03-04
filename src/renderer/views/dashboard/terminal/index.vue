@@ -61,6 +61,9 @@ export default {
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
           break
+        case 'accounts':
+          this.$electron.remote.app.quit()
+          break
         case 'quit':
           this.$electron.remote.app.quit()
           break

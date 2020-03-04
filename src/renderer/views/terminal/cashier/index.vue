@@ -83,7 +83,6 @@ export default {
   mounted() {
     this.focus()
     this.initOrder()
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     setInterval(() => { // 自动同步订单
       queueSyncOrder()
     }, 5000)

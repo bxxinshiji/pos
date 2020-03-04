@@ -89,9 +89,7 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
-
-const { globalShortcut } = require('electron')
-
+import { globalShortcut } from 'electron'
 app.on('ready', () => {
   globalShortcut.register('F10', () => {
     mainWindow.show()
