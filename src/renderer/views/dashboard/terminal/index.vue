@@ -62,10 +62,13 @@ export default {
           this.$router.push({ path: '/terminal/inventory' })
           break
         case 'accounts':
-          this.$electron.remote.app.quit()
+          // this.$electron.remote.app.quit()
           break
         case 'quit':
           this.$electron.remote.app.quit()
+          break
+        case 'off':
+          require('child_process').exec('shutdown /s /t 0')
           break
         default:
           console.log('功能暂时无法实现')
