@@ -28,6 +28,7 @@ const state = {
   },
   Keyboard: {
     shutDown: 'g', // 关机
+    index: 'f8',
     inputFoots: 'f3', // 聚焦
     currentRowUp: 'up', // 向上选择商品
     currentRowDown: 'down', // 向下选择商品
