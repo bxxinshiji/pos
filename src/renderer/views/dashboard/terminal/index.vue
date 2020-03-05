@@ -71,9 +71,11 @@ export default {
           this.logout()
           break
         case 'quit':
+          this.logout()
           this.$electron.remote.app.quit()
           break
         case 'off':
+          this.logout()
           require('child_process').exec('shutdown /s /t 0')
           break
         default:

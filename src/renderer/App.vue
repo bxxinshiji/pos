@@ -11,7 +11,6 @@ require('@/utils/mousetrap-global-bind')
 export default {
   name: 'App',
   mounted() {
-    this.$store.dispatch('user/logout')// 每次启动都自动退出
     this.syncTerminal()
     this.globalShortcut()
   },
