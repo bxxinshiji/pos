@@ -55,6 +55,8 @@ function createWindow() {
   })
   mainWindow.webContents.openDevTools()
 }
+
+app.disableHardwareAcceleration() // 来禁用GPU加速。
 // 获取单实例锁
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {

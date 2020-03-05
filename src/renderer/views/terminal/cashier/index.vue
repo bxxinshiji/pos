@@ -81,6 +81,7 @@ export default {
     this.closeSideBar()// 缩小侧栏
   },
   mounted() {
+    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.focus()
     this.initOrder()
     setInterval(() => { // 自动同步订单

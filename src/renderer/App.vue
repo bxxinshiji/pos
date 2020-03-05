@@ -11,7 +11,6 @@ require('@/utils/mousetrap-global-bind')
 export default {
   name: 'App',
   mounted() {
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.globalShortcut()
   },

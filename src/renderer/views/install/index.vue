@@ -139,6 +139,7 @@ export default {
             this.initConfig()
             if (this.ruleForm.isTerminal) {
               if (await this.isSql2000()) {
+                this.$store.state.healthy.isSql2000 = true
                 this.syncInfo()
               } else {
                 return
@@ -251,6 +252,9 @@ export default {
       })
       this.$router.push(`/login`)
     }
+  },
+  destroyed() {
+    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>
