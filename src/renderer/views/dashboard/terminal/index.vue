@@ -18,6 +18,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { Settle as accountsSettle } from '@/api/accounts'
 export default {
   name: 'terminal',
   data() {
@@ -44,6 +45,7 @@ export default {
   created() {
   },
   mounted() {
+    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     document.addEventListener('keydown', this.keydown)
   },
   methods: {
@@ -61,8 +63,12 @@ export default {
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
           break
+        case 'out':
+          this.logout()
+          break
         case 'accounts':
-          // this.$electron.remote.app.quit()
+          accountsSettle() // 结账
+          this.logout()
           break
         case 'quit':
           this.$electron.remote.app.quit()
@@ -87,10 +93,17 @@ export default {
     },
     removeEventListener() {
       document.removeEventListener('keydown', this.keydown)
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   },
   beforeDestroy() {
     this.removeEventListener()
+  },
+  destroyed() {
+    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>
