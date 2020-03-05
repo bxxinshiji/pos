@@ -138,7 +138,7 @@ const hander = {
               amount: amount, // 支付金额
               getAmount: '', // 收到的钱[现金可以多少其他不允许]
               orderNo: '', // 支付宝、微信等支付指定订单单号[订单编号+支付方式ID+支付序号]
-              status: true // 现金支付时默认支付状态成功
+              status: false // 现金支付时默认支付状态成功
             }
           } else {
             Message({
