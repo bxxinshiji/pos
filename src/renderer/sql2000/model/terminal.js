@@ -42,7 +42,9 @@ const terminal = {
           })
           return
         }
-        this.loadingInstance.close()
+        if (this.loadingInstance) {
+          this.loadingInstance.close()
+        }
       }).catch(error => {
         reject(error)
       })
