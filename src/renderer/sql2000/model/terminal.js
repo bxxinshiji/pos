@@ -14,8 +14,9 @@ function handerItem(item) {
 }
 const terminal = {
   PosCode: '',
+  loadingInstance: {},
   // 获取终端状态信息
-  Get: () => {
+  Get() {
     return new Promise((resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
@@ -28,17 +29,20 @@ const terminal = {
         const macAddress = store.state.settings.macAddress
         const item = response[0]
         if (trim(item.PosName) !== trim(macAddress)) {
-          Loading.service({
-            text: '请后台绑定终端网卡地址: ' + macAddress,
+          this.loadingInstance = Loading.service({
+            text: '终端:' + terminal.PosCode + ' 请到后台绑定终端网卡地址: ' + macAddress,
             background: 'rgba(0, 0, 0, 0.7)'
           })
+          return
         }
         if (item.IsEnable === '0') {
-          Loading.service({
+          this.loadingInstance = Loading.service({
             text: '终端状态未开启',
             background: 'rgba(0, 0, 0, 0.7)'
           })
+          return
         }
+        this.loadingInstance.close()
       }).catch(error => {
         reject(error)
       })
@@ -85,7 +89,7 @@ const terminal = {
     })
   },
   // 保存终端信息
-  Save: () => {
+  Save() {
     return new Promise((resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))

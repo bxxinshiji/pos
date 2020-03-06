@@ -22,6 +22,10 @@
           <el-switch v-model="ruleForm.isTerminal"></el-switch>
         </el-form-item>
         <span v-if="ruleForm.isTerminal">
+          
+          <el-form-item label="终端网卡地址" prop="terminal">
+            <span>{{macAddress}}</span>
+          </el-form-item>
           <el-form-item label="终端编号" prop="terminal">
             <el-input v-model="ruleForm.terminal"></el-input>
           </el-form-item>
@@ -62,6 +66,7 @@
 
 <script>
 import { Message } from 'element-ui'
+import { mapState } from 'vuex'
 import { isServer } from '@/utils/healthy'
 import { isSql2000 } from '@/sql2000/utils/healthy'
 import { SyncPlu } from '@/sql2000/api/goods'
@@ -127,6 +132,11 @@ export default {
       activities: [
       ]
     }
+  },
+  computed: {
+    ...mapState({
+      macAddress: state => state.settings.macAddress
+    })
   },
   mounted() {
   },
