@@ -11,7 +11,7 @@
         <el-table-column
           label="#"
           prop="no"
-          min-width="35"
+          min-width="55"
         >
         </el-table-column>
         <el-table-column
@@ -158,6 +158,9 @@ export default {
 .goods{
   width:100vw;
 }
+.el-table /deep/ .cell{
+    line-height:3vh;
+}
 .el-table /deep/ th{
     color: @el-warning;
     font-size:2.5vh;
@@ -184,4 +187,17 @@ export default {
   background-color: @syntax-background-color;
 }
 
+// 自动移滚动条样式
+.goods ::-webkit-scrollbar{
+  width: 4px;
+  height: 4px;
+}
+.goods ::-webkit-scrollbar-thumb{
+  border-radius: 1em;
+  background-color: @syntax-wrap-guide-color;
+}
+.goods ::-webkit-scrollbar-track{
+  border-radius: 1em;
+  background-color: @syntax-background-color;
+}
 </style>

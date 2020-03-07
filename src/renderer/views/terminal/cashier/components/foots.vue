@@ -50,7 +50,10 @@
             </el-row>
           </span>
           <div v-else>
-            <span>待录入商品</span>
+            <span>今日收款</span>
+            <span>订单: </span><span>153 笔</span>
+            <span>总金额: </span><span>1523625.21 元</span>
+            <span>未上报</span><span>1 笔</span>
           </div>
         </el-col>
         <el-col :span="8">

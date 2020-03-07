@@ -14,7 +14,7 @@ function handerItem(item) {
 }
 const terminal = {
   PosCode: '',
-  loadingInstance: {},
+  loadingInstance: '',
   // 获取终端状态信息
   Get() {
     return new Promise((resolve, reject) => {
