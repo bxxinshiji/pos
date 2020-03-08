@@ -51,6 +51,9 @@ export default {
   mounted() {
     document.addEventListener('keydown', this.keydown)
   },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown)
+  },
   methods: {
     ...pay,
     initPay() {
@@ -101,9 +104,6 @@ export default {
         this.handleClose()
       }
     }
-  },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.keydown)
   }
 }
 </script>

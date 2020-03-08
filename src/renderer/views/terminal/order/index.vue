@@ -2,77 +2,122 @@
     <div class="container">
       <el-table
         ref="table"
-        :data="goods"
+        :data="rows"
         height="72vh"
         size="mini"
         highlight-current-row
-        class="goods"
       >
-        <template slot="empty">暂无商品录入</template>
+        <template slot="empty">未查询到录入</template>
         <el-table-column
-          label="#"
-          prop="no"
-          min-width="35"
+          label="单号"
+          prop="orderNo"
+          min-width="100"
         >
         </el-table-column>
         <el-table-column
-          prop="pluCode"
-          label="编码"
-          min-width="110"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="商品名称"
-          min-width="180"
+          prop="userId"
+          label="用户ID"
+          min-width="80"
         >
         </el-table-column>
         <el-table-column
           prop="number"
           label="数量"
-          min-width="100"
+          min-width="50"
         >
-          <template slot-scope="scope">
+         <template slot-scope="scope">
             {{ scope.row.number.toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="price"
-          label="单价"
+          prop="total"
+          label="总价"
           min-width="100"
         >
           <template slot-scope="scope">
-            {{ (scope.row.price * 0.01).toFixed(2) }}
+            {{ (scope.row.total*0.01).toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="total"
-          label="小计"
-          min-width="100"
+          prop="type"
+          label="状态"
+          min-width="80"
         >
           <template slot-scope="scope">
-            {{ (scope.row.total * 0.01).toFixed(2) }}
+            <el-tag 
+              size="medium"
+              :type="scope.row.type?'success':'warning'"
+            >
+             {{ scope.row.type?'销货':'退货' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="publish"
+          label="发布"
+          min-width="80"
+        >
+          <template slot-scope="scope">
+            <el-tag 
+              size="medium"
+              :type="scope.row.publish?'success':'danger'"
+            >
+             {{ scope.row.publish?'发布':'未发布' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="createdAt"
+          label="时间"
+          min-width="100"
+        >
+         <template slot-scope="scope">
+            {{ scope.row.createdAt | parseTime }}
           </template>
         </el-table-column>
       </el-table>
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </div>
 </template>
 
 <script>
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { List } from '@/model/api/order'
 
 export default {
   name: 'Order',
-  components: { },
+  components: {
+    Pagination
+  },
   data() {
     return {
-      goods: []
+      total: 0,
+      rows: null,
+      listQuery: {
+        page: 1,
+        limit: 5,
+        order: [
+          ['publish', 'ASC'],
+          ['id', 'DESC']
+        ],
+        where: {
+          userId: this.$store.state.user.username
+        }
+      }
     }
   },
   computed: {
   },
   created() {
+    this.getList()
   },
   methods: {
+    getList() {
+      List(this.listQuery).then(response => {
+        this.total = response.count
+        this.rows = response.rows
+      })
+    }
   }
 }
 </script>

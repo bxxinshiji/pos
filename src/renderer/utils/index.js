@@ -203,3 +203,25 @@ export function formatStr(str, length, substr = true) {
     return sub(str, length)
   }
 }
+
+/**
+ * 分页
+ * @param {int} Limit 每页数量
+ * @param {int} Page 页码
+ * @returns {string}
+ */
+export function pagination(Limit, Page) {
+  Limit = Number(Limit)
+  Page = Number(Page)
+  const pagination = {
+    limit: 10,
+    offset: -1
+  }
+  if (Limit > 0) {
+    pagination.limit = Limit
+  }
+  if (Page > 1) {
+    pagination.offset = (Page - 1) * pagination.limit
+  }
+  return pagination
+}
