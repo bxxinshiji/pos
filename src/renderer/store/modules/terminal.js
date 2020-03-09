@@ -93,7 +93,7 @@ const actions = {
       good.no = no // 计算序号
       no--
       if (good.total) { // 计算总价或者数量
-        good.number = Math.round(good.total / good.price * 100) * 0.01
+        good.number = Math.round(good.total / good.price * 100) / 100
       } else {
         good.total = good.number * good.price
       }

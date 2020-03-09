@@ -41,7 +41,7 @@
           min-width="100"
         >
           <template slot-scope="scope">
-            {{ (scope.row.price * 0.01).toFixed(2) }}
+            {{ (scope.row.price / 100).toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -50,7 +50,7 @@
           min-width="100"
         >
           <template slot-scope="scope">
-            {{ (scope.row.total * 0.01).toFixed(2) }}
+            {{ (scope.row.total / 100).toFixed(2) }}
           </template>
         </el-table-column>
       </el-table>

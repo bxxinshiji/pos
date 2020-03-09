@@ -169,7 +169,7 @@ const hander = {
       this.handleClose() // 关闭页面防止  修改 BUG 多种支付时第二次无法输入需求金额问题【每种支付确认后自动关闭页面】
       Message({
         type: 'waning',
-        message: '订单还未完结,请支付剩余货款。金额: ' + (this.order.waitPay * 0.01).toFixed(2) + ' 元'
+        message: '订单还未完结,请支付剩余货款。金额: ' + (this.order.waitPay / 100).toFixed(2) + ' 元'
       })
     }
   }

@@ -38,7 +38,7 @@ const hander = {
     store.dispatch('terminal/changeIsPay', true) // 开启支付页面
     self.$message({
       type: 'success',
-      message: '收款金额:' + amount * 0.01 + '元'
+      message: '收款金额:' + (amount / 100).toFixed(2) + '元'
     })
     self.$refs.foots.input = ''
   },

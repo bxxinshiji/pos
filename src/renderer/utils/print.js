@@ -22,10 +22,10 @@ const goodsHander = (goodsExp, goods) => {
           show = show + formatStr((item.number).toFixed(2), reg[1], false) + ' '
           break
         case 'price':
-          show = show + formatStr((item.price * 0.01).toFixed(2), reg[1], false) + ' '
+          show = show + formatStr((item.price / 100).toFixed(2), reg[1], false) + ' '
           break
         case 'total':
-          show = show + formatStr((item.total * 0.01).toFixed(2), reg[1], false) + ' '
+          show = show + formatStr((item.total / 100).toFixed(2), reg[1], false) + ' '
           break
       }
     })
@@ -47,10 +47,10 @@ const paysHander = (paysExp, pays) => {
           show = show + formatStr(item.name, reg[1]) + ' '
           break
         case 'amount':
-          show = show + formatStr((item.amount * 0.01).toFixed(2), reg[1], false) + ' '
+          show = show + formatStr((item.amount / 100).toFixed(2), reg[1], false) + ' '
           break
         case 'getAmount':
-          show = show + formatStr((item.getAmount * 0.01).toFixed(2), reg[1], false) + ' '
+          show = show + formatStr((item.getAmount / 100).toFixed(2), reg[1], false) + ' '
           break
       }
     })
@@ -108,7 +108,7 @@ const print = {
       }
       element = element.replace(/{{\s*stuats\s*}}/g, order.type ? '销货' : '退货')
 
-      element = element.replace(/{{\s*total\s*}}/g, (order.total * 0.01).toFixed(2))
+      element = element.replace(/{{\s*total\s*}}/g, (order.total / 100).toFixed(2))
       element = element.replace(/{{\s*userId}\s*}/g, order.userId)
       element = element.replace(/{{\s*terminal\s*}}/g, order.terminal)
       element = element.replace(/{{\s*orderNo\s*}}/g, order.orderNo)

@@ -35,7 +35,7 @@
           min-width="100"
         >
           <template slot-scope="scope">
-            {{ (scope.row.total*0.01).toFixed(2) }}
+            {{ (scope.row.total / 100).toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -69,7 +69,7 @@
         <el-table-column
           prop="createdAt"
           label="时间"
-          min-width="100"
+          min-width="120"
         >
          <template slot-scope="scope">
             {{ scope.row.createdAt | parseTime }}
@@ -95,7 +95,7 @@ export default {
       rows: null,
       listQuery: {
         page: 1,
-        limit: 5,
+        limit: 10,
         order: [
           ['publish', 'ASC'],
           ['id', 'DESC']

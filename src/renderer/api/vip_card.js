@@ -18,7 +18,7 @@ export function Get(code) {
 export function Pay(pay) {
   return new Promise((resolve, reject) => {
     SQL2000SQL.then(sql => {
-      sql.default.Pay(pay.code, pay.amount * 0.01).then(response => {
+      sql.default.Pay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
         resolve(response)
       }).catch(error => {
         reject(error)

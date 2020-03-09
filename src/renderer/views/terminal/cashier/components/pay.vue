@@ -7,7 +7,7 @@
       
       <div class="payAmount"> 
         <span class="id"> 收款金额: </span>
-        <span>{{ (payAmount * 0.01).toFixed(2) }} </span>
+        <span>{{ (payAmount / 100).toFixed(2) }} </span>
       </div> 
       <span v-for="(pay,index) in pays" :key="index">
         <el-button v-if="pay.type!='pay'" type="primary" :disabled="pay.type!='cashPay'" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>

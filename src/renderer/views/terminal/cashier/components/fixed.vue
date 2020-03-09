@@ -4,9 +4,9 @@
       type="success"
       :closable="false"
     >
-      <div>应收:<span>{{(amount*0.01).toFixed(2)}}</span></div>
-      <div>实收:<span>{{(getAmount*0.01).toFixed(2)}}</span></div>
-      <div class="change">找零:<span>{{((getAmount-amount)*0.01).toFixed(2)}}</span></div>
+      <div>应收:<span>{{(amount / 100).toFixed(2)}}</span></div>
+      <div>实收:<span>{{(getAmount / 100).toFixed(2)}}</span></div>
+      <div class="change">找零:<span>{{((getAmount-amount) / 100).toFixed(2)}}</span></div>
     </el-alert>
 </template>
 

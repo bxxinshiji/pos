@@ -18,10 +18,10 @@ const order = {
     const BcCode = 1 // 班次
     const TranType = item.dataValues.type ? 1 : 0 // 交易类型 [1、销货 2、作废销货 3、退货] 4、作废退货
     const XfType = 0 // 消费类型 [0、普通消费 1、会员消费]
-    const YsAmt = item.dataValues.total * 0.01// 应收金额
-    const YhAmt = 0 * 0.01// 优惠金额
+    const YsAmt = (item.dataValues.total / 100).toFixed(2)// 应收金额
+    const YhAmt = (0 / 100).toFixed(2)// 优惠金额
     const SsAmt = YsAmt - YhAmt // 实收金额
-    const SfAmt = item.dataValues.getAmount * 0.01 // 实付金额
+    const SfAmt = (item.dataValues.getAmount / 100).toFixed(2) // 实付金额
     const CardCode = '' // 会员卡号
     const ReasonCode = ''
     const ZfTag = 0 // 作废 [0、正常 1、作废]
@@ -52,8 +52,8 @@ const order = {
         where: { id: goods.snapshotId }
       }).then(request => {
         const snapshot = request.snapshot
-        const price = goods.price * 0.01
-        const total = goods.total * 0.01
+        const price = (goods.price / 100).toFixed(2)
+        const total = (goods.total / 100).toFixed(2)
 
         const LnNo = goods.no // 行号
         const XsCount = goods.number // 数量
@@ -124,8 +124,8 @@ const order = {
     })
     item.pays.forEach((pay, index) => {
       const payType = Pays[pay.payId].type
-      const getAmount = pay.getAmount * 0.01
-      const amount = pay.amount * 0.01
+      const getAmount = (pay.getAmount / 100).toFixed(2)
+      const amount = (pay.amount / 100).toFixed(2)
       const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 销售日期
       const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
       const SaleItemNo = item.dataValues.orderNo // 销售流水号
@@ -192,10 +192,11 @@ const order = {
       ).then(response => {
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
-        if (total !== order.dataValues.total * 2 * 0.01) {
+        console.log(total, (order.dataValues.total * 2 / 100).toFixed(2))
+
+        if (total.toFixed(2) !== (order.dataValues.total * 2 / 100).toFixed(2)) {
           reject(new Error('订单总价校验错误'))
         }
-
         if (goodsCount !== order.dataValues.number) {
           reject(new Error('订单商品总数量校验错误'))
         }

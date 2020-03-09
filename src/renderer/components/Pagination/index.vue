@@ -11,12 +11,6 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-alert
-      title="快捷键"
-      type="success"
-      description="End 下一页、 PgUp 首页、 PageDown 最后一页"
-    >
-    </el-alert>
   </div>
 </template>
 

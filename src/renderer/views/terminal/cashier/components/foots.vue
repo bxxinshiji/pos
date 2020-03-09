@@ -24,9 +24,9 @@
           <div v-if="order.pays.length>0">
             <div v-for="(pay,index) in order.pays" :key="index" class="pay-list">
               <div class="name"><span class="warning">{{pay.name}} </span></div>
-              <div class="pay">付款: <span class="success">{{(pay.amount * 0.01).toFixed(2) }} </span></div>
-              <div class="change">实收: <span class="brand"> {{((pay.getAmount?pay.getAmount:pay.amount) * 0.01).toFixed(2) }} </span></div>
-              <!-- <div>找零: <span>{{((pay.getAmount - pay.amount) * 0.01).toFixed(2) }} </span></div> -->
+              <div class="pay">付款: <span class="success">{{(pay.amount / 100).toFixed(2) }} </span></div>
+              <div class="change">实收: <span class="brand"> {{((pay.getAmount?pay.getAmount:pay.amount) / 100).toFixed(2) }} </span></div>
+              <!-- <div>找零: <span>{{((pay.getAmount - pay.amount) / 100).toFixed(2) }} </span></div> -->
               <div class="status"><span v-bind:class="[ pay.status ? 'success' : 'danger']">{{pay.status ?'已收款':'待收款' }} </span></div>
             </div>
           </div>
@@ -38,8 +38,8 @@
             </el-row>
             <el-row>
               <el-col :span="12" class="good">
-                <span>单价: {{ goods.price?(goods.price * 0.01).toFixed(2):'' }}</span>
-                <span>小计: {{ goods.price?(goods.total * 0.01).toFixed(2):'' }}</span>
+                <span>单价: {{ goods.price?(goods.price / 100).toFixed(2):'' }}</span>
+                <span>小计: {{ goods.price?(goods.total / 100).toFixed(2):'' }}</span>
                 <span>部门: {{ goods.snapshot.depCode }}</span>
               </el-col>
               <el-col :span="12" class="good">
@@ -63,7 +63,7 @@
               <span></span>
               <span>数 量: {{ order.number.toFixed(2) }}</span>
             </el-row>
-            <el-row class="totals">￥{{ (order.waitPay*0.01).toFixed(2) }}</el-row>
+            <el-row class="totals">￥{{ (order.waitPay / 100).toFixed(2) }}</el-row>
           </div>
         </el-col>
       </el-row>
