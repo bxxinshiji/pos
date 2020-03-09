@@ -19,16 +19,18 @@ function createWindow() {
   if (process.platform === 'darwin') {
     const template = [
       {
-        label: 'Application',
+        label: '应用',
         submenu: [
-          { label: 'Quit', accelerator: 'Command+Q', click: function() { app.quit() } }
+          { label: '退出', accelerator: 'Command+Q', click: function() { app.quit() } }
         ]
       },
       {
-        label: 'Edit',
+        label: '编辑',
         submenu: [
-          { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-          { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' }
+          { label: '剪切', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+          { label: '复制', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+          { label: '粘贴', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+          { label: '全选', accelerator: 'CommandOrControl+A', selector: 'selectAll:' }
         ]
       }
     ]

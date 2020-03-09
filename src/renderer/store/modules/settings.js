@@ -23,7 +23,7 @@ const state = {
   isPlucode: false,
   printer: {
     switch: true,
-    template: '           ******超市\n************* {{stuats}} *************\n编码    商品名称   数量   合计\n{{goods(pluCode|7,name|10,number|5,total|7)}}\n--------------------------------\n收款方式    应收金额    实收金额\n{{pays(name|12,amount|9,getAmount|9)}}\n--------------------------------\n收款员: {{userId}} 收款机: {{terminal}} \n金额: {{total}}元\n订单:{{orderNo}}\n时间:{{createdAt}}\n地址:博兴五路319号\n电话:0543-2120888 ',
+    template: '           ******超市\n************* {{stuats}} *************\n编码    商品名称   数量   合计\n{{goods(pluCode|7,name|10,number|5,total|7)}}\n--------------------------------\n收款方式    应收金额    实收金额\n{{pays(name|12,amount|9,getAmount|9)}}\n--------------------------------\n收款员: {{userId}} 收款机: {{terminal}} \n金额: {{total}}元\n订单:{{orderNo}} 打印: {{print}} 次\n时间:{{createdAt}}\n地址:博兴五路319号\n电话:0543-2120888 ',
     device: 'USB'
   },
   Keyboard: {

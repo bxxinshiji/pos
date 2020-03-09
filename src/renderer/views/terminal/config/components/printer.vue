@@ -46,6 +46,7 @@
             <div>终端ID {<span>{</span>terminal}} </div>
             <div>订单编号 {<span>{</span>orderNo}} </div>
             <div>订单时间 {<span>{</span>createdAt}} </div>
+            <div>打印次数 {<span>{</span>print}} </div>
           </el-collapse-item>
           <el-collapse-item title="居中大号文本 centerText" name="2">
             <div>例:{<span>{</span>centerText(XXX)}}</div>
@@ -97,6 +98,7 @@ export default {
         getAmount: 20000,
         type: true, // 销售类型 销货 退货
         createdAt: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'), // 销售日期
+        print: 0,
         goods: [
           {
             pluCode: '1011147',

@@ -115,8 +115,8 @@ const print = {
       element = element.replace(/{{\s*userId}\s*}/g, order.userId)
       element = element.replace(/{{\s*terminal\s*}}/g, order.terminal)
       element = element.replace(/{{\s*orderNo\s*}}/g, order.orderNo)
-      order.createdAt = parseTime(order.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 订单下单时间
-      element = element.replace(/{{\s*createdAt\s*}}/g, order.createdAt)
+      element = element.replace(/{{\s*createdAt\s*}}/g, parseTime(order.createdAt, '{y}-{m}-{d} {h}:{i}:{s}'))
+      element = element.replace(/{{\s*print\s*}}/g, order.print + 1)
 
       return {
         type,
