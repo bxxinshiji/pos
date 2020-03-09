@@ -89,7 +89,9 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { List } from '@/model/api/order'
-
+import { syncOrder } from '@/api/order'
+import { AddPrint } from '@/model/api/order'
+import print from '@/utils/print'
 export default {
   name: 'Order',
   components: {
@@ -97,6 +99,8 @@ export default {
   },
   data() {
     return {
+      currentOrder: '',
+      currentRow: 0,
       total: 0,
       rows: null,
       listQuery: {
@@ -115,14 +119,103 @@ export default {
   computed: {
   },
   created() {
+  },
+  mounted() {
+    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
+    document.addEventListener('keydown', this.keydown)
     this.getList()
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown)
   },
   methods: {
     getList() {
       List(this.listQuery).then(response => {
         this.total = response.count
         this.rows = response.rows
+        this.resetCurrentRow()
       })
+    },
+    // 1 or -1 上下选择行
+    handerCurrentRow(value) {
+      if (value > 0 && this.rows.length - 1 > this.currentRow) {
+        this.currentRow = this.currentRow + value
+      }
+      if (value < 0 && this.currentRow > 0) {
+        this.currentRow = this.currentRow + value
+      }
+      this.setCurrentRow(this.currentRow)
+    },
+    // 重置选择行
+    resetCurrentRow(value = 0) {
+      this.currentRow = value
+      this.setCurrentRow(this.currentRow)
+    },
+    // 设置选择航
+    setCurrentRow(value) {
+      this.$refs.table.setCurrentRow(this.rows[value])
+      if (this.rows[value]) {
+        this.currentOrder = this.rows[value]
+      }
+    },
+    MessageBox({ title, message }, type = 'error') {
+      this.$confirm(message, title, {
+        type: type,
+        showCancelButton: false,
+        showConfirmButton: false,
+        dangerouslyUseHTMLString: true,
+        center: true
+      }).then(() => {
+      }).catch(() => {
+      })
+    },
+    print() {
+      if (print.switch()) {
+        print.hander(this.currentOrder).then(response => {
+          AddPrint(this.currentOrder).then(response => { // 增加打印次数
+            this.getList()
+          })
+          this.$notify({
+            title: '打印成功',
+            message: '订单:' + this.currentOrder.orderNo,
+            type: 'success'
+          })
+        }).catch(err => {
+          this.$notify({
+            title: '打印失败',
+            message: err.message,
+            type: 'error',
+            duration: 15000
+          })
+        })
+      }
+    },
+    syncOrder() {
+      syncOrder(this.currentOrder).then(response => { // 同步订单
+        this.getList()
+      }).catch(err => {
+        this.MessageBox({
+          title: '订单发布失败',
+          message: err
+        })
+      })
+    },
+    keydown(e) {
+      if (e.key === 'ArrowUp') { // 向上
+        this.handerCurrentRow(-1)
+      }
+      if (e.key === 'ArrowDown') { // 向下
+        this.handerCurrentRow(1)
+      }
+      if (e.key === '1') { // 订单详情
+        console.log(this.currentOrder)
+      }
+      if (e.key === '2') { // 发布订单
+        this.syncOrder()
+      }
+      if (e.key === '3') { // 打印订单
+        this.print()
+      }
     }
   }
 }
