@@ -1,5 +1,7 @@
 import { formatStr } from '@/utils/index'
 import escpos from '@/utils/escpos'
+import { parseTime } from '@/utils/index'
+import { GoodsSnapshot } from '@/model/api/order'
 import store from '@/store'
 const config = store.state.settings.printer
 
@@ -75,8 +77,9 @@ const print = {
   },
   contents: [],
   hander(order) {
-    this.order(order)
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
+      await GoodsSnapshot(order.goods) // 合并商品快照
+      this.order(order) // 计算订单
       escpos.print(this.contents, { device: 'USB' }).then(response => {
         resolve(response)
       }).catch(err => {
@@ -112,6 +115,7 @@ const print = {
       element = element.replace(/{{\s*userId}\s*}/g, order.userId)
       element = element.replace(/{{\s*terminal\s*}}/g, order.terminal)
       element = element.replace(/{{\s*orderNo\s*}}/g, order.orderNo)
+      order.createdAt = parseTime(order.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 订单下单时间
       element = element.replace(/{{\s*createdAt\s*}}/g, order.createdAt)
 
       return {

@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize')
 import { parseTime, addPreZero } from '@/utils/index'
-import sequelize from '@/model/order'
-const Snapshots = sequelize.models.snapshot
+import { GoodsSnapshot } from '@/model/api/order'
 import sequelizePay from '@/model/pay'
 import connection from '@/sql2000/model/connection'
 const pool = connection.Pool()
@@ -45,54 +44,48 @@ const order = {
     const XfType = 0 // 消费类型 [0、普通消费 1、会员消费]
     const LrType = 0 // 数据来源 [0、正常 1、提帐]
     const GzXsDate = XsDate
+    await GoodsSnapshot(item.goods) // 合并商品快照
     for (let index = 0; index < item.goods.length; index++) {
       const goods = item.goods[index]
-      await Snapshots.findOne({
-        attributes: ['snapshot'],
-        where: { id: goods.snapshotId }
-      }).then(request => {
-        const snapshot = request.snapshot
-        const price = (goods.price / 100).toFixed(2)
-        const total = (goods.total / 100).toFixed(2)
+      const price = (goods.price / 100).toFixed(2)
+      const total = (goods.total / 100).toFixed(2)
 
-        const LnNo = goods.no // 行号
-        const XsCount = goods.number // 数量
-        const SPrice = price// 售价
-        const FsPrice = price// 发生价
-        const YsAmt = total // 应收金额
-        const YhAmt = 0 // 优惠金额
-        const SsAmt = total - YhAmt // 实收金额
-        const HyPrice = snapshot.HyPrice // 会员价
+      const LnNo = goods.no // 行号
+      const XsCount = goods.number // 数量
+      const SPrice = price// 售价
+      const FsPrice = price// 发生价
+      const YsAmt = total // 应收金额
+      const YhAmt = 0 // 优惠金额
+      const SsAmt = total - YhAmt // 实收金额
+      const HyPrice = goods.HyPrice // 会员价
 
-        const PluCode = snapshot.pluCode // 商品ID
-        const BarCode = snapshot.barCode // 商品条形码
-        const PluName = snapshot.name // 商品名称
-        const PluAbbr = snapshot.name // 商品别名
-        const DepCode = snapshot.depCode // 部门ID
-        const ClsCode = snapshot.ClsCode // 品类ID
-        const SupCode = snapshot.SupCode // 供应商ID
-        const BrandCode = snapshot.BrandCode // 品牌ID
-        const Unit = snapshot.unit // 单位
-        const Spec = snapshot.spec // 规格
-        const TaxRate = snapshot.JTaxRate // 销项税率
-        const YhType = snapshot.YhType // 优惠类型 [0、无优惠 1、促销优惠 2、批量促销 3、限量促销 4、会员优惠 5、赠送优惠 6、单项优惠 7、交易优惠 8、逢双优惠 9、买赠促销(送) A、混合促销 B、局部超额优惠 C、整单超额优惠 D、整单超额换购 E、积分换购 F、买赠促销(买) G、电子秤(数量金额签) ]
-        const MgType = snapshot.MgType //
-        const IsDecimal = snapshot.IsDecimal // 十进制
-        const Tag = snapshot.Tag
-        const BakData1 = '' // 批号
-        const BakData2 = '' // 厂家
-        const BakData3 = 0 // 备用信息
+      const PluCode = goods.pluCode // 商品ID
+      const BarCode = goods.barCode // 商品条形码
+      const PluName = goods.name // 商品名称
+      const PluAbbr = goods.name // 商品别名
+      const DepCode = goods.depCode // 部门ID
+      const ClsCode = goods.ClsCode // 品类ID
+      const SupCode = goods.SupCode // 供应商ID
+      const BrandCode = goods.BrandCode // 品牌ID
+      const Unit = goods.unit // 单位
+      const Spec = goods.spec // 规格
+      const TaxRate = goods.JTaxRate // 销项税率
+      const YhType = goods.YhType // 优惠类型 [0、无优惠 1、促销优惠 2、批量促销 3、限量促销 4、会员优惠 5、赠送优惠 6、单项优惠 7、交易优惠 8、逢双优惠 9、买赠促销(送) A、混合促销 B、局部超额优惠 C、整单超额优惠 D、整单超额换购 E、积分换购 F、买赠促销(买) G、电子秤(数量金额签) ]
+      const MgType = goods.MgType //
+      const IsDecimal = goods.IsDecimal // 十进制
+      const Tag = goods.Tag
+      const BakData1 = '' // 批号
+      const BakData2 = '' // 厂家
+      const BakData3 = 0 // 备用信息
 
-        this.sql = this.sql + ` INSERT INTO tXsPluItem(XsDate, XsTime,  SaleItemNo, UserCode, CurrDate, BcCode, ClerkCode, PageNo, LnNo, TranType, 
+      this.sql = this.sql + ` INSERT INTO tXsPluItem(XsDate, XsTime,  SaleItemNo, UserCode, CurrDate, BcCode, ClerkCode, PageNo, LnNo, TranType, 
       XsType, XfType, LrType, GzXsDate, PluCode, BarCode, PluName, PluAbbr, DepCode, ClsCode, SupCode, BrandCode, Unit, Spec, 
       TaxRate, SPrice, HyPrice, FsPrice, XsCount, YsAmt, YhAmt, SsAmt, YhType, MgType, IsDecimal, Tag, BakData1, BakData2, BakData3)
           values('` + XsDate + `','` + XsTime + `','` + SaleItemNo + `','` + UserCode + `','` + CurrDate + `','` + BcCode + `','` + ClerkCode + `','` + PageNo + `','` + LnNo + `','` + TranType + `',
           '` + XsType + `','` + XfType + `','` + LrType + `','` + GzXsDate + `','` + PluCode + `','` + BarCode + `','` + PluName + `','` + PluAbbr + `','` + DepCode + `','` + ClsCode + `','` + SupCode + `','` + BrandCode + `','` + Unit + `','` + Spec + `',
           '` + TaxRate + `','` + SPrice + `','` + HyPrice + `','` + FsPrice + `','` + XsCount + `','` + YsAmt + `','` + YhAmt + `','` + SsAmt + `','` + YhType + `','` + MgType + `','` + IsDecimal + `','` + Tag + `','` + BakData1 + `','` + BakData2 + `','` + BakData3 + `') `
 
-        // 数据库 INSERT end
-      })
-      // 查找商品快照 end
+      // 数据库 INSERT end
     }
     // 商品循环 end'
   },
@@ -159,6 +152,7 @@ const order = {
       this.CreateOrderSQL(item)
       await this.CreateOrderGoodsSQL(item) // 因为需要查询商品快照数据库所有异步
       await this.CreateOrderPaySQL(item)
+
       pool.DB.query(this.sql,
         { type: Sequelize.QueryTypes.INSERT }
       ).then(response => {
@@ -183,19 +177,17 @@ const order = {
   OrderCheck(order) {
     const orderNo = order.dataValues.orderNo
     return new Promise(async(resolve, reject) => {
-      const sql = `select SsAmt as orderTotal  from tXsTranItem  WHERE SaleItemNo=` + orderNo + `
-      select sum(XsCount) as goodsCount  from tXsPluItem  WHERE SaleItemNo=` + orderNo + `
-      select sum(ZfAmt) as payTotal  from tXsSkItem  WHERE SaleItemNo=` + orderNo + ``
+      const sql = `select SsAmt as orderTotal  from tXsTranItem  WHERE SaleItemNo='` + orderNo + `'
+      select sum(XsCount) as goodsCount  from tXsPluItem  WHERE SaleItemNo='` + orderNo + `'
+      select sum(ZfAmt) as payTotal  from tXsSkItem  WHERE SaleItemNo='` + orderNo + `'`
 
       pool.DB.query(sql,
         { type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
-        console.log(total, (order.dataValues.total * 2 / 100).toFixed(2))
-
         if (total.toFixed(2) !== (order.dataValues.total * 2 / 100).toFixed(2)) {
-          reject(new Error('订单总价校验错误'))
+          reject(new Error('订单总价校验错误. 总价:' + (response[0]['orderTotal']).toFixed(2) + ' 商品总价:' + (response[2]['payTotal']).toFixed(2) + ' 本地总价:' + (order.dataValues.total / 100).toFixed(2)))
         }
         if (goodsCount !== order.dataValues.number) {
           reject(new Error('订单商品总数量校验错误'))

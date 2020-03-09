@@ -23,7 +23,11 @@ const Order = sequelize.define('order', {
   number: Sequelize.DECIMAL, // 商品数量
   total: Sequelize.INTEGER, // 成交金额
   getAmount: Sequelize.INTEGER, // 付款金额 一般指实付金额找零之前 比如 付款100 找零20  这里字段记录100
-  publish: Sequelize.BOOLEAN // 是否发布到服务器
+  publish: Sequelize.BOOLEAN, // 是否发布到服务器
+  print: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  } // 打印次数
 }, {})
 
 // 订单商品

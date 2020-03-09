@@ -1,6 +1,7 @@
 
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
+const Snapshots = sequelize.models.snapshot
 import { pagination } from '@/utils/index'
 
 export function List(listQuery) {
@@ -18,4 +19,16 @@ export function List(listQuery) {
       reject(error)
     })
   })
+}
+// GoodsSnapshot 处理商品信息合并商品信息快照
+export async function GoodsSnapshot(goods) {
+  for (let index = 0; index < goods.length; index++) { // 合并商品快照
+    var item = goods[index]
+    await Snapshots.findOne({
+      attributes: ['snapshot'],
+      where: { id: item.snapshotId }
+    }).then(request => {
+      item = Object.assign(item, request.snapshot)
+    })
+  }
 }

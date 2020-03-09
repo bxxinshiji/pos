@@ -32,7 +32,7 @@
         <el-table-column
           prop="total"
           label="总价"
-          min-width="100"
+          min-width="80"
         >
           <template slot-scope="scope">
             {{ (scope.row.total / 100).toFixed(2) }}
@@ -65,6 +65,12 @@
              {{ scope.row.publish?'发布':'未发布' }}
             </el-tag>
           </template>
+        </el-table-column>
+         <el-table-column
+          prop="print"
+          label="打印次数"
+          min-width="80"
+        >
         </el-table-column>
         <el-table-column
           prop="createdAt"

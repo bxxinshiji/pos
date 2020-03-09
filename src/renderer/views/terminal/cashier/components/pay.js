@@ -2,7 +2,7 @@
 import { Notification, Message } from 'element-ui'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { syncOrder } from '@/api/order'
-import { parseTime } from '@/utils/index'
+// import { parseTime } from '@/utils/index'
 import print from '@/utils/print'
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
@@ -12,9 +12,9 @@ const EndOrder = (order, self) => {
   Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
-    order.createdAt = parseTime(orderRes.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 订单下单时间
+    // order.createdAt = parseTime(orderRes.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 订单下单时间
     if (print.switch()) {
-      print.hander(order).then(response => {
+      print.hander(orderRes).then(response => {
         Notification({
           title: '打印成功',
           message: '订单:' + order.orderNo,
