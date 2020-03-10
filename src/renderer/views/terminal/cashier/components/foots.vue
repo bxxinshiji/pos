@@ -164,7 +164,7 @@ export default {
           createdAt: createdAt
         }
       }).then(response => {
-        this.info.total = response
+        this.info.total = response || 0
       })
       Order.count({
         where: {
