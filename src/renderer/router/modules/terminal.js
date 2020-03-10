@@ -18,7 +18,7 @@ export default {
       name: 'Cashier',
       component: () => import('@/views/terminal/cashier/index'),
       meta: {
-        title: '收银',
+        title: '收银台',
         icon: 'cashier',
         permits: ['ui_terminal_index'],
         roles: ['terminal']
@@ -29,7 +29,7 @@ export default {
       name: 'Order',
       component: () => import('@/views/terminal/order/index'),
       meta: {
-        title: '订单',
+        title: '订单查询',
         icon: 'order',
         permits: ['ui_terminal_order'],
         roles: ['terminal']
@@ -40,9 +40,20 @@ export default {
       name: 'Inventory',
       component: () => import('@/views/terminal/inventory/index'),
       meta: {
-        title: '盘点',
+        title: '盘点商品',
         icon: 'inventory',
         permits: ['ui_terminal_inventory'],
+        roles: ['terminal']
+      }
+    },
+    {
+      path: 'password',
+      name: 'Password',
+      component: () => import('@/views/terminal/password/index'),
+      meta: {
+        title: '修改密码',
+        icon: 'password',
+        permits: ['ui_terminal_password'],
         roles: ['terminal']
       }
     },
@@ -51,7 +62,7 @@ export default {
       name: 'Config',
       component: () => import('@/views/terminal/config/index'),
       meta: {
-        title: '配置',
+        title: '系统配置',
         icon: 'config',
         permits: ['ui_terminal_config'],
         roles: ['terminal']

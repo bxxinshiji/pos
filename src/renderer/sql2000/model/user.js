@@ -15,7 +15,7 @@ function handerItem(items) {
 
 const user = {
   // 获取全部用户
-  All: () => {
+  All() {
     return new Promise((resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
@@ -26,6 +26,22 @@ const user = {
         response.forEach(items => {
           handerItem(items)
         })
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  Password(username, password) {
+    return new Promise((resolve, reject) => {
+      if (!store.state.healthy.isSql2000) {
+        reject(Error('服务器断开！！(SQL2000服务器断开)'))
+      }
+      pool.DB.query(`
+      update tXsUser set PassWd='` + password + `' where UserCode=` + username + `
+      `,
+      { type: Sequelize.QueryTypes.SELECT }
+      ).then(response => {
         resolve(response)
       }).catch(error => {
         reject(error)

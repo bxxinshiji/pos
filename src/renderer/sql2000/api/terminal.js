@@ -15,17 +15,17 @@ export async function SyncTerminal() {
   if (Terminal.PosCode) {
     await Terminal.Get()
     let status = 0 // 等待窗口锁
-    // 更新商品信息
-    if (Terminal.IsChgPlu === '1') {
+    // 更新用户信息
+    if (Terminal.IsChgUser === '1') {
       status++
       const loadingInstance = Loading.service({
-        text: '更新商品信息中...',
+        text: '更新用户信息中...',
         background: 'rgba(0, 0, 0, 0.7)'
       })
       SyncUser().then(() => {
-        Terminal.IsChgPlu = '0'
+        Terminal.IsChgUser = '0'
         Terminal.Save()
-        loadingInstance.text = '商品信息更新完成'
+        loadingInstance.text = '用户信息更新完成'
         setTimeout(() => {
           status--
           if (status === 0) {

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+const SQL2000SQL = import('@/sql2000/model/user')
 
 export function Exist(data) {
   return request({
@@ -74,5 +75,19 @@ export function Delete(data) {
       'method': 'Users.Delete',
       'request': data
     }
+  })
+}
+// Password 密码修改
+export function Password(username, password) {
+  return new Promise((resolve, reject) => {
+    SQL2000SQL.then(sql => {
+      sql.default.Password(username, password).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    }).catch(error => {
+      reject(error)
+    })
   })
 }

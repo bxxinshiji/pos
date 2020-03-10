@@ -63,6 +63,9 @@ export default {
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
           break
+        case 'password':
+          this.$router.push({ path: '/terminal/password' })
+          break
         case 'out':
           this.logout()
           break
@@ -112,15 +115,6 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/less/atom/syntax-variables.less";
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
-}
 .router{
   display: -webkit-flex; /* Safari */
   display: flex;
