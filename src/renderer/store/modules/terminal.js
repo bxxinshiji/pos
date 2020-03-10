@@ -147,7 +147,6 @@ const actions = {
     commit('SET_CURRENT_GOODS', goods)
   }
 }
-
 export default {
   namespaced: true,
   state,

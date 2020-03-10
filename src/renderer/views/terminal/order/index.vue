@@ -133,7 +133,7 @@ export default {
       List(this.listQuery).then(response => {
         this.total = response.count
         this.rows = response.rows
-        this.resetCurrentRow()
+        this.resetCurrentRow(this.currentRow)
       })
     },
     // 1 or -1 上下选择行
@@ -210,10 +210,10 @@ export default {
       if (e.key === '1') { // 订单详情
         console.log(this.currentOrder)
       }
-      if (e.key === '2') { // 发布订单
+      if (e.key === '2' && this.currentOrder) { // 发布订单
         this.syncOrder()
       }
-      if (e.key === '3') { // 打印订单
+      if (e.key === '3' && this.currentOrder) { // 打印订单
         this.print()
       }
     }

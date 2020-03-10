@@ -20,6 +20,7 @@ export function List(listQuery) {
     })
   })
 }
+
 // AddPrint 增加打印次数
 export function AddPrint(order) {
   return new Promise((resolve, reject) => {
