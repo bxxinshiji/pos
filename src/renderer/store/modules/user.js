@@ -64,7 +64,11 @@ const actions = {
         // 终端模式
         LoginTerminal({ username: username.trim(), password: password }).then(response => {
           const { user, valid } = response
-          if (!response) {
+          if (valid) {
+            commit('SET_TOKEN', user)
+            resolve(valid)
+          } else {
+            reject('密码错误')
             Message.closeAll()
             Message({
               message: '密码错误',
@@ -72,8 +76,6 @@ const actions = {
               duration: 5 * 1000
             })
           }
-          commit('SET_TOKEN', user)
-          resolve(valid)
         }).catch(error => {
           if (error.message === 'User does not exist') {
             Message.closeAll()
