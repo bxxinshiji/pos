@@ -83,14 +83,23 @@
         </el-table-column>
       </el-table>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-      <el-button-group class="button">
-            <el-button type="primary" @click="handerSyncOrder(currentOrder)">
-              2 发布
-            </el-button>
-            <el-button type="warning" @click="handerPrint(currentOrder)">
-              3 打印
-            </el-button>
-      </el-button-group>
+      <el-row>
+          <el-col :span="8.5">
+            <div class="button">
+                  <el-button type="primary" @click="handerSyncOrder(currentOrder)">
+                    2 发布订单
+                  </el-button>
+                  <el-button type="warning" @click="handerPrint(currentOrder)">
+                    3 打印订单
+                  </el-button>
+            </div>
+          </el-col>
+          <el-col :span="15.5">
+            <div class="black-info ">
+                  快捷键: 2 发布、3 打印、 End 下一页、 PgUp 首页、 PgDn 最后一页、↑ 向上、↓ 向下
+            </div>
+          </el-col>
+      </el-row>
     </div>
 </template>
 
@@ -248,6 +257,16 @@ export default {
       margin: 1vw;
   }
   .button{
-    padding: 0px 16px
+    padding: 0px 16px;
+  }
+  .black-info {
+    height: 40px;
+    padding: 1vw;
+    border-radius:4px;
+    background-color: #303133;
+    color: #ffffff;
+    height: 100%;
+    padding: 13px;
+    font-size: 12px;
   }
 </style>
