@@ -11,19 +11,19 @@
         <el-table-column
           label="单号"
           prop="orderNo"
-          min-width="100"
+          min-width="115"
         >
         </el-table-column>
         <el-table-column
           prop="userId"
-          label="用户ID"
-          min-width="80"
+          label="用户"
+          min-width="60"
         >
         </el-table-column>
         <el-table-column
           prop="number"
           label="数量"
-          min-width="50"
+          min-width="60"
         >
          <template slot-scope="scope">
             {{ scope.row.number.toFixed(2) }}
@@ -41,7 +41,7 @@
         <el-table-column
           prop="type"
           label="状态"
-          min-width="80"
+          min-width="70"
         >
           <template slot-scope="scope">
             <el-tag 
@@ -68,14 +68,14 @@
         </el-table-column>
          <el-table-column
           prop="print"
-          label="打印次数"
-          min-width="80"
+          label="打印"
+          min-width="45"
         >
         </el-table-column>
         <el-table-column
           prop="createdAt"
           label="时间"
-          min-width="120"
+          min-width="135"
         >
          <template slot-scope="scope">
             {{ scope.row.createdAt | parseTime }}
@@ -83,6 +83,14 @@
         </el-table-column>
       </el-table>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+      <el-button-group class="button">
+            <el-button type="primary" @click="handerSyncOrder(currentOrder)">
+              2 发布
+            </el-button>
+            <el-button type="warning" @click="handerPrint(currentOrder)">
+              3 打印
+            </el-button>
+      </el-button-group>
     </div>
 </template>
 
@@ -121,6 +129,7 @@ export default {
   created() {
   },
   mounted() {
+    this.toggleHeader(false)// 关闭打开头部
     this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     document.addEventListener('keydown', this.keydown)
     this.getList()
@@ -129,6 +138,9 @@ export default {
     document.removeEventListener('keydown', this.keydown)
   },
   methods: {
+    toggleHeader(turn) {
+      this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: turn })
+    },
     getList() {
       List(this.listQuery).then(response => {
         this.total = response.count
@@ -169,10 +181,10 @@ export default {
       }).catch(() => {
       })
     },
-    print() {
+    handerPrint(currentOrder) {
       if (print.switch()) {
-        print.hander(this.currentOrder).then(response => {
-          AddPrint(this.currentOrder).then(response => { // 增加打印次数
+        print.hander(currentOrder).then(response => {
+          AddPrint(currentOrder).then(response => { // 增加打印次数
             this.getList()
           })
           this.$notify({
@@ -190,8 +202,13 @@ export default {
         })
       }
     },
-    syncOrder() {
-      syncOrder(this.currentOrder).then(response => { // 同步订单
+    handerSyncOrder(currentOrder) {
+      syncOrder(currentOrder).then(response => { // 同步订单
+        this.$notify({
+          title: '订单发布成功',
+          message: '订单:' + this.currentOrder.orderNo,
+          type: 'success'
+        })
         this.getList()
       }).catch(err => {
         this.MessageBox({
@@ -211,11 +228,15 @@ export default {
         console.log(this.currentOrder)
       }
       if (e.key === '2' && this.currentOrder) { // 发布订单
-        this.syncOrder()
+        this.handerSyncOrder(this.currentOrder)
       }
       if (e.key === '3' && this.currentOrder) { // 打印订单
-        this.print()
+        this.handerPrint(this.currentOrder)
       }
+    },
+    destroyed() {
+      this.toggleHeader(true) // 重新打开头部
+      this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
     }
   }
 }
@@ -225,5 +246,8 @@ export default {
   @import "~@/assets/less/atom/syntax-variables.less";
   .container {
       margin: 1vw;
+  }
+  .button{
+    padding: 0px 16px
   }
 </style>
