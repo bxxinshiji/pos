@@ -14,7 +14,7 @@
                     ref="input"
                     v-model="input" 
                     @keyup.enter.native="handerInput"
-                    @input="hanerOnInput"
+                    @input="handerOnInput"
                     placeholder="请输入价格"
                     />
             </el-col>
@@ -24,7 +24,7 @@
                 <el-button type="primary" style="width:100%" @click="handerInput">确定</el-button>
             </el-col>
             <el-col :span="12">
-                <el-button style="width:100%" @click="handleClose">取消</el-button>
+                <el-button style="width:100%" @click="handlerClose">取消</el-button>
             </el-col>
         </el-row>
     </span>
@@ -75,17 +75,17 @@ export default {
     handerInput() {
       this.cacheGoods.dataValues.total = this.input * 100
       this.$emit('cacheGoods', this.cacheGoods.dataValues)
-      this.handleClose()
+      this.handlerClose()
     },
-    hanerOnInput(value) {
+    handerOnInput(value) {
       this.input = value.replace(/[^0-9.]/g, '')
     },
-    handleClose() {
+    handlerClose() {
       this.$store.dispatch('terminal/changeIsInputPrice', false)
     },
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
-        this.handleClose()
+        this.handlerClose()
       }
     }
   },
