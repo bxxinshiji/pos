@@ -71,7 +71,9 @@
         <el-tab-pane label="支付快捷键">
             <payKeyboard/>
         </el-tab-pane>
-        <el-tab-pane label="第三方支付">第三方支付</el-tab-pane>
+        <el-tab-pane label="第三扫码支付">
+          <pay/>
+        </el-tab-pane>
         </el-tabs>
     </div>
 </template>
@@ -83,10 +85,10 @@ import { isServer } from '@/utils/healthy'
 import Printer from './components/printer.vue'
 import Keyboard from './components/keyboard.vue'
 import payKeyboard from './components/payKeyboard.vue'
-
+import pay from './components/pay.vue'
 export default {
   name: 'Config',
-  components: { Printer, Keyboard, payKeyboard },
+  components: { Printer, Keyboard, payKeyboard, pay },
   data() {
     return {
       sqlForm: {

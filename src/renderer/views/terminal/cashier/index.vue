@@ -28,6 +28,7 @@
         v-show="order.status"
       />
       <pay
+        ref="pay"
         v-if="isPay"
         :order="order"
       />
@@ -193,6 +194,7 @@ export default {
   destroyed() {
     this.unregisterMousetrap()// 注销按键监听
     this.toggleHeader(true) // 重新打开头部
+    this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
     this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }

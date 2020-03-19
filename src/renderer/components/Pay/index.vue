@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid'
+
 import { AopF2F } from '@/api/pay'
 // 前俯后仰 新
 export default {
@@ -74,7 +74,6 @@ export default {
   methods: {
     hander(order) {
       this.dialogVisible = true
-      order.id = uuidv4().replace(/\-/g, '') // 生成随机UUID
       // order.id = '38e494c5a47a45d4b68b7522554472f8'
       this.order = order
       this.handerBegin()

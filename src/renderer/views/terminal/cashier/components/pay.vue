@@ -40,7 +40,11 @@ export default {
   computed: {
     ...mapState({
       order: state => state.terminal.order,
-      payAmount: state => state.terminal.payAmount
+      payAmount: state => state.terminal.payAmount,
+      scanStoreId: state => state.settings.scanStoreId,
+      scanPayId: state => state.settings.scanPayId,
+      terminal: state => state.settings.terminal,
+      username: state => state.user.username
     })
   },
   created() {
@@ -84,6 +88,8 @@ export default {
         const regVipCard = /^((;)\d{20})$/
         if (regVipCard.test(code)) { // 储值卡正则
           this.cardPay(code)
+        } else {
+          this.scanPay(code) // 扫码
         }
       })
     },

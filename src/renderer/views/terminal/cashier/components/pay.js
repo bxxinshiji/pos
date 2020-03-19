@@ -1,11 +1,12 @@
-
 import { Notification, Message } from 'element-ui'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { syncOrder } from '@/api/order'
 import { AddPrint } from '@/model/api/order'
+import { parseTime } from '@/utils/index'
 import print from '@/utils/print'
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
+import { v4 as uuidv4 } from 'uuid'
 
 // 完结订单
 const EndOrder = (order, self) => {
@@ -43,50 +44,43 @@ const EndOrder = (order, self) => {
     })
   })
 }
-// const payError = (error) => {
-//   console.error(error)
-//   MessageBox.confirm(error
-//     , '支付失败', {
-//       type: 'error',
-//       showCancelButton: false,
-//       showConfirmButton: false,
-//       dangerouslyUseHTMLString: true
-//     }).then(() => {
-//   }).catch(() => {
-//   })
-// }
-// 支付订单
-const payHander = (pay) => {
-  return new Promise(async(resolve, reject) => {
-    if (!pay.status) {
-      switch (pay.type) {
-        case 'cardPay':
-          if (pay.code) {
-            await CardPay(pay).then(response => {
+
+const hander = {
+  payHander(pay) {
+    return new Promise(async(resolve, reject) => {
+      if (!pay.status) {
+        switch (pay.type) {
+          case 'cardPay':
+            if (pay.code) {
+              await CardPay(pay).then(response => {
+                pay.status = true
+                resolve(pay)
+              }).catch(error => {
+                reject(error)
+              })
+            } else {
+              reject(new Error('请刷卡!会员卡号不允许为空'))
+            }
+            break
+          case 'remoteCardPay':
+            console.log('remoteCardPay')
+            break
+          case 'scanPay':
+            await this.payAopF2F(pay).then(response => {
               pay.status = true
               resolve(pay)
             }).catch(error => {
               reject(error)
             })
-          } else {
-            reject(new Error('请刷卡!会员卡号不允许为空'))
-          }
-          break
-        case 'remoteCardPay':
-          console.log('remoteCardPay')
-          break
-        case 'scanPay':
-          console.log('scanPay')
-          break
-        case 'cashPay':
-          pay.status = true // 现金支付时默认支付状态成功
-          resolve(pay)
-          break
+            break
+          case 'cashPay':
+            pay.status = true // 现金支付时默认支付状态成功
+            resolve(pay)
+            break
+        }
       }
-    }
-  })
-}
-const hander = {
+    })
+  },
   cardPay(code) {
     VipCardGet(code).then(response => {
       if (response.amount * 100 < this.payAmount) {
@@ -107,6 +101,71 @@ const hander = {
       })
     })
   },
+  payAopF2F(pay) {
+    return new Promise(async(resolve, reject) => {
+      const code = pay.code
+      pay.orderNo = uuidv4().replace(/\-/g, '') // 支付宝、微信等支付指定订单单号[UUID生成]
+      let method = ''
+      const regAlipay = /^(?:2[5-9]|30)\d{14,18}$/
+      if (regAlipay.test(code)) { // 支付宝支付
+        method = 'alipay'
+      }
+      const regWechat = /^1[0-5]\d{16}$/
+      if (regWechat.test(code)) { // 微信支付
+        method = 'wechat'
+      }
+      if (method) {
+        // 检测唯一扫码支付
+        // 获取位置扫码支付
+        // 不允许其他支付方式
+        const scanOrder = {
+          storeId: this.scanStoreId,
+          method: method,
+          authCode: code,
+          title: this.order.orderNo,
+          orderNo: this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}'),
+          totalAmount: pay.amount,
+          operatorId: this.username,
+          terminalId: this.terminal
+        }
+
+        console.log(this.order)
+        console.log(scanOrder)
+        console.log(this.username, this.scanPayId, this.terminal, this.scanStoreId)
+      } else {
+        Message({
+          type: 'warning',
+          message: '暂不支持此付款方式!'
+        })
+        return
+      }
+    })
+  },
+  scanPay(code) {
+    if (!this.scanStoreId) {
+      Message({
+        type: 'error',
+        message: '请设置付款商家!'
+      })
+      return
+    }
+    if (!this.scanPayId) {
+      Message({
+        type: 'error',
+        message: '扫码付款方式未设置!'
+      })
+      return
+    }
+    if (this.payAmount < this.order.waitPay) {
+      Message({
+        type: 'warning',
+        duration: 10000,
+        message: '扫码付款必须大于代付款金额!【多笔付款请最后支付】'
+      })
+      return
+    }
+    this.handerPay(this.scanPayId, code)
+  },
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
     let payInfo = {}
     this.pays.forEach(pay => {
@@ -115,7 +174,6 @@ const hander = {
           if (this.order.waitPay > 0) {
             const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
             const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 || amount) : amount // 收到的钱[现金可以多少其他不允许]
-            const orderNo = this.order.orderNo + '_' + pay.id + '_' + this.order.pays.length// 支付宝、微信等支付指定订单单号[订单编号+支付方式ID+支付序号]
             payInfo = {
               payId: pay.id, // 支付方式
               name: pay.name, // 支付方式名称
@@ -123,7 +181,7 @@ const hander = {
               code: code, // 会员卡
               amount: amount, // 支付金额
               getAmount: getAmount, // 收到的钱[现金可以多少其他不允许]
-              orderNo: orderNo, // 支付宝、微信等支付指定订单单号[订单编号+支付方式ID+支付序号]
+              orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
               status: false // 现金支付时默认支付状态成功
             }
           }
@@ -137,7 +195,7 @@ const hander = {
               code: code, // 会员卡
               amount: amount, // 支付金额
               getAmount: '', // 收到的钱[现金可以多少其他不允许]
-              orderNo: '', // 支付宝、微信等支付指定订单单号[订单编号+支付方式ID+支付序号]
+              orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
               status: false // 现金支付时默认支付状态成功
             }
           } else {
@@ -148,7 +206,7 @@ const hander = {
             return
           }
         }
-        payHander(payInfo).then(response => {
+        this.payHander(payInfo).then(response => {
           this.order.pays.push(response)
           this.$store.dispatch('terminal/handerOrder') // 更新订单信息
           this.handerOrder() // 处理订单支付

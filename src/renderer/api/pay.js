@@ -1,13 +1,13 @@
 import request from '@/utils/request'
-
-export function Pay(data) {
+request.defaults.error = false // 关闭错误提示
+export function AopF2F(data) {
   return request({
     method: 'post',
     data: {
       service: 'pay-api',
-      method: 'Pays.Pay',
+      method: 'Pays.AopF2F',
       request: {
-        pay: data
+        order: data
       }
     }
   })
