@@ -1,11 +1,15 @@
 import { Notification, Message } from 'element-ui'
-import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
+import { AopF2F } from '@/api/pay'
 import { syncOrder } from '@/api/order'
-import { AddPrint } from '@/model/api/order'
+import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
 import print from '@/utils/print'
-import sequelize from '@/model/order'
-const Order = sequelize.models.order
+
+import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
+import { AddPrint } from '@/model/api/order'
+import orderSequelize from '@/model/order'
+const Order = orderSequelize.models.order
+
 import { v4 as uuidv4 } from 'uuid'
 
 // 完结订单
@@ -66,10 +70,13 @@ const hander = {
             console.log('remoteCardPay')
             break
           case 'scanPay':
+            this.scand = true
             await this.payAopF2F(pay).then(response => {
-              pay.status = true
+              pay.status = response
+              this.scand = false
               resolve(pay)
             }).catch(error => {
+              this.scand = false
               reject(error)
             })
             break
@@ -115,10 +122,8 @@ const hander = {
         method = 'wechat'
       }
       if (method) {
-        // 检测唯一扫码支付
-        // 获取位置扫码支付
-        // 不允许其他支付方式
-        const scanOrder = {
+        // 查找创建 PayOrder
+        await findCreatePayOrder(this.order, {
           storeId: this.scanStoreId,
           method: method,
           authCode: code,
@@ -127,17 +132,20 @@ const hander = {
           totalAmount: pay.amount,
           operatorId: this.username,
           terminalId: this.terminal
-        }
-
-        console.log(this.order)
-        console.log(scanOrder)
-        console.log(this.username, this.scanPayId, this.terminal, this.scanStoreId)
-      } else {
-        Message({
-          type: 'warning',
-          message: '暂不支持此付款方式!'
+        }).then(async res => {
+          await AopF2F(res.pay).then(response => {
+            if (response.data.valid) {
+              StautsUpdatePayOrder(res.pay.orderNo, response.data.valid)
+            }
+            resolve(response.data.valid)
+          }).catch(error => {
+            reject(error)
+          })
+        }).catch(error => {
+          reject(error)
         })
-        return
+      } else {
+        reject(new Error('暂不支持此付款方式!'))
       }
     })
   },

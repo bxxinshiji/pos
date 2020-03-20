@@ -72,13 +72,6 @@ export default {
     }, 1000)
   },
   methods: {
-    hander(order) {
-      this.dialogVisible = true
-      // order.id = '38e494c5a47a45d4b68b7522554472f8'
-      this.order = order
-      this.handerBegin()
-      this.handerPay()
-    },
     handerBegin() {
       this.begin = true
       this.end = false
@@ -88,25 +81,32 @@ export default {
       this.begin = false
       this.end = true
     },
-    handerPay() {
-      AopF2F(this.order).then(response => {
-        if (response.data.valid) {
-          this.handerEnd()
-          this.info = {
-            type: 'success',
-            message: '支付成功'
+    handerPay(order) {
+      return new Promise(async(resolve, reject) => {
+        this.dialogVisible = true
+        this.order = order
+        this.handerBegin()
+        AopF2F(this.order).then(response => {
+          if (response.data.valid) {
+            this.handerEnd()
+            this.info = {
+              type: 'success',
+              message: '支付成功'
+            }
           }
-        }
-      }).catch(error => {
-        this.handerEnd()
-        switch (this.order.method) {
-          case 'alipay':
-            this.alipayHander(error)
-            break
-          case 'wechat':
-            this.wechatHander(error)
-            break
-        }
+          // resolve(response.data.valid)
+        }).catch(error => {
+          this.handerEnd()
+          switch (this.order.method) {
+            case 'alipay':
+              this.alipayHander(error)
+              break
+            case 'wechat':
+              this.wechatHander(error)
+              break
+          }
+          reject(error)
+        })
       })
     },
     wechatHander(error) {

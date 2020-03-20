@@ -108,7 +108,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.usernameFocus()
   },
   methods: {
@@ -149,7 +148,6 @@ export default {
     }
   },
   destroyed() {
-    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>

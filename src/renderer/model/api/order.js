@@ -35,6 +35,7 @@ export function AddPrint(order) {
     })
   })
 }
+
 // GoodsSnapshot 处理商品信息合并商品信息快照
 export async function GoodsSnapshot(goods) {
   for (let index = 0; index < goods.length; index++) { // 合并商品快照

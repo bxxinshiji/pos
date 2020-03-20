@@ -45,7 +45,6 @@ export default {
   created() {
   },
   mounted() {
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     document.addEventListener('keydown', this.keydown)
   },
   methods: {
@@ -108,7 +107,6 @@ export default {
     this.removeEventListener()
   },
   destroyed() {
-    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>

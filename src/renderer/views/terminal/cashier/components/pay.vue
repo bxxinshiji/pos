@@ -1,18 +1,23 @@
 <template>
-    <el-alert
-      class="order-end"
-      type="success"
-      :closable="false"
-    >
-      
-      <div class="payAmount"> 
-        <span class="id"> 收款金额: </span>
-        <span>{{ (payAmount / 100).toFixed(2) }} </span>
-      </div> 
-      <span v-for="(pay,index) in pays" :key="index">
-        <el-button v-if="pay.type!='pay'" type="primary" :disabled="pay.type!='cashPay'" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>
-      </span>
-    </el-alert>
+    <span>
+      <el-alert
+        class="order-end"
+        type="success"
+        :closable="false"
+      >
+        <div class="info">
+          <span v-if="scand" class="await"><i class="fa fa-spinner fa-pulse fa-fw"></i> 付款中</span>
+          <div class="payAmount"> 
+            <span class="id"> 收款金额: </span>
+            <span>{{ (payAmount / 100).toFixed(2) }} </span>
+          </div> 
+        </div>
+        <span v-for="(pay,index) in pays" :key="index">
+          <el-button v-if="pay.type!='pay'" type="primary" :disabled="pay.type!='cashPay'" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>
+        </span>
+      </el-alert>
+      <pay-html ref="pay"/>
+    </span>
 </template>
 
 <script>
@@ -27,14 +32,17 @@ const payKeyboard = store.state.settings.payKeyboard
 import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
 import Pay from '@/model/pay'
+import PayHtml from '@/components/Pay'
 
 export default {
   name: 'pay',
+  components: { PayHtml },
   props: {
   },
   data() {
     return {
-      pays: []
+      pays: [],
+      scand: true // 扫码付款是否开始
     }
   },
   computed: {
@@ -137,11 +145,29 @@ export default {
   margin-right: 1vw;
   font-size: (100vh/100vw)*2.7vw;
 }
-.payAmount{
-  font-size: 2.1vh;
-  margin-top: 1vh;
-  span{
-    color: @el-danger;
+.info{
+  text-align:center;
+  .payAmount{
+    margin:0 auto;
+    font-size: 6vh;
+    span{
+      color: @el-danger;
+    }
   }
+  .await{
+    font-size: 8vw;
+    color: #E6A23C;
+    margin:0 auto;
+  }
+}
+.svg-icon{
+  font-size: 8vw;
+  margin-bottom: 3vw;
+}
+.wechat{
+  color: #67C23A;
+}
+.alipay{
+  color: #409EFF;
 }
 </style>

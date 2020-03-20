@@ -82,7 +82,6 @@ export default {
     this.closeSideBar()// 缩小侧栏
   },
   mounted() {
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.focus()
     this.initOrder()
     setInterval(() => { // 自动同步订单
@@ -195,7 +194,6 @@ export default {
     this.unregisterMousetrap()// 注销按键监听
     this.toggleHeader(true) // 重新打开头部
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
-    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>

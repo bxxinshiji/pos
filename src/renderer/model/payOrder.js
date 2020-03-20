@@ -16,10 +16,13 @@ sequelize.authenticate().then(() => {
 
 // 订单
 sequelize.define('payOrder', {
-  id: { type: Sequelize.STRING, unique: true }, // 订单编号
-  stauts: Sequelize.BOOLEAN, // 终端编号
+  orderNo: { type: Sequelize.STRING, unique: true }, // 订单编号
   pay: Sequelize.JSON, // 支付数据
-  order: Sequelize.JSON // 订单数据
+  order: Sequelize.JSON, // 订单数据
+  stauts: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  }
 }, {})
 
 // 初始化数据模型

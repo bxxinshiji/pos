@@ -139,7 +139,6 @@ export default {
   },
   mounted() {
     this.toggleHeader(false)// 关闭打开头部
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     document.addEventListener('keydown', this.keydown)
     this.getList()
   },
@@ -245,7 +244,6 @@ export default {
     },
     destroyed() {
       this.toggleHeader(true) // 重新打开头部
-      this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
     }
   }
 }

@@ -264,7 +264,6 @@ export default {
     }
   },
   destroyed() {
-    this.$store.dispatch('healthy/clearInterval') // 健康监测关闭
   }
 }
 </script>

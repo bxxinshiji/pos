@@ -109,7 +109,6 @@ export default {
   mounted() {
     this.$refs.password.focus()
     document.addEventListener('keydown', this.keydown)
-    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
   },
   methods: {
     handerPassword() {

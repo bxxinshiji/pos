@@ -11,12 +11,15 @@ require('@/utils/mousetrap-global-bind')
 export default {
   name: 'App',
   mounted() {
+    this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.globalShortcut()
   },
   methods: {
     syncTerminal() {
-      SyncTerminal()
+      setTimeout(() => {
+        SyncTerminal()
+      }, 5 * 1000)// 等待 5 秒后第一次同步数据
       setInterval(() => {
         SyncTerminal()
       }, 30000)
