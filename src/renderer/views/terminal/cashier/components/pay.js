@@ -4,6 +4,7 @@ import { syncOrder } from '@/api/order'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
 import print from '@/utils/print'
+import errorPay from '@/utils/error-pay'
 
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
@@ -38,7 +39,7 @@ const EndOrder = (order, self) => {
     self.handleClose() // 关闭页面
     syncOrder(orderRes) // 异步同步服务器订单
   }).catch(error => {
-    // 关联插入出错删除订单数据
+    // 删除出错关联插入订单数据
     Order.destroy({ where: { orderNo: order.orderNo }})
     Notification({
       title: '创建订单错误',
@@ -90,22 +91,18 @@ const hander = {
   },
   cardPay(code) {
     VipCardGet(code).then(response => {
+      const payAmount = this.payAmount
       if (response.amount * 100 < this.payAmount) {
-        this.$store.dispatch('terminal/changePayAmount', response.amount * 100) // 开启支付页面的收款金额
+        this.$store.dispatch('terminal/changePayAmount', response.amount * 100) // 根据会员卡月自定义输收款金额
       }
       if (this.payAmount) {
         this.handerPay(response.id, response.cardNo)
       } else {
-        Message({
-          type: 'error',
-          message: '账户余额为零'
-        })
+        this.$store.dispatch('terminal/changePayAmount', payAmount) // 无法付款时恢复 付款金额
+        this.error = '账户余额为零'
       }
     }).catch(error => {
-      Message({
-        type: 'error',
-        message: error
-      })
+      this.error = error
     })
   },
   payAopF2F(pay) {
@@ -133,11 +130,11 @@ const hander = {
           operatorId: this.username,
           terminalId: this.terminal
         }).then(async res => {
-          await AopF2F(res.pay).then(response => {
-            if (response.data.valid) {
-              StautsUpdatePayOrder(res.pay.orderNo, response.data.valid)
+          await this.AopF2F(res.pay).then(response => {
+            if (response) {
+              StautsUpdatePayOrder(res.pay.orderNo, response)
             }
-            resolve(response.data.valid)
+            resolve(response)
           }).catch(error => {
             reject(error)
           })
@@ -149,32 +146,47 @@ const hander = {
       }
     })
   },
+  AopF2F(pay) {
+    return new Promise(async(resolve, reject) => {
+      await AopF2F(pay).then(response => { // 远程支付开始
+        resolve(response.data.valid)
+      }).catch(error => {
+        const err = errorPay.hander(error, pay.method)
+        if (err === 'USERPAYING') {
+          console.log(err)
+          this.warning = '等待用户付款中'
+          const sleep = 6
+          setTimeout(() => { // 等待时间后继续请求支付查询付款情况
+            this.warning = '支付查询中'
+            this.AopF2F(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }, (sleep - 1) * 1000)// 等待
+        } else {
+          reject(err) // 返回处理后的错误信息
+        }
+      })
+    })
+  },
   scanPay(code) {
     if (!this.scanStoreId) {
-      Message({
-        type: 'error',
-        message: '请设置付款商家!'
-      })
+      this.error = '请设置付款商家'
       return
     }
     if (!this.scanPayId) {
-      Message({
-        type: 'error',
-        message: '扫码付款方式未设置!'
-      })
+      this.error = '扫码付款方式未设置'
       return
     }
     if (this.payAmount < this.order.waitPay) {
-      Message({
-        type: 'warning',
-        duration: 10000,
-        message: '扫码付款必须大于代付款金额!【多笔付款请最后支付】'
-      })
+      this.error = '扫码付款必须大于待付款金额!【多笔付款请最后支付】'
       return
     }
     this.handerPay(this.scanPayId, code)
   },
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
+    this.initInfo()
     let payInfo = {}
     this.pays.forEach(pay => {
       if (String(pay.id) === String(id)) {
@@ -207,10 +219,7 @@ const hander = {
               status: false // 现金支付时默认支付状态成功
             }
           } else {
-            Message({
-              type: 'error',
-              message: '退货只允许现金形式'
-            })
+            this.error = '退货只允许现金形式'
             return
           }
         }
@@ -219,10 +228,7 @@ const hander = {
           this.$store.dispatch('terminal/handerOrder') // 更新订单信息
           this.handerOrder() // 处理订单支付
         }).catch(error => {
-          Message({
-            type: 'error',
-            message: error
-          })
+          this.error = error
           return
         })
       }

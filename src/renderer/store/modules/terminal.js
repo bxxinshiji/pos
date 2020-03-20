@@ -50,7 +50,7 @@ const mutations = {
   IS_PAY: (state, visible) => { // 自定义输入商品价格页面控制
     state.isPay = visible
   },
-  PAY_AMOUNT: (state, amount) => { // 自定义输入商品价格页面控制应收款金额
+  PAY_AMOUNT: (state, amount) => { // 自定义输收款金额
     state.payAmount = amount
   }
 }
@@ -129,7 +129,7 @@ const actions = {
   changeIsPay({ commit }, visible) { // 自定义输入商品价格页面控制
     commit('IS_PAY', visible)
   },
-  changePayAmount({ commit }, amount) { // 自定义输入商品价格页面金额
+  changePayAmount({ commit }, amount) { // 自定义输收款金额
     commit('PAY_AMOUNT', amount)
   },
   pushCacheOrder({ commit, state }) { // 挂起订单

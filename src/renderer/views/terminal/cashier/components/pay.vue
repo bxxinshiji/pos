@@ -6,7 +6,8 @@
         :closable="false"
       >
         <div class="info">
-          <span v-if="scand" class="await"><i class="fa fa-spinner fa-pulse fa-fw"></i> 付款中</span>
+          <span v-if="scand" class="await"><i class="fa fa-spinner fa-pulse fa-fw"></i>  {{warning}}</span>
+          <span v-if="error" class="error"><i class="fa fa-times-circle fa-fw"></i> {{error}}</span>
           <div class="payAmount"> 
             <span class="id"> 收款金额: </span>
             <span>{{ (payAmount / 100).toFixed(2) }} </span>
@@ -42,7 +43,9 @@ export default {
   data() {
     return {
       pays: [],
-      scand: true // 扫码付款是否开始
+      error: '', // 错误信息
+      scand: false, // 扫码付款是否开始
+      warning: '付款中' // 等待信息
     }
   },
   computed: {
@@ -79,6 +82,11 @@ export default {
           })
         })
       })
+    },
+    initInfo() {
+      this.error = '' // 错误信息
+      this.scand = false // 扫码付款是否开始
+      this.warning = '付款中' // 等待信息
     },
     registerMousetrap() { // 注册快捷键
       Object.keys(payKeyboard).map(key => {
@@ -155,19 +163,18 @@ export default {
     }
   }
   .await{
-    font-size: 8vw;
+    font-size: 7vw;
     color: #E6A23C;
     margin:0 auto;
   }
-}
-.svg-icon{
-  font-size: 8vw;
-  margin-bottom: 3vw;
 }
 .wechat{
   color: #67C23A;
 }
 .alipay{
   color: #409EFF;
+}
+.error{
+  color: #F56C6C;
 }
 </style>
