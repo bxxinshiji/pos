@@ -6,7 +6,7 @@
         :closable="false"
       >
         <div class="info">
-          <span v-if="scand" class="await"><i class="fa fa-spinner fa-pulse fa-fw"></i>  {{warning}}</span>
+          <span v-if="scand" class="warning"><i class="fa fa-spinner fa-pulse fa-fw"></i>  {{warning}}</span>
           <span v-if="error" class="error"><i class="fa fa-times-circle fa-fw"></i> {{error}}</span>
           <div class="payAmount"> 
             <span class="id"> 收款金额: </span>
@@ -163,8 +163,8 @@ export default {
       color: @el-danger;
     }
   }
-  .await{
-    font-size: 7vw;
+  .warning{
+    font-size: 7vh;
     color: #E6A23C;
     margin:0 auto;
   }
