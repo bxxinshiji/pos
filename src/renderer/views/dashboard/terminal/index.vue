@@ -26,9 +26,10 @@ export default {
       keyboards: [
         { name: '收银台', key: '0', label: 'cashier' },
         { name: '订单查询', key: '1', label: 'order' },
-        { name: '盘点商品', key: '2', label: 'inventory' },
-        { name: '修改密码', key: '3', label: 'password' },
-        { name: '系统配置', key: '4', label: 'config' },
+        { name: '支付查询', key: '2', label: 'pay' },
+        { name: '盘点商品', key: '3', label: 'inventory' },
+        { name: '修改密码', key: '4', label: 'password' },
+        { name: '系统配置', key: '5', label: 'config' },
         { name: '暂离退出', key: '6', label: 'out' },
         { name: '结账退出', key: '7', label: 'accounts' },
         { name: '退出软件', key: '8', label: 'quit' },
@@ -55,6 +56,9 @@ export default {
           break
         case 'order':
           this.$router.push({ path: '/terminal/order' })
+          break
+        case 'pay':
+          this.$router.push({ path: '/terminal/pay' })
           break
         case 'config':
           this.$router.push({ path: '/terminal/config' })
@@ -129,6 +133,9 @@ export default {
   }
   .cashier{
     background: @el-success;
+  }
+  .pay{
+    background: #ff6f00;
   }
   .order{
     background: @el-brand;

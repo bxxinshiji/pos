@@ -23,8 +23,7 @@ export default {
         permits: ['ui_terminal_index'],
         roles: ['terminal']
       }
-    },
-    {
+    }, {
       path: 'order',
       name: 'Order',
       component: () => import('@/views/terminal/order/index'),
@@ -34,8 +33,17 @@ export default {
         permits: ['ui_terminal_order'],
         roles: ['terminal']
       }
-    },
-    {
+    }, {
+      path: 'pay',
+      name: 'Pay',
+      component: () => import('@/views/terminal/pay/index'),
+      meta: {
+        title: '支付订单',
+        icon: 'pay',
+        permits: ['ui_terminal_pay'],
+        roles: ['terminal']
+      }
+    }, {
       path: 'inventory',
       name: 'Inventory',
       component: () => import('@/views/terminal/inventory/index'),
@@ -45,8 +53,7 @@ export default {
         permits: ['ui_terminal_inventory'],
         roles: ['terminal']
       }
-    },
-    {
+    }, {
       path: 'password',
       name: 'Password',
       component: () => import('@/views/terminal/password/index'),
@@ -56,8 +63,7 @@ export default {
         permits: ['ui_terminal_password'],
         roles: ['terminal']
       }
-    },
-    {
+    }, {
       path: 'config',
       name: 'Config',
       component: () => import('@/views/terminal/config/index'),

@@ -1,7 +1,24 @@
 import sequelize from '@/model/payOrder'
 const PayOrder = sequelize.models.payOrder
+import { pagination } from '@/utils/index'
 
-// 更新用户密码
+export function List(listQuery) {
+  return new Promise((resolve, reject) => {
+    const page = pagination(listQuery.limit, listQuery.page)
+    PayOrder.findAndCountAll({
+      offset: page.offset,
+      limit: page.limit,
+      order: listQuery.order,
+      where: listQuery.where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 查找创建订单
 export function findCreate(order, pay) {
   return new Promise((resolve, reject) => {
     PayOrder.create({ // 不存在创建订单
