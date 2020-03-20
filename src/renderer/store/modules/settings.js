@@ -23,6 +23,7 @@ const state = {
   isPlucode: false,
   scanStoreId: '', // 支付商户id
   scanPayId: 0, //  扫码支付ID
+  orderTitle: '扫码支付商品',
   printer: {
     switch: true,
     template: '           ******超市\n************* {{stuats}} *************\n编码    商品名称   数量   合计\n{{goods(pluCode|7,name|10,number|5,total|7)}}\n--------------------------------\n收款方式    应收金额    实收金额\n{{pays(name|12,amount|9,getAmount|9)}}\n--------------------------------\n收款员: {{userId}} 收款机: {{terminal}} \n金额: {{total}}元\n订单:{{orderNo}} 打印: {{print}} 次\n时间:{{createdAt}}\n地址:博兴五路319号\n电话:0543-2120888 ',
@@ -100,6 +101,10 @@ function init() {
   state.terminal = Store.get('settings.terminal')
   state.scanStoreId = Store.get('settings.scanStoreId')
   state.scanPayId = Store.get('settings.scanPayId')
+  const orderTitle = Store.get('settings.orderTitle')
+  if (orderTitle) {
+    state.orderTitle = orderTitle
+  }
 
   const barcodeReg = Store.get('settings.barcodeReg')
   if (barcodeReg) {

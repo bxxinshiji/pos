@@ -13,6 +13,9 @@
                       </el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="订单名称"  :prop="ruleForm.orderTitle">
+                    <el-input v-model="ruleForm.orderTitle">></el-input>
+                </el-form-item>
                 <br>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -30,7 +33,8 @@ export default {
       scanPay: [],
       ruleForm: {
         scanStoreId: this.$store.state.settings.scanStoreId,
-        scanPayId: this.$store.state.settings.scanPayId
+        scanPayId: this.$store.state.settings.scanPayId,
+        orderTitle: this.$store.state.settings.orderTitle
       }
     }
   },

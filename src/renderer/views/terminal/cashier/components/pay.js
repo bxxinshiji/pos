@@ -124,7 +124,7 @@ const hander = {
           storeId: this.scanStoreId,
           method: method,
           authCode: code,
-          title: this.order.orderNo,
+          title: this.orderTitle,
           orderNo: this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}'),
           totalAmount: pay.amount,
           operatorId: this.username,
@@ -153,7 +153,6 @@ const hander = {
       }).catch(error => {
         const err = errorPay.hander(error, pay.method)
         if (err === 'USERPAYING') {
-          console.log(err)
           this.warning = '等待用户付款中'
           const sleep = 6
           setTimeout(() => { // 等待时间后继续请求支付查询付款情况

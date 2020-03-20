@@ -54,6 +54,7 @@ export default {
       payAmount: state => state.terminal.payAmount,
       scanStoreId: state => state.settings.scanStoreId,
       scanPayId: state => state.settings.scanPayId,
+      orderTitle: state => state.settings.orderTitle,
       terminal: state => state.settings.terminal,
       username: state => state.user.username
     })
