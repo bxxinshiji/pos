@@ -32,13 +32,14 @@ export async function SyncPlu() {
           goods.push({
             pluCode: item.pluCode,
             barCode: item.barCode,
-            editAt: item.editAt,
+            depCode: item.depCode,
             price: Math.round(item.price * 100),
             name: item.name,
             unit: item.unit,
             spec: item.spec,
             type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
-            snapshot: item
+            snapshot: item,
+            editAt: item.editAt
           })
         })
       }

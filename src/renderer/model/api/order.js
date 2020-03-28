@@ -1,6 +1,7 @@
 
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
+const Goods = sequelize.models.good
 const Snapshots = sequelize.models.snapshot
 import { pagination } from '@/utils/index'
 
@@ -49,4 +50,18 @@ export async function GoodsSnapshot(goods) {
       })
     }
   }
+}
+
+export function DepTotal(listQuery) {
+  return new Promise((resolve, reject) => {
+    Goods.findAll({
+      attributes: ['depCode', 'total'],
+      group: 'depCode',
+      where: listQuery.where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
 }

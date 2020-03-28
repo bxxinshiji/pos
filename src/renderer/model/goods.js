@@ -18,6 +18,7 @@ sequelize.authenticate().then(() => {
 const Goods = sequelize.define('good', {
   pluCode: { type: Sequelize.STRING, unique: true }, // PLU码 自编码
   barCode: { type: Sequelize.STRING }, // 终端编号
+  depCode: { type: Sequelize.BIGINT }, // 部门编码
   price: { type: Sequelize.BIGINT }, // 名称
   name: { type: Sequelize.STRING }, // 名称
   unit: { type: Sequelize.STRING }, // 单位

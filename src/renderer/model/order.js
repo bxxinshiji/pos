@@ -35,9 +35,9 @@ const Goods = sequelize.define('good', {
   number: Sequelize.DECIMAL, // 商品数量
   price: Sequelize.INTEGER, // 商品价格
   total: Sequelize.INTEGER, // 小计
-  no: Sequelize.INTEGER // 排列序号
+  no: Sequelize.INTEGER, // 排列序号
+  depCode: Sequelize.INTEGER // 部门编码
 }, {
-  timestamps: false
 })
 Order.Goods = Order.hasMany(Goods, {
   onUpdate: 'cascade',
