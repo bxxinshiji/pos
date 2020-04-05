@@ -15,7 +15,8 @@ const order = {
   },
   async CreateOrderGoodsSQL(item) {
     const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 销售日期
-    const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
+    const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s} {h}:{i}:{s}') // 销售时间
+    const JzDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 结账日期
     const SaleItemNo = item.dataValues.orderNo // 销售流水号
     const UserCode = item.dataValues.userId // 收款员编号
     const CurrDate = parseTime(item.dataValues.createdAt, '{y}{m}{d}')
@@ -44,8 +45,8 @@ const order = {
       const Tag = goods.Tag
       const BakData3 = 0 // 备用信息
 
-      this.sql = this.sql + ` INSERT INTO tXsPosPD (XsDate ,XsTime ,SaleItemNo ,UserCode ,CurrDate ,BcCode ,PageNo ,LnNo ,PluCode ,PluName ,PluAbbr ,DepCode ,ClsCode ,SupCode ,TaxRate ,SPrice ,XsCount ,YsAmt ,MgType ,IsDecimal ,Tag ,BakData3,IsGenDno ) 
-        values ('` + XsDate + `', '` + XsTime + `', '` + SaleItemNo + `', '` + UserCode + `', '` + CurrDate + `', '` + BcCode + `', '` + PageNo + `', '` + LnNo + `', '` + PluCode + `', '` + PluName + `', 
+      this.sql = this.sql + ` INSERT INTO tXsPosPD (XsDate ,XsTime ,JzDate, SaleItemNo ,UserCode ,CurrDate ,BcCode ,PageNo ,LnNo ,PluCode ,PluName ,PluAbbr ,DepCode ,ClsCode ,SupCode ,TaxRate ,SPrice ,XsCount ,YsAmt ,MgType ,IsDecimal ,Tag ,BakData3,IsGenDno ) 
+        values ('` + XsDate + `', '` + XsTime + `','` + JzDate + `', '` + SaleItemNo + `', '` + UserCode + `', '` + CurrDate + `', '` + BcCode + `', '` + PageNo + `', '` + LnNo + `', '` + PluCode + `', '` + PluName + `', 
           '` + PluAbbr + `', '` + DepCode + `', '` + ClsCode + `', '` + SupCode + `', '` + TaxRate + `', '` + SPrice + `', '` + XsCount + `', '` + YsAmt + `', '` + MgType + `', '` + IsDecimal + `', '` + Tag + `', '` + BakData3 + `','0') `
       // 数据库 INSERT end
     }
