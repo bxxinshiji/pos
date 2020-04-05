@@ -25,7 +25,7 @@
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
     "mssql": "node .electron-vue/mssql.js",
-    "rebuild": "node .electron-vue/mssql.js && ./node_modules/.bin/electron-rebuild"
+    "rebuild": "./node_modules/.bin/electron-rebuild && node .electron-vue/mssql.js"
   },
   "build": {
     "productName": "pos",
