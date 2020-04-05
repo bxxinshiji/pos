@@ -1,3 +1,4 @@
+import store from '@/store'
 import { OrderNo as SQL2000OrderNo } from '@/sql2000/utils/order'
 const SQL2000OrderSQL = import('@/sql2000/model/order')
 import sequelize from '@/model/order'
@@ -21,6 +22,7 @@ export function syncOrder(order) {
         }, {
           where: { orderNo: order.orderNo }
         })
+        store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
         resolve(response)
       }).catch(error => {
         reject(error.message)

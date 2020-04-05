@@ -1,3 +1,4 @@
+import store from '@/store'
 import { Notification, Message } from 'element-ui'
 import { AopF2F } from '@/api/pay'
 import { syncOrder } from '@/api/order'
@@ -18,6 +19,7 @@ const EndOrder = (order, self) => {
   Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
+    store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
     if (print.switch()) {
       print.hander(orderRes).then(response => {
         AddPrint(orderRes) // 增加打印次数

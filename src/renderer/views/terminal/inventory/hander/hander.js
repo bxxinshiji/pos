@@ -20,6 +20,7 @@ const hander = {
     if (self.order.goods.length) {
       Create(self.order).then(orderRes => {
         self.order.status = true // 订单完结
+        self.$refs.foots.information() // 更新info
       }).catch(error => {
         Notification({
           title: '创建订单错误',
@@ -36,8 +37,10 @@ const hander = {
       }).then(() => {
         All().then(orders => {
           if (orders.length > 0) {
-            syncOrder(orders).then(res => {
-              Empty()
+            syncOrder(orders).then(() => {
+              Empty().then(() => {
+                self.$refs.foots.information() // 更新info
+              })
               self.$message({
                 type: 'success',
                 message: '上传盘点订单数据成功'

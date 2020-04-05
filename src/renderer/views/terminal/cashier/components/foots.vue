@@ -57,12 +57,12 @@
             </el-row>
             <el-row>
               <el-col :span="12" class="good">
-                <span>订单: {{info.count}} 笔</span>
-                <span>未上报: {{info.publish}} 笔</span>
-                <span>总金额: {{(info.total / 100).toFixed(2)}} 元</span>
+                <span>订单: {{orderInfo.count}} 笔</span>
+                <span>未上报: {{orderInfo.publish}} 笔</span>
+                <span>总金额: {{(orderInfo.total / 100).toFixed(2)}} 元</span>
               </el-col>
               <el-col :span="12" class="good">
-                <span>退款: {{info.returns}} 笔</span>
+                <span>退款: {{orderInfo.returns}} 笔</span>
               </el-col>
             </el-row>
           </div>
@@ -84,28 +84,20 @@
 <script>
 import { mapState } from 'vuex'
 
-const { Op } = require('sequelize')
-import sequelize from '@/model/order'
-const Order = sequelize.models.order
 export default {
   name: 'foots',
   props: {
   },
   data() {
     return {
-      input: '',
-      info: {
-        count: 0,
-        returns: 0,
-        total: 0,
-        publish: 0
-      }
+      input: ''
     }
   },
   computed: {
     ...mapState({
       order: state => state.terminal.order,
-      goods: state => state.terminal.currentGoods
+      goods: state => state.terminal.currentGoods,
+      orderInfo: state => state.terminal.orderInfo
     }),
     sales() {
       return this.order.type ? '销货' : '退货'
@@ -116,7 +108,7 @@ export default {
   created() {
   },
   mounted() {
-    this.information()
+    this.$store.dispatch('terminal/changeOrderInfo')
   },
   methods: {
     focus() {
@@ -133,46 +125,6 @@ export default {
     },
     handerPay() {
       this.$emit('handerPay')
-    },
-    information() {
-      const createdAt = { // 获取当天订单
-        [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
-        [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
-      }
-      const userId = this.$store.state.user.username
-
-      Order.count({
-        where: {
-          userId: userId,
-          createdAt: createdAt
-        }
-      }).then(response => {
-        this.info.count = response
-      })
-      Order.count({
-        where: {
-          type: 0,
-          userId: userId,
-          createdAt: createdAt
-        }
-      }).then(response => {
-        this.info.returns = response
-      })
-      Order.sum('total', {
-        where: {
-          userId: userId,
-          createdAt: createdAt
-        }
-      }).then(response => {
-        this.info.total = response || 0
-      })
-      Order.count({
-        where: {
-          publish: 0
-        }
-      }).then(response => {
-        this.info.publish = response
-      })
     }
   },
   destroyed() {

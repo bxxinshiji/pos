@@ -23,8 +23,14 @@ export function List(listQuery) {
 }
 
 export function Empty() {
-  sequelize.sync({
-    force: true
+  return new Promise((resolve, reject) => {
+    sequelize.sync({
+      force: true
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
   })
 }
 export function Create(order) {

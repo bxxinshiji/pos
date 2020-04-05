@@ -1,5 +1,9 @@
 import store from '@/store'
+const { Op } = require('sequelize')
+import sequelize from '@/model/order'
+const Order = sequelize.models.order
 import { OrderNo } from '@/api/order'
+
 const state = {
   order: {
     userId: '',
@@ -20,7 +24,13 @@ const state = {
   cacheOrder: [], //  挂单的缓存订单
   isInputPrice: false, // 自定义输入商品价格页面控制
   isPay: false, // 支付页面悬浮
-  payAmount: 0
+  payAmount: 0,
+  orderInfo: { // 订单汇总信息
+    count: 0, // 总数
+    returns: 0, // 退款
+    total: 0, // 总金额
+    publish: 0// 未上报
+  }
 }
 
 const mutations = {
@@ -52,6 +62,11 @@ const mutations = {
   },
   PAY_AMOUNT: (state, amount) => { // 自定义输收款金额
     state.payAmount = amount
+  },
+  SET_ORDER_INFO: (state, { key, value }) => { // 自定义输收款金额
+    if (state.orderInfo.hasOwnProperty(key)) {
+      state.orderInfo[key] = value
+    }
   }
 }
 
@@ -145,6 +160,45 @@ const actions = {
   },
   changeCurrentGoods({ commit }, goods) { // 设置商品列表选中商品
     commit('SET_CURRENT_GOODS', goods)
+  },
+  changeOrderInfo({ commit }) {
+    const createdAt = { // 获取当天订单
+      [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
+      [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
+    }
+    const userId = store.state.user.username
+    Order.count({
+      where: {
+        userId: userId,
+        createdAt: createdAt
+      }
+    }).then(response => {
+      commit('SET_ORDER_INFO', { key: 'count', value: response || 0 })
+    })
+    Order.count({
+      where: {
+        type: 0,
+        userId: userId,
+        createdAt: createdAt
+      }
+    }).then(response => {
+      commit('SET_ORDER_INFO', { key: 'returns', value: response || 0 })
+    })
+    Order.sum('total', {
+      where: {
+        userId: userId,
+        createdAt: createdAt
+      }
+    }).then(response => {
+      commit('SET_ORDER_INFO', { key: 'total', value: response || 0 })
+    })
+    Order.count({
+      where: {
+        publish: 0
+      }
+    }).then(response => {
+      commit('SET_ORDER_INFO', { key: 'publish', value: response || 0 })
+    })
   }
 }
 export default {
