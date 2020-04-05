@@ -1,5 +1,7 @@
+import { Notification } from 'element-ui'
 import store from '@/store'
-import { Message } from 'element-ui'
+import { All, Create } from '@/model/api/orderPD'
+import { syncOrder } from '@/api/orderPD'
 
 const hander = {
   // 输入框聚焦
@@ -15,31 +17,51 @@ const hander = {
     self.$refs.goods.handerCurrentRow(+1)
   },
   pay(self) {
-    if (!self.order.goods.length) {
-      self.$message({
-        type: 'warning',
-        message: '未找到结账商品,请输入结账商品。'
+    if (self.order.goods.length) {
+      Create(self.order).then(orderRes => {
+        self.order.status = true // 订单完结
+      }).catch(error => {
+        Notification({
+          title: '创建订单错误',
+          message: error.message,
+          type: 'error',
+          duration: 15000
+        })
       })
-      return
-    }
-    const waitPay = self.order.waitPay
-    if (waitPay === 0) {
-      self.$message({
-        type: 'warning',
-        message: '订单已完结,请勿重复付款。'
+    } else {
+      self.$confirm('上传会覆盖之前上传未处理数据', '上传盘点数据', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('上传盘点数据')
+        All().then(orders => {
+          syncOrder(orders).then(res => {
+            self.$message({
+              type: 'success',
+              message: '上传盘点订单数据成功'
+            })
+          }).catch(error => {
+            Notification({
+              title: '上传盘点订单数据错误',
+              message: error,
+              type: 'error',
+              duration: 15000
+            })
+          })
+        }).catch(() => {
+          self.$message({
+            type: 'error',
+            message: '未找到盘点订单数据'
+          })
+        })
+      }).catch(() => {
+        self.$message({
+          type: 'info',
+          message: '已取消上传盘点数据'
+        })
       })
-      return
     }
-    let amount = Math.floor(self.$refs.foots.input * 100)
-    // 输入支付金额 (默认应收款金额)
-    amount = (amount === 0) ? waitPay : amount
-    store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
-    store.dispatch('terminal/changeIsPay', true) // 开启支付页面
-    self.$message({
-      type: 'success',
-      message: '收款金额:' + (amount / 100).toFixed(2) + '元'
-    })
-    self.$refs.foots.input = ''
   },
   addGoods(self) { // 添加商品可以条形码可以自编码
     const plucode = self.$refs.foots.input
@@ -98,26 +120,6 @@ const hander = {
       })
     })
   },
-  // 销售状态 销货|退货
-  salesStatus(self) {
-    const type = !self.order.type ? '销货' : '退货'
-    self.$confirm('进入【' + type + '】状态, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
-      self.order.type = !self.order.type
-      self.$message({
-        type: 'success',
-        message: '进入' + type + '状态'
-      })
-    }).catch(() => {
-      self.$message({
-        type: 'info',
-        message: '取消进入' + type + '状态'
-      })
-    })
-  },
   pushPullOrder(self) { // 挂单取单
     if (self.order.goods.length > 0) {
       store.dispatch('terminal/pushCacheOrder')
@@ -125,7 +127,7 @@ const hander = {
       if (store.state.terminal.cacheOrder.length >= 1) {
         store.dispatch('terminal/pullCacheOrder')
       } else {
-        Message({
+        self.$message({
           type: 'warning',
           message: '订单为空无法挂起。'
         })

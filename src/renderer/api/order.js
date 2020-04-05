@@ -6,8 +6,8 @@ const Order = sequelize.models.order
  * OrderNo 订单编号定义
  * @returns {Promise}
  */
-export async function OrderNo(terminal) {
-  return SQL2000OrderNo(terminal)
+export async function OrderNo(terminal, type) {
+  return SQL2000OrderNo(terminal, type)
 }
 /**
  * syncOrder 同步订单

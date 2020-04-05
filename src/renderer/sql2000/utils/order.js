@@ -1,16 +1,22 @@
 const Op = require('sequelize').Op
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
+import sequelizePD from '@/model/orderPD'
+const OrderPD = sequelizePD.models.order
 import { parseTime, addPreZero } from '@/utils/index'
 /**
  * OrderNo 订单编号定义
  * @returns {Promise}
  */
-export async function OrderNo(terminal) {
+export async function OrderNo(terminal, type) {
   return new Promise(async(resolve, reject) => {
     const date = parseTime(new Date(), '{y}{m}{d}').substr(2, 6)
     var orderNo = terminal + date
-    await Order.findOne({
+    let orderModel = Order
+    if (type === 'orderPD') {
+      orderModel = OrderPD
+    }
+    await orderModel.findOne({
       order: [['orderNo', 'DESC']],
       where: {
         orderNo: {

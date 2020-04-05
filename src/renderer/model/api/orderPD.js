@@ -1,5 +1,5 @@
 
-import sequelize from '@/model/order'
+import sequelize from '@/model/orderPD'
 const Order = sequelize.models.order
 const Goods = sequelize.models.good
 const Snapshots = sequelize.models.snapshot
@@ -21,11 +21,21 @@ export function List(listQuery) {
     })
   })
 }
-export function All(listQuery) {
+export function Create(order) {
   return new Promise((resolve, reject) => {
-    Order.findAndCountAll({
-      order: listQuery.order,
-      where: listQuery.where,
+    Order.create(order, {
+      include: [Order.Goods, Order.Pays]
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+export function All() {
+  return new Promise((resolve, reject) => {
+    Order.findAll({
       include: [Order.Goods, Order.Pays]
     }).then(response => {
       resolve(response)

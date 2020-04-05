@@ -56,11 +56,11 @@ const mutations = {
 }
 
 const actions = {
-  changeInitOrder({ commit }) { // 自定义输入商品价格页面控制
+  changeInitOrder({ commit }, type) { // 自定义输入商品价格页面控制
     return new Promise((resolve, reject) => {
       const userId = store.state.user.username
       const terminal = store.state.settings.terminal
-      OrderNo(terminal).then(order_no => {
+      OrderNo(terminal, type).then(order_no => {
         store.dispatch('terminal/changeCurrentGoods', {}) // 清空选中商品
         commit('SET_ORDER', {
           userId: userId,
