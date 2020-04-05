@@ -11,7 +11,9 @@ export async function isSql2000(config) {
   }
   await connection.DB.authenticate().then(() => {
     status = true
-  }).catch(() => {
+  }).catch((error) => {
+    console.log(error)
+
     status = false
   })
   return status

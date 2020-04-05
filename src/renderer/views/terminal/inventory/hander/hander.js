@@ -1,6 +1,6 @@
 import { Notification } from 'element-ui'
 import store from '@/store'
-import { All, Create } from '@/model/api/orderPD'
+import { All, Create, Empty } from '@/model/api/orderPD'
 import { syncOrder } from '@/api/orderPD'
 
 const hander = {
@@ -34,25 +34,32 @@ const hander = {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log('上传盘点数据')
         All().then(orders => {
-          syncOrder(orders).then(res => {
+          if (orders.length > 0) {
+            syncOrder(orders).then(res => {
+              Empty()
+              self.$message({
+                type: 'success',
+                message: '上传盘点订单数据成功'
+              })
+            }).catch(error => {
+              Notification({
+                title: '上传盘点订单数据错误',
+                message: error,
+                type: 'error',
+                duration: 15000
+              })
+            })
+          } else {
             self.$message({
-              type: 'success',
-              message: '上传盘点订单数据成功'
-            })
-          }).catch(error => {
-            Notification({
-              title: '上传盘点订单数据错误',
-              message: error,
               type: 'error',
-              duration: 15000
+              message: '盘点订单数据为空'
             })
-          })
-        }).catch(() => {
+          }
+        }).catch(error => {
           self.$message({
             type: 'error',
-            message: '未找到盘点订单数据'
+            message: '未找到盘点订单数据' + error
           })
         })
       }).catch(() => {

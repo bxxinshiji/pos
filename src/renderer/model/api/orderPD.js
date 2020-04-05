@@ -21,6 +21,12 @@ export function List(listQuery) {
     })
   })
 }
+
+export function Empty() {
+  sequelize.sync({
+    force: true
+  })
+}
 export function Create(order) {
   return new Promise((resolve, reject) => {
     Order.create(order, {

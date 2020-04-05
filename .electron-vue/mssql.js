@@ -17,6 +17,6 @@ function replaceFile (filePath, sourceRegx, targetStr) {
 }
 replaceFile(
     path.join(__dirname, '../node_modules/sequelize/lib/dialects/mssql/query.js'),
-    /execSql/g,
-    'execSqlBatch'
+    /execSql\(/g,
+    'execSqlBatch('
 )
