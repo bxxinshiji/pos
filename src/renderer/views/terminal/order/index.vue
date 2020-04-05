@@ -7,7 +7,7 @@
         size="mini"
         highlight-current-row
       >
-        <template slot="empty">未查询到录入</template>
+        <template slot="empty">未查询到订单</template>
         <el-table-column
           label="单号"
           prop="orderNo"
