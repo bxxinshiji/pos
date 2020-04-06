@@ -4,7 +4,13 @@
         <el-tab-pane label="系统设置">
             <el-form :inline=true :model="sysForm" :rules="sysRules" ref="sysForm"  label-width="100px">
                 <el-form-item label="服务器API" prop="api">
-                    <el-input v-model="sysForm.api"></el-input>
+                    <el-input 
+                      v-model="sysForm.api" 
+                      :autosize="{ minRows: 2, maxRows: 8}"
+                      placeholder="负载均衡服务器,一行一个"
+                      type="textarea"
+                    >
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="终端模式" prop="isTerminal">
                     <el-switch v-model="sysForm.isTerminal"></el-switch>
