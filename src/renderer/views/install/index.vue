@@ -80,7 +80,7 @@ export default {
     return {
       active: 0,
       ruleForm: {
-        api: 'http://rpc1.binzhou.vip/rpc',
+        api: 'http://rpc1.xilewanggou.com/rpc\nhttp://rpc2.xilewanggou.com/rpc\nhttp://rpc3.xilewanggou.com/rpc\nhttp://rpc4.xilewanggou.com/rpc\nhttp://rpc5.xilewanggou.com/rpc',
         isTerminal: false,
         terminal: '0001',
         sql2000_host: '192.168.20.10',

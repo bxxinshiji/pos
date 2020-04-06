@@ -30,7 +30,7 @@ const state = {
     device: 'USB'
   },
   Keyboard: {
-    shutDown: 'g', // 关机
+    shutDown: 'f1', // 关机
     index: 'f8',
     inputFoots: 'f3', // 聚焦
     currentRowUp: 'up', // 向上选择商品
