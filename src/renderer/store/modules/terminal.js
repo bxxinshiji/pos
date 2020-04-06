@@ -30,7 +30,8 @@ const state = {
     returns: 0, // 退款
     total: 0, // 总金额
     publish: 0// 未上报
-  }
+  },
+  syncTerminal: true // 是否允许同步终端
 }
 
 const mutations = {
@@ -67,6 +68,9 @@ const mutations = {
     if (state.orderInfo.hasOwnProperty(key)) {
       state.orderInfo[key] = value
     }
+  },
+  SYNC_TERMINAL: (state, value) => { // 是否允许同步终端
+    state.syncTerminal = value
   }
 }
 
@@ -199,6 +203,9 @@ const actions = {
     }).then(response => {
       commit('SET_ORDER_INFO', { key: 'publish', value: response || 0 })
     })
+  },
+  handerSyncTerminal({ commit }, value) { // 是否允许同步终端
+    commit('SYNC_TERMINAL', value)
   }
 }
 export default {

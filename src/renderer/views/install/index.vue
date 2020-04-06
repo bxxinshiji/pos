@@ -139,6 +139,7 @@ export default {
     })
   },
   mounted() {
+    this.$store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
   },
   methods: {
     next(formName) {
@@ -260,6 +261,7 @@ export default {
       Object.keys(this.ruleForm).forEach(key => {
         this.$store.dispatch('settings/changeSetting', { key: 'install', value: true })
       })
+      this.$store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
       this.$router.push(`/login`)
     }
   },

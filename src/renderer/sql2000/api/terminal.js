@@ -12,6 +12,8 @@ import { Loading } from 'element-ui'
  */
 export async function SyncTerminal() {
   Terminal.PosCode = store.state.settings.terminal
+  store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
+
   if (Terminal.PosCode) {
     await Terminal.Get()
     let status = 0 // 等待窗口锁
@@ -22,7 +24,7 @@ export async function SyncTerminal() {
         text: '更新用户信息中...',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      SyncUser().then(() => {
+      await SyncUser().then(() => {
         Terminal.IsChgUser = '0'
         Terminal.Save()
         loadingInstance.text = '用户信息更新完成'
@@ -43,7 +45,7 @@ export async function SyncTerminal() {
         text: '更新商品信息中...',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      SyncPlu().then(() => {
+      await SyncPlu().then(() => {
         Terminal.IsChgPlu = '0'
         Terminal.Save()
         loadingInstance.text = '商品信息更新完成'
@@ -64,7 +66,7 @@ export async function SyncTerminal() {
         text: '更新支付信息中...',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      SyncPay().then(() => {
+      await SyncPay().then(() => {
         Terminal.IsChgZfKind = '0'
         Terminal.Save()
         loadingInstance.text = '支付信息更新完成'
@@ -78,6 +80,7 @@ export async function SyncTerminal() {
         console.log(error)
       })
     }
+    store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
     Terminal.UserName = store.getters.name
     Terminal.UserCode = store.getters.username
     Terminal.PosState = '10'
