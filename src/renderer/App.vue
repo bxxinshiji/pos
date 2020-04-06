@@ -66,4 +66,7 @@ export default {
 </script>
 
 <style lang="less">
+body {
+  background: #ffffff;
+}
 </style>
