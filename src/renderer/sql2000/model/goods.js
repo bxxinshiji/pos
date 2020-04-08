@@ -20,8 +20,8 @@ const goods = {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
 
-      // LIST_SQL  列表查询语句(状态启用商品)
-      const LIST_SQL = `
+      // sql  列表查询语句(状态启用商品)
+      const sql = `
           select 
             PluCode as pluCode ,
             BarCode barCode,
@@ -46,10 +46,11 @@ const goods = {
             IsDecimal,
             Tag
           from tBmPlu 
-          WHERE XgDate >= '` + editAt + `' AND PluStatus!=2 AND PluStatus!=3 AND PluStatus!=4 AND PluStatus!='A' AND PluStatus!='B'
+          WHERE XgDate >= '` + editAt + `'
           ORDER BY XgDate Asc
       `
-      pool.DB.query(LIST_SQL,
+
+      pool.DB.query(sql,
         {
           type: Sequelize.QueryTypes.SELECT
         }

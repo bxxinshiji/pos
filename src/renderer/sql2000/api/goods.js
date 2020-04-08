@@ -15,7 +15,7 @@ export async function SyncPlu() {
       attributes: ['editAt'],
       order: [['editAt', 'DESC']]
     }).then(res => {
-      editAt = parseTime(res.editAt, '{y}-{m}-{d} {h}:{i}:{s}')
+      editAt = res ? parseTime(res.editAt, '{y}-{m}-{d} {h}:{i}:{s}') : '2010-01-01 00:00:00'
     })
     await SQLGoods.List(editAt).then(async response => {
       if (response) {
@@ -62,7 +62,7 @@ export async function SyncPlu() {
       //   force: true
       // })
       await BarCodes.bulkCreate(barCodes,
-        { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'editAt'] }).then(() => {
+        { updateOnDuplicate: ['pluCode', 'name', 'spec'] }).then(() => {
       }).catch(error => {
         console.error(error)
         reject(new Error('插入商品条码失败'))
