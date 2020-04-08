@@ -9,7 +9,7 @@ const BarCodes = sequelize.models.barCode
 
 export async function SyncPlu() {
   return new Promise(async(resolve, reject) => {
-    const goods = []
+    let goods = []
     let editAt = ''
     await Goods.findOne({
       attributes: ['editAt'],
@@ -39,7 +39,7 @@ export async function SyncPlu() {
       reject(new Error('查询商品PLU失败'))
     })
 
-    const barCodes = []
+    let barCodes = []
     await SQLBarcode.All().then(response => {
       if (response) {
         response.forEach(item => {
@@ -72,6 +72,9 @@ export async function SyncPlu() {
         console.error(error)
         reject(new Error('插入商品PLU失败'))
       })
+
+      goods = []
+      barCodes = []
     } else {
       reject(new Error('未找到更新商品信息'))
     }
