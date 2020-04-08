@@ -47,8 +47,11 @@ function createWindow() {
     useContentSize: true,
     fullscreen: true,
     // frame: false, // 无边框窗口
-    backgroundColor: '#303133', // 背景色
-    webPreferences: { webSecurity: false } // 允许 electron 跨域
+    backgroundColor: '#303133', //
+    webPreferences: {
+      webSecurity: false, // 允许 electron 跨域
+      nodeIntegrationInWorker: true// 允许多线程
+    }
   })
 
   mainWindow.loadURL(winURL)
