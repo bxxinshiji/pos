@@ -3,6 +3,7 @@ import connection from '@/sql2000/model/connection'
 import { trim } from '@/utils'
 const pool = connection.Pool()
 import store from '@/store'
+import { parseTime } from '@/utils/index'
 
 // 删除字符串两边空格
 function handerItem(items) {
@@ -19,7 +20,6 @@ const goods = {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
-
       // sql  列表查询语句(状态启用商品)
       const sql = `
           select 
@@ -46,10 +46,9 @@ const goods = {
             IsDecimal,
             Tag
           from tBmPlu 
-          WHERE XgDate >= '` + editAt + `'
+          WHERE XgDate >= '` + parseTime(editAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + String(editAt.getFullYear() + 1) + `'
           ORDER BY XgDate Asc
       `
-
       pool.DB.query(sql,
         {
           type: Sequelize.QueryTypes.SELECT
