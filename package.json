@@ -1,6 +1,6 @@
 {
   "name": "pos",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "author": "bigrocs <bigrocs@qq.com>",
   "description": "桌面终端",
   "license": "MIT",
@@ -24,8 +24,8 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "mssql": "node .electron-vue/mssql.js",
-    "rebuild": "./node_modules/.bin/electron-rebuild && node .electron-vue/mssql.js"
+    "init": "node .electron-vue/init.js",
+    "rebuild": "./node_modules/.bin/electron-rebuild && node .electron-vue/init.js"
   },
   "build": {
     "productName": "pos",

@@ -12,5 +12,8 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true
+  sidebarLogo: true,
+
+  // 程序版本号 npm run init 会自动更新
+  version: '1.0.18'
 }

@@ -3,8 +3,13 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-row class="stauts"> 
-            <span>状态:</span>
-            <span class="success"> 盘点 </span>
+              <el-col :span="12">
+                <span>状态:</span>
+                <span class="success"> 盘点 </span>
+              </el-col>
+              <el-col :span="12" style="text-align:right">
+                版本: {{version}}
+              </el-col>
           </el-row>
           <el-row class="order"> 
             <span>订单号:</span>
@@ -94,6 +99,7 @@ export default {
   },
   computed: {
     ...mapState({
+      version: state => state.settings.version,
       order: state => state.terminal.order,
       goods: state => state.terminal.currentGoods
     })

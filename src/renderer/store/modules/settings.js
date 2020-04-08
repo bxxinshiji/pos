@@ -3,13 +3,14 @@ import defaultSettings from '@/settings'
 import Store from '@/utils/electron-store'
 import { isServer } from '@/utils/healthy'
 
-const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
+const { showSettings, fixedHeader, sidebarLogo, version } = defaultSettings
 
 const state = {
   showSettings: showSettings,
   fixedHeader: fixedHeader,
   isHeader: true,
   sidebarLogo: sidebarLogo,
+  version: version,
   // 自定义开发
   api: '', // baseURL集合每行一个回车分割
   baseURL: '', // 主API地址

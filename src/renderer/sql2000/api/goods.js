@@ -18,7 +18,6 @@ export async function SyncPlu() {
       editAt = res ? res.editAt : new Date('2004')
     })
     const CurrentDate = (new Date()).getFullYear()
-    console.log(editAt.getFullYear(), CurrentDate)
     for (let index = editAt.getFullYear(); index <= CurrentDate; index++) {
       editAt = new Date(String(index))
       await SQLGoods.List(editAt).then(async response => {

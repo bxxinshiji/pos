@@ -70,7 +70,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 9vh;
+  font-size: 8vh;
   span{
     margin-left: 2vh;
     font-size: 5vh;
