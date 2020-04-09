@@ -123,7 +123,7 @@ const hander = {
       if (method) {
         // 查找创建 PayOrder
         await findCreatePayOrder(this.order, {
-          storeId: this.scanStoreId,
+          storeName: this.scanStoreName,
           method: method,
           authCode: code,
           title: this.orderTitle,
@@ -172,7 +172,7 @@ const hander = {
     })
   },
   scanPay(code) {
-    if (!this.scanStoreId) {
+    if (!this.scanStoreName) {
       this.error = '请设置付款商家'
       return
     }

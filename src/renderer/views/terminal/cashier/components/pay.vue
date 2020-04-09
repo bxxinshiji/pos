@@ -52,7 +52,7 @@ export default {
     ...mapState({
       order: state => state.terminal.order,
       payAmount: state => state.terminal.payAmount,
-      scanStoreId: state => state.settings.scanStoreId,
+      scanStoreName: state => state.settings.scanStoreName,
       scanPayId: state => state.settings.scanPayId,
       orderTitle: state => state.settings.orderTitle,
       terminal: state => state.settings.terminal,

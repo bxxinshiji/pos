@@ -1,7 +1,7 @@
 <template>
     <el-form :inline=true  :model="ruleForm" ref="ruleForm" label-width="100px">
-                <el-form-item label="扫码商户ID"  :prop="ruleForm.scanStoreId">
-                    <el-input v-model="ruleForm.scanStoreId">></el-input>
+                <el-form-item label="扫码商户用户名"  :prop="ruleForm.scanStoreName">
+                    <el-input v-model="ruleForm.scanStoreName">></el-input>
                 </el-form-item>
                 <el-form-item label="扫码付款方式"  :prop="ruleForm.scanPayId">
                     <el-select v-model="ruleForm.scanPayId" placeholder="请选择支付">
@@ -32,7 +32,7 @@ export default {
     return {
       scanPay: [],
       ruleForm: {
-        scanStoreId: this.$store.state.settings.scanStoreId,
+        scanStoreName: this.$store.state.settings.scanStoreName,
         scanPayId: this.$store.state.settings.scanPayId,
         orderTitle: this.$store.state.settings.orderTitle
       }

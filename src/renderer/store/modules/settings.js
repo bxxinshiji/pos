@@ -22,7 +22,7 @@ const state = {
   macAddress: '', // mac 地址
   barcodeReg: '27PPPPPBBBBBC', // 条形码识别规则
   isPlucode: false,
-  scanStoreId: '', // 支付商户id
+  scanStoreName: '', // 支付商户用户名
   scanPayId: 0, //  扫码支付ID
   orderTitle: '扫码支付商品',
   printer: {
@@ -100,7 +100,7 @@ function init() {
   state.install = Store.get('settings.install')
   state.isTerminal = Store.get('settings.isTerminal')
   state.terminal = Store.get('settings.terminal')
-  state.scanStoreId = Store.get('settings.scanStoreId')
+  state.scanStoreName = Store.get('settings.scanStoreName')
   state.scanPayId = Store.get('settings.scanPayId')
   const orderTitle = Store.get('settings.orderTitle')
   if (orderTitle) {
