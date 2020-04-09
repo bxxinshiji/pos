@@ -122,14 +122,14 @@ export default {
   display: flex;
   flex-wrap: wrap;
   span{
-    margin: 15px;
+    margin: 1.6vw;
     color:#fff;
-    font-size:38px;
-    width: 280px;
-    height: 100px;
-    line-height: 60px;
+    font-size:3.7vw;
+    width: 27vw;
+    height: 15vh;
+    line-height: 10vh;
     border-radius:5px;
-    padding:20px;
+    padding:2vw;
   }
   .cashier{
     background: @el-success;

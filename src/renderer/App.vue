@@ -14,7 +14,6 @@ export default {
     this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.globalShortcut()
-    console.log(1, process, this.$electron)
   },
   methods: {
     syncTerminal() {
