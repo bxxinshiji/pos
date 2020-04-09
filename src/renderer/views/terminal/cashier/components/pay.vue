@@ -141,9 +141,7 @@ export default {
     top:0;
     bottom:0;
     width: 80vw;
-    max-width: 700px;
     height: 50vh;
-    max-height: 350px;
 }
 .el-alert /deep/ .el-alert__description{
   font-size: (100vh/100vw)*7vw;
