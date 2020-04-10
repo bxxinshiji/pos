@@ -14,6 +14,7 @@ export function AopF2F(data) {
 }
 
 export function Refund(data) {
+  request.defaults.error = true // 关闭错误提示
   return request({
     method: 'post',
     data: {

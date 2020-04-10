@@ -30,7 +30,6 @@ export async function isInternet() {
  */
 export async function isServer(url = null) {
   url ? (request.defaults.baseURL = url) : null
-  request.defaults.error = false // 关闭错误提示
   var status = false
   await request({
     method: 'post',
@@ -44,6 +43,5 @@ export async function isServer(url = null) {
   }).catch(() => {
     status = false
   })
-  request.defaults.error = true // 开启错误提示
   return status
 }

@@ -9,7 +9,7 @@ const service = axios.create({
   baseURL: localStore.get('settings.baseURL'), // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
-  error: true // 默认开启错误提示
+  error: false // 默认开启错误提示
 })
 
 // request interceptor
@@ -77,6 +77,8 @@ service.interceptors.response.use(
     // }
   },
   error => {
+    console.log(service.defaults, service.headers)
+
     // 错误提示
     if (service.defaults.error) {
       const detail = error.response.data.detail
