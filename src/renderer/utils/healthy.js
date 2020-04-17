@@ -32,11 +32,9 @@ export async function isServer(url = null) {
   url ? (request.defaults.baseURL = url) : null
   var status = false
   await request({
+    url: '/user-api/health/health',
     method: 'post',
     data: {
-      service: 'user-api',
-      method: 'Health.Health',
-      request: {}
     }
   }).then(() => {
     status = true

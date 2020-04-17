@@ -108,12 +108,12 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
-import { globalShortcut } from 'electron'
-app.on('ready', () => {
-  globalShortcut.register('F10', () => {
-    mainWindow.show()
-  })
-  globalShortcut.register('F9', () => {
-    mainWindow.hide()
-  })
-})
+// import { globalShortcut } from 'electron'
+// app.on('ready', () => {
+//   globalShortcut.register('F10', () => {
+//     mainWindow.show()
+//   })
+//   globalShortcut.register('F9', () => {
+//     mainWindow.hide()
+//   })
+// })

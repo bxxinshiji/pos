@@ -4,35 +4,27 @@ const SQL2000SQL = import('@/sql2000/model/user')
 export function Exist(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/exist',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.Exist',
-      'request': data
-    }
+    data: data
   })
 }
 
 export function List(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/list',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.List',
-      'request': data
-    }
+    data: data
   })
 }
 
 export function Info() {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/info',
     method: 'post',
     data: {
-      service: 'user-api',
-      method: 'Users.Info',
-      request: {}
     }
   })
 }
@@ -40,48 +32,36 @@ export function Info() {
 export function Get(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/get',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.Get',
-      'request': data
-    }
+    data: data
   })
 }
 
 export function Create(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/create',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.Create',
-      'request': data
-    }
+    data: data
   })
 }
 
 export function Update(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/update',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.Update',
-      'request': data
-    }
+    data: data
   })
 }
 
 export function Delete(data) {
   request.defaults.error = true // 关闭错误提示
   return request({
+    url: '/user-api/users/delete',
     method: 'post',
-    data: {
-      'service': 'user-api',
-      'method': 'Users.Delete',
-      'request': data
-    }
+    data: data
   })
 }
 // Password 密码修改

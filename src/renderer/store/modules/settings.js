@@ -31,18 +31,18 @@ const state = {
     device: 'USB'
   },
   Keyboard: {
-    shutDown: 'f1', // 关机
-    index: 'f8',
-    inputFoots: 'f3', // 聚焦
     currentRowUp: 'up', // 向上选择商品
     currentRowDown: 'down', // 向下选择商品
-    goodsNumber: 'a', // 商品数量
-    deleteGoods: 'w', // 删除选择商品
-    emptyOrder: 'q', // 清空商品
-    salesStatus: 't', // 销售状态(销货退货)
-    pushPullOrder: 'm', // 挂单取单快
-    pay: 'p', // 支付缓存
-    addGoods: 'o' // 添加商品可以条形码可以自编码
+    shutDown: 'f1', // 关机
+    inputFoots: 'f2', // 聚焦
+    pushPullOrder: 'f3', // 挂单取单快
+    salesStatus: 'f4', // 销售状态(销货退货)
+    deleteGoods: 'f6', // 删除选择商品
+    emptyOrder: 'f7', // 清空商品
+    goodsNumber: 'f8', // 商品数量
+    addGoods: 'f9', // 添加商品可以条形码可以自编码
+    pay: 'f10', // 支付缓存
+    index: 'f12' // 主页
   }, // 键盘快捷键
   payKeyboard: {
     '0': 'x',
