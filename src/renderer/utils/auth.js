@@ -1,5 +1,5 @@
 import Store from '@/utils/electron-store'
-const TokenKey = 'X-Token'
+const TokenKey = 'X-CSRF-Token'
 
 export function getToken() {
   return Store.get(TokenKey)
