@@ -124,8 +124,8 @@ export default {
   span{
     margin: 1.6vw;
     color:#fff;
-    font-size:3.7vw;
-    width: 27vw;
+    font-size:3.3vw;
+    width: 25vw;
     height: 15vh;
     line-height: 10vh;
     border-radius:5px;
