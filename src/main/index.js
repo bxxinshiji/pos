@@ -58,7 +58,6 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  // mainWindow.webContents.openDevTools()
 }
 
 app.disableHardwareAcceleration() // 来禁用GPU加速。
@@ -108,12 +107,16 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
-// import { globalShortcut } from 'electron'
-// app.on('ready', () => {
-//   globalShortcut.register('F10', () => {
-//     mainWindow.show()
-//   })
-//   globalShortcut.register('F9', () => {
-//     mainWindow.hide()
-//   })
-// })
+import { globalShortcut } from 'electron'
+app.on('ready', () => {
+  let devTools = false
+  globalShortcut.register('Home', () => {
+    if (devTools) {
+      mainWindow.webContents.openDevTools()
+      devTools = false
+    } else {
+      mainWindow.webContents.closeDevTools()
+      devTools = true
+    }
+  })
+})
