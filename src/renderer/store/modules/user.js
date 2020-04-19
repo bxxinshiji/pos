@@ -101,6 +101,12 @@ const actions = {
           commit('SET_TOKEN', data.token)
           resolve(valid)
         }).catch(error => {
+          const detail = error.response.data.detail
+          Message({
+            message: detail,
+            type: 'error',
+            duration: 5 * 1000
+          })
           reject(error)
         })
       }
@@ -160,6 +166,12 @@ const actions = {
             resetRouter()
             resolve()
           }).catch(error => {
+            const detail = error.response.data.detail
+            Message({
+              message: detail,
+              type: 'error',
+              duration: 5 * 1000
+            })
             reject(error)
           })
         } else {

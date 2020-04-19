@@ -166,6 +166,12 @@ const hander = {
             })
           }, (sleep - 1) * 1000)// 等待
         } else {
+          const detail = error.response.data.detail
+          Message({
+            message: detail,
+            type: 'error',
+            duration: 5 * 1000
+          })
           reject(err) // 返回处理后的错误信息
         }
       })

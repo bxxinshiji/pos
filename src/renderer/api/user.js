@@ -2,7 +2,6 @@ import request from '@/utils/request'
 const SQL2000SQL = import('@/sql2000/model/user')
 
 export function Exist(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/exist',
     method: 'post',
@@ -11,7 +10,6 @@ export function Exist(data) {
 }
 
 export function List(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/list',
     method: 'post',
@@ -20,7 +18,6 @@ export function List(data) {
 }
 
 export function Info() {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/info',
     method: 'post',
@@ -30,7 +27,6 @@ export function Info() {
 }
 
 export function Get(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/get',
     method: 'post',
@@ -39,7 +35,6 @@ export function Get(data) {
 }
 
 export function Create(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/create',
     method: 'post',
@@ -48,7 +43,6 @@ export function Create(data) {
 }
 
 export function Update(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/update',
     method: 'post',
@@ -57,7 +51,6 @@ export function Update(data) {
 }
 
 export function Delete(data) {
-  request.defaults.error = true // 关闭错误提示
   return request({
     url: '/user-api/users/delete',
     method: 'post',

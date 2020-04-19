@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import store from '@/store'
 import localStore from '@/utils/electron-store'
 import { getToken } from '@/utils/auth'
@@ -77,17 +77,15 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    console.log(service.defaults, service.headers)
-
     // 错误提示
-    if (service.defaults.error) {
-      const detail = error.response.data.detail
-      Message({
-        message: detail,
-        type: 'error',
-        duration: 5 * 1000
-      })
-    }
+    // if (service.defaults.error) {
+    //   const detail = error.response.data.detail
+    //   Message({
+    //     message: detail,
+    //     type: 'error',
+    //     duration: 5 * 1000
+    //   })
+    // }
     return Promise.reject(error)
   }
 )
