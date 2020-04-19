@@ -101,7 +101,6 @@ export default {
   created() {
   },
   mounted() {
-    this.toggleHeader(false)// 关闭打开头部
     document.addEventListener('keydown', this.keydown)
     this.getList()
   },
@@ -109,9 +108,6 @@ export default {
     document.removeEventListener('keydown', this.keydown)
   },
   methods: {
-    toggleHeader(turn) {
-      this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: turn })
-    },
     getList() {
       List(this.listQuery).then(response => {
         this.total = response.count
@@ -194,7 +190,6 @@ export default {
       }
     },
     destroyed() {
-      this.toggleHeader(true) // 重新打开头部
     }
   }
 }

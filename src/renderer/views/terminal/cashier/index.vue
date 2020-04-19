@@ -78,7 +78,6 @@ export default {
   },
   created() {
     this.registerMousetrap()// 初始化 启用按键监听
-    this.toggleHeader(false)// 关闭打开头部
     this.closeSideBar()// 缩小侧栏
   },
   mounted() {
@@ -111,9 +110,6 @@ export default {
   methods: {
     ...goodsHander,
     ...mousetrapHander,
-    toggleHeader(turn) {
-      this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: turn })
-    },
     closeSideBar() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: true })
     },
@@ -192,7 +188,6 @@ export default {
   },
   destroyed() {
     this.unregisterMousetrap()// 注销按键监听
-    this.toggleHeader(true) // 重新打开头部
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
   }
 }
