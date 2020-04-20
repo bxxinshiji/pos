@@ -200,7 +200,7 @@ const hander = {
         if (this.order.type) {
           if (this.order.waitPay > 0) {
             const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
-            const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 || amount) : amount // 收到的钱[现金可以多少其他不允许]
+            const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 ? amount : this.payAmount) : amount // 收到的钱[现金可以多少其他不允许]
             payInfo = {
               payId: pay.id, // 支付方式
               name: pay.name, // 支付方式名称
