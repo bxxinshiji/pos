@@ -9,21 +9,9 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
-    <style>
-      .loading {
-        color:#fff;
-        text-align: center;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-      }
-    </style>
   </head>
   <body>
-    <div id="app">
-      <span class="loading">系统加载中...</span>
-    </div>
+    <div id="app"></div>
     <!-- Set `__static` path to static files in production -->
     <% if (!process.browser) { %>
       <script>
