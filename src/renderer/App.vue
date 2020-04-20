@@ -24,7 +24,7 @@ export default {
       }, 5 * 1000)// 等待 5 秒后第一次同步数据
       setInterval(() => {
         SyncTerminal()
-      }, 5000)
+      }, 30000)
     },
     globalShortcut() {
       const KeyboardIndex = this.$store.state.settings.Keyboard.index
