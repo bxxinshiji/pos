@@ -1,7 +1,7 @@
 import sequelize from '@/model/pay'
 const Pay = sequelize.models.pay
 
-// 更新用户密码
+// 获取支付信息
 export function Get(listQuery) {
   return new Promise((resolve, reject) => {
     Pay.findAll({

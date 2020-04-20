@@ -14,7 +14,7 @@ export default {
     this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.globalShortcut()
-    this.logout() // 软件启动先退出
+    // this.logout() // 软件启动先退出
     this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: false }) // 关闭头部
   },
   methods: {

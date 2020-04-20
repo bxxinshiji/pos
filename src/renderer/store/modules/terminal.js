@@ -1,8 +1,6 @@
 import store from '@/store'
-const { Op } = require('sequelize')
-import sequelize from '@/model/order'
-const Order = sequelize.models.order
-import { OrderNo } from '@/api/order'
+const OrderModel = import('@/model/api/order')
+const Order = import('@/api/order')
 
 const state = {
   order: {
@@ -29,7 +27,8 @@ const state = {
     count: 0, // 总数
     returns: 0, // 退款
     total: 0, // 总金额
-    publish: 0// 未上报
+    publish: 0, // 未上报
+    pays: []
   },
   syncTerminal: true // 是否允许同步终端
 }
@@ -64,10 +63,8 @@ const mutations = {
   PAY_AMOUNT: (state, amount) => { // 自定义输收款金额
     state.payAmount = amount
   },
-  SET_ORDER_INFO: (state, { key, value }) => { // 自定义输收款金额
-    if (state.orderInfo.hasOwnProperty(key)) {
-      state.orderInfo[key] = value
-    }
+  SET_ORDER_INFO: (state, orderInfo) => { // 自定义输收款金额
+    state.orderInfo = orderInfo
   },
   SYNC_TERMINAL: (state, value) => { // 是否允许同步终端
     state.syncTerminal = value
@@ -79,25 +76,27 @@ const actions = {
     return new Promise((resolve, reject) => {
       const userId = store.state.user.username
       const terminal = store.state.settings.terminal
-      OrderNo(terminal, type).then(order_no => {
-        store.dispatch('terminal/changeCurrentGoods', {}) // 清空选中商品
-        commit('SET_ORDER', {
-          userId: userId,
-          terminal: terminal,
-          orderNo: order_no,
-          goods: [],
-          pays: [],
-          type: 1,
-          number: 0,
-          total: 0,
-          getAmount: 0,
-          waitPay: 0,
-          status: false, // 订单状态是否完结订单
-          publish: false
+      Order.then(o => {
+        o.OrderNo(terminal, type).then(order_no => {
+          store.dispatch('terminal/changeCurrentGoods', {}) // 清空选中商品
+          commit('SET_ORDER', {
+            userId: userId,
+            terminal: terminal,
+            orderNo: order_no,
+            goods: [],
+            pays: [],
+            type: 1,
+            number: 0,
+            total: 0,
+            getAmount: 0,
+            waitPay: 0,
+            status: false, // 订单状态是否完结订单
+            publish: false
+          })
+          resolve()
+        }).catch(error => {
+          reject(error)
         })
-        resolve()
-      }).catch(error => {
-        reject(error)
       })
     })
   },
@@ -158,50 +157,20 @@ const actions = {
   pullCacheOrder({ commit }) { // 取出订单
     commit('PULL_CACHE_ORDER')
     const terminal = store.state.settings.terminal
-    OrderNo(terminal).then(order_no => {
-      commit('SET_ORDER_KEY', { key: 'orderNo', value: order_no })
+    Order.then(o => {
+      o.OrderNo(terminal).then(order_no => {
+        commit('SET_ORDER_KEY', { key: 'orderNo', value: order_no })
+      })
     })
   },
   changeCurrentGoods({ commit }, goods) { // 设置商品列表选中商品
     commit('SET_CURRENT_GOODS', goods)
   },
   changeOrderInfo({ commit }) {
-    const createdAt = { // 获取当天订单
-      [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
-      [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
-    }
-    const userId = store.state.user.username
-    Order.count({
-      where: {
-        userId: userId,
-        createdAt: createdAt
-      }
-    }).then(response => {
-      commit('SET_ORDER_INFO', { key: 'count', value: response || 0 })
-    })
-    Order.count({
-      where: {
-        type: 0,
-        userId: userId,
-        createdAt: createdAt
-      }
-    }).then(response => {
-      commit('SET_ORDER_INFO', { key: 'returns', value: response || 0 })
-    })
-    Order.sum('total', {
-      where: {
-        userId: userId,
-        createdAt: createdAt
-      }
-    }).then(response => {
-      commit('SET_ORDER_INFO', { key: 'total', value: response || 0 })
-    })
-    Order.count({
-      where: {
-        publish: 0
-      }
-    }).then(response => {
-      commit('SET_ORDER_INFO', { key: 'publish', value: response || 0 })
+    OrderModel.then(m => {
+      m.Info(store.state.user.username).then(info => {
+        commit('SET_ORDER_INFO', info)
+      })
     })
   },
   handerSyncTerminal({ commit }, value) { // 是否允许同步终端

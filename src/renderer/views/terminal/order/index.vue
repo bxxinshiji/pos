@@ -100,10 +100,28 @@
             </div>
           </el-col>
       </el-row>
+      <el-row :gutter="20" class="orderInfo">
+        <el-col :span="2.4">
+            <span>今日汇总</span>
+        </el-col>
+        <el-col :span="2.4">
+          <span>订单: {{orderInfo.count}} 笔</span>
+        </el-col>
+        <el-col :span="2.4">
+          <span>退款: {{orderInfo.returns}} 笔</span>
+        </el-col>
+        <el-col :span="2.4">
+          <span>总金额: {{(orderInfo.total / 100).toFixed(2)}} 元</span>
+        </el-col>
+        <el-col :span="2.4" v-for="(pay,key) in orderInfo.pays" :key="key">
+          <span>{{pay.name}}: </span><span>{{(pay.amount / 100).toFixed(2) }} 元</span>
+        </el-col>
+      </el-row>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { List } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
@@ -134,12 +152,16 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      orderInfo: state => state.terminal.orderInfo
+    })
   },
   created() {
   },
   mounted() {
     document.addEventListener('keydown', this.keydown)
     this.getList()
+    this.$store.dispatch('terminal/changeOrderInfo')
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydown)
@@ -260,6 +282,11 @@ export default {
     color: #ffffff;
     height: 100%;
     padding: 13px;
+    font-size: 12px;
+  }
+  .orderInfo{
+    padding: 1vw;
+    color: #303133;
     font-size: 12px;
   }
 </style>

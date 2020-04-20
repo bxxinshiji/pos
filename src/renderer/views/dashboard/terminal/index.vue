@@ -32,8 +32,8 @@ export default {
         { name: '系统配置', key: '5', label: 'config' },
         { name: '暂离退出', key: '6', label: 'out' },
         { name: '结账退出', key: '7', label: 'accounts' },
-        { name: '退出软件', key: '8', label: 'quit' },
-        { name: '关机', key: '9', label: 'off' }
+        { name: '退出软件', key: '8', label: 'quit' }
+        // { name: '关机', key: '9', label: 'off' }
       ]
     }
   },
@@ -73,17 +73,28 @@ export default {
           this.logout()
           break
         case 'accounts':
-          accountsSettle() // 结账
-          this.logout()
+          this.$confirm('结账退出 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            accountsSettle() // 结账
+            this.logout()
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消关机'
+            })
+          })
           break
         case 'quit':
           this.logout()
           this.$electron.remote.app.quit()
           break
-        case 'off':
-          this.logout()
-          require('child_process').exec('shutdown /s /t 0')
-          break
+        // case 'off':
+        //   this.logout()
+        //   require('child_process').exec('shutdown /s /t 0')
+        //   break
         default:
           console.log('功能暂时无法实现')
           break

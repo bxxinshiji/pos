@@ -1,7 +1,9 @@
 
+const { Op } = require('sequelize')
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
 const Goods = sequelize.models.good
+const Pays = sequelize.models.pay
 const Snapshots = sequelize.models.snapshot
 import { pagination } from '@/utils/index'
 
@@ -76,4 +78,64 @@ export function DepTotal(listQuery) {
       reject(error)
     })
   })
+}
+export async function Info(userId) {
+  const info = {
+    count: 0,
+    returns: 0,
+    total: 0,
+    publish: 0,
+    pays: []
+  }
+  const createdAt = { // 获取当天订单
+    [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
+    [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
+  }
+  await Order.count({
+    where: {
+      userId: userId,
+      createdAt: createdAt
+    }
+  }).then(response => {
+    info.count = response || 0
+  })
+  await Order.count({
+    where: {
+      type: 0,
+      userId: userId,
+      createdAt: createdAt
+    }
+  }).then(response => {
+    info.returns = response || 0
+  })
+  await Order.sum('total', {
+    where: {
+      userId: userId,
+      createdAt: createdAt
+    }
+  }).then(response => {
+    info.total = response || 0
+  })
+  await Order.count({
+    where: {
+      publish: 0
+    }
+  }).then(response => {
+    info.publish = response || 0
+  })
+  await Pays.findAll({
+    attributes: ['name', [sequelize.fn('SUM', sequelize.col('amount')), 'amount']],
+    group: 'payId',
+    include: [{ // include关键字表示关联查询
+      model: Order, // 指定关联的model
+      attributes: [],
+      where: {
+        userId: userId,
+        createdAt: createdAt
+      }
+    }]
+  }).then(response => {
+    info.pays = response
+  })
+  return info
 }
