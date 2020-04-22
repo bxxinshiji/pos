@@ -95,7 +95,7 @@ const hander = {
     VipCardGet(code).then(response => {
       const payAmount = this.payAmount
       if (response.amount * 100 < this.payAmount) {
-        this.$store.dispatch('terminal/changePayAmount', response.amount * 100) // 根据会员卡月自定义输收款金额
+        this.$store.dispatch('terminal/changePayAmount', parseInt(response.amount * 100)) // 根据会员卡余额自定义输收款金额
       }
       if (this.payAmount) {
         this.handerPay(response.id, response.cardNo)
