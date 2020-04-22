@@ -54,7 +54,7 @@
                   <el-button type="primary" @click="handerPayGet(currentOrder)">
                     1 支付查询
                   </el-button>
-                  <el-button type="primary" @click="handerLoadOrder(currentOrder)">
+                  <el-button type="warning" @click="handerLoadOrder(currentOrder)">
                     2 载入订单
                   </el-button>
             </div>
@@ -69,11 +69,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { AopF2F } from '@/api/pay'
 import errorPay from '@/utils/error-pay'
 import { StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { List } from '@/model/api/payOrder'
+import { GetById } from '@/model/api/pay'
 export default {
   name: 'Order',
   components: {
@@ -93,21 +95,37 @@ export default {
         ],
         where: {
         }
+      },
+      scanPayInfo: {
+        id: '',
+        name: '',
+        type: ''
       }
     }
   },
   computed: {
+    ...mapState({
+      scanPayId: state => state.settings.scanPayId
+    })
   },
   created() {
   },
   mounted() {
     document.addEventListener('keydown', this.keydown)
     this.getList()
+    this.initScanPayInfo()
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydown)
   },
   methods: {
+    initScanPayInfo() {
+      GetById(this.scanPayId).then(info => {
+        this.scanPayInfo.id = info.id
+        this.scanPayInfo.name = info.name
+        this.scanPayInfo.type = info.type
+      })
+    },
     getList() {
       List(this.listQuery).then(response => {
         this.total = response.count
@@ -173,7 +191,27 @@ export default {
       })
     },
     handerLoadOrder(currentOrder) {
-      console.log('载入订单等待开发')
+      if (currentOrder.stauts) {
+        const pay = currentOrder.pay
+        const order = currentOrder.order
+        order.pays.push({
+          payId: this.scanPayInfo.id, // 支付方式
+          name: this.scanPayInfo.name, // 支付方式名称
+          type: this.scanPayInfo.type, // 支付方式
+          code: pay.authCode, // 会员卡
+          amount: pay.totalAmount, // 支付金额
+          getAmount: '', // 收到的钱[现金可以多少其他不允许]
+          orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
+          status: currentOrder.stauts // 现金支付时默认支付状态成功
+        })
+        this.$store.dispatch('terminal/changeLoadOrder', order)
+        this.$router.push({ path: '/terminal/cashier' })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '未支付订单不允许载入'
+        })
+      }
     },
     keydown(e) {
       if (e.key === 'ArrowUp') { // 向上
@@ -186,7 +224,18 @@ export default {
         this.handerPayGet(this.currentOrder)
       }
       if (e.key === '2' && this.currentOrder) { // 载入订单
-        this.handerLoadOrder(this.currentOrder)
+        this.$confirm('是否载入订单, 是否继续?【请勿重复载入一个订单】', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handerLoadOrder(this.currentOrder)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消载入'
+          })
+        })
       }
     },
     destroyed() {
@@ -211,6 +260,6 @@ export default {
     color: #ffffff;
     height: 100%;
     padding: 13px;
-    font-size: 12px;
+    font-size: 11px;
   }
 </style>

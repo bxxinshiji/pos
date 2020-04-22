@@ -17,9 +17,10 @@ const state = {
     status: false, // 订单状态是否完结订单
     publish: false
   },
+  cacheOrder: [], //  挂单的缓存订单
+  loadOrder: {}, // 加载订单 1、支付成功没有下单成功的订单重新加载 2、离开页面的订单进行缓存
   cacheGoods: {}, // 缓存自定义价格商品信息
   currentGoods: {}, // 商品列表页面选中的商品
-  cacheOrder: [], //  挂单的缓存订单
   isInputPrice: false, // 自定义输入商品价格页面控制
   isPay: false, // 支付页面悬浮
   payAmount: 0,
@@ -47,6 +48,13 @@ const mutations = {
   },
   PULL_CACHE_ORDER: (state) => { // 取出第一个订单
     state.order = state.cacheOrder.shift()
+  },
+  LOAD_ORDER: (state, loadOrder) => { // 加载订单
+    state.loadOrder = loadOrder
+  },
+  PULL_LOAD_ORDER: (state, loadOrder) => { // 加载订单
+    state.order = state.loadOrder
+    state.loadOrder = {}
   },
   SET_CURRENT_GOODS: (state, goods) => { // 设置商品列表选中商品
     state.currentGoods = goods
@@ -162,6 +170,19 @@ const actions = {
         commit('SET_ORDER_KEY', { key: 'orderNo', value: order_no })
       })
     })
+  },
+  changeLoadOrder({ commit }, loadOrder) { // 加载订单到缓存
+    commit('LOAD_ORDER', loadOrder)
+  },
+  changePullLoadOrder({ commit, state }) { // 取出加载到缓存的订单
+    const order = state.loadOrder
+    const terminal = store.state.settings.terminal
+    Order.then(o => {
+      o.OrderNo(terminal).then(order_no => {
+        order.orderNo = order_no
+      })
+    })
+    commit('PULL_LOAD_ORDER')
   },
   changeCurrentGoods({ commit }, goods) { // 设置商品列表选中商品
     commit('SET_CURRENT_GOODS', goods)

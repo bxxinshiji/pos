@@ -282,7 +282,7 @@ export default {
     color: #ffffff;
     height: 100%;
     padding: 13px;
-    font-size: 12px;
+    font-size: 11px;
   }
   .orderInfo{
     padding: 1vw;

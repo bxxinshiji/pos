@@ -13,3 +13,18 @@ export function Get(listQuery) {
     })
   })
 }
+
+// 根据ID获取支付信息
+export function GetById(id) {
+  return new Promise((resolve, reject) => {
+    Pay.findOne({
+      where: {
+        id: id
+      }
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}

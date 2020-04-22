@@ -65,6 +65,9 @@ export default {
     this.registerMousetrap()
   },
   mounted() {
+    if (this.order.waitPay === 0) {
+      this.handerOrder()
+    }
     document.addEventListener('keydown', this.keydown)
   },
   beforeDestroy() {

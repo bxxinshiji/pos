@@ -70,10 +70,11 @@ export default {
       'username'
     ]),
     ...mapState({
+      isPlucode: state => state.settings.isPlucode,
       isInputPrice: state => state.terminal.isInputPrice,
       isPay: state => state.terminal.isPay,
       order: state => state.terminal.order,
-      isPlucode: state => state.settings.isPlucode
+      loadOrder: state => state.terminal.loadOrder
     })
   },
   created() {
@@ -82,7 +83,11 @@ export default {
   },
   mounted() {
     this.focus()
-    this.initOrder()
+    if (Object.keys(this.loadOrder).length > 0) { // 判断是否使用加载的缓存订单
+      this.$store.dispatch('terminal/changePullLoadOrder')
+    } else {
+      this.initOrder()
+    }
     setInterval(() => { // 自动同步订单
       queueSyncOrder()
     }, 5000)
@@ -189,6 +194,7 @@ export default {
   destroyed() {
     this.unregisterMousetrap()// 注销按键监听
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
+    this.$store.dispatch('terminal/changeLoadOrder', this.order) // 离开页面载入未付款订单
   }
 }
 </script>

@@ -23,7 +23,7 @@ const hander = {
       return
     }
     const waitPay = self.order.waitPay
-    if (waitPay === 0) {
+    if (waitPay === 0 && self.order.status) {
       self.$message({
         type: 'warning',
         message: '订单已完结,请勿重复付款。'
