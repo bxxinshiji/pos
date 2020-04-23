@@ -1,8 +1,8 @@
 <template>
     <el-row :gutter="20" class="heads">
         <el-col class="user" :span="7">
-          <el-row> 账号: {{ name }} </el-row> 
-          <el-row> 名称: {{ username }} </el-row> 
+          <el-row> 账号: {{ username }} </el-row> 
+          <el-row> 名称: {{ name }} </el-row> 
         </el-col>
         <el-col class="logo" :span="10">
           <svg-icon icon-class="xinshiji" />  
