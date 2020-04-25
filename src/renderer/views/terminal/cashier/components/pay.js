@@ -1,5 +1,5 @@
 import store from '@/store'
-import { Notification, Message } from 'element-ui'
+import { Notification, MessageBox, Message } from 'element-ui'
 import { AopF2F, Query } from '@/api/pay'
 import { syncOrder } from '@/api/order'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
@@ -42,16 +42,17 @@ const EndOrder = (order, self) => {
     syncOrder(orderRes) // 异步同步服务器订单
   }).catch(error => {
     // 删除出错关联插入订单数据
-    Order.destroy({ where: { orderNo: order.orderNo }})
-    Notification({
-      title: '创建订单错误',
-      message: error.message,
+    // Order.destroy({ where: { orderNo: order.orderNo }})
+    MessageBox.confirm('未知错误请重新下单,或加载订单。' + error.message, '创建订单错误', {
       type: 'error',
-      duration: 15000
+      showCancelButton: false,
+      showConfirmButton: false,
+      center: true
+    }).then(() => {
+    }).catch(() => {
     })
   })
 }
-
 const hander = {
   payHander(pay) {
     return new Promise(async(resolve, reject) => {

@@ -7,6 +7,14 @@ import { EAN13 } from '@/utils/barcode'
 const hander = {
   addGoods(value, isPlucode) { // 添加商品  type 代码类型 条形码、自编码
     this.getGoods(value, isPlucode).then(goods => {
+      const status = goods.snapshot.status
+      if (status === '2' || status === '3' || status === '4' || status === 'A' || status === 'B') {
+        this.MessageBox({
+          title: '商品禁止销售',
+          message: '此商品已被管理员禁止销售,请联系管理员。'
+        })
+        return
+      }
       if (goods) {
         // 默认没有商品数量没有总价时 商品数量为1
         if (!goods.dataValues.number && !goods.dataValues.total) {
