@@ -18,6 +18,18 @@ const errorPay = {
   alipay(detail) {
     if (this.isJSON(detail)) {
       detail = JSON.parse(detail)
+      if (detail['trade_status'] === 'WAIT_BUYER_PAY') {
+        this.error = 'USERPAYING'
+        return
+      }
+      if (detail['trade_status'] === 'TRADE_CLOSED') {
+        this.error = '未付款交易超时关闭，或支付完成后全额退'
+        return
+      }
+      if (detail['trade_status'] === 'TRADE_FINISHED') {
+        this.error = '交易结束，不可退款'
+        return
+      }
       switch (detail['code']) {
         case '10003':
           this.error = 'USERPAYING'
@@ -42,16 +54,25 @@ const errorPay = {
       detail = JSON.parse(detail)
       if (detail['return_msg'] !== 'OK') {
         this.error = detail['return_msg']
+        return
+      }
+      if (detail['trade_state'] === 'USERPAYING' || detail['trade_state'] === 'NOTPAY') {
+        this.error = 'USERPAYING'
+        return
+      }
+      if (detail.hasOwnProperty('trade_state')) {
+        this.error = detail['trade_state_desc']
+        return
       }
       switch (detail['err_code']) {
         case 'USERPAYING':
           this.error = 'USERPAYING'
-          break
+          return
         default:
           if (detail['err_code_des']) {
             this.error = detail['err_code_des']
+            return
           }
-          break
       }
     } else {
       this.error = detail

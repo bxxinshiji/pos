@@ -1,6 +1,6 @@
 import store from '@/store'
 import { Notification, Message } from 'element-ui'
-import { AopF2F } from '@/api/pay'
+import { AopF2F, Query } from '@/api/pay'
 import { syncOrder } from '@/api/order'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
@@ -132,7 +132,7 @@ const hander = {
           operatorId: this.username,
           terminalId: this.terminal
         }).then(async res => {
-          await this.AopF2F(res.pay).then(response => {
+          await this.handerAopF2F(res.pay).then(response => {
             if (response) {
               StautsUpdatePayOrder(res.pay.orderNo, response)
             }
@@ -148,31 +148,71 @@ const hander = {
       }
     })
   },
-  AopF2F(pay) {
+  handerAopF2F(pay) {
     return new Promise(async(resolve, reject) => {
       await AopF2F(pay).then(response => { // 远程支付开始
         resolve(response.data.valid)
       }).catch(error => {
-        const err = errorPay.hander(error, pay.method)
-        if (err === 'USERPAYING') {
-          this.warning = '等待用户付款中'
+        if (error.message.indexOf('timeout of') !== -1) {
+          this.warning = '超时查询支付中'
+          this.handerPayQuery(pay).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+        } else {
+          const err = errorPay.hander(error, pay.method)
+          if (err === 'USERPAYING') {
+            this.warning = '等待用户付款中'
+            const sleep = 6
+            setTimeout(() => { // 等待时间后继续请求支付查询付款情况
+              this.warning = '支付查询中'
+              this.handerPayQuery(pay).then(response => {
+                resolve(response)
+              }).catch(error => {
+                reject(error)
+              })
+            }, (sleep - 1) * 1000)// 等待
+          } else {
+            reject(err) // 返回处理后的错误信息
+          }
+        }
+      })
+    })
+  },
+  handerPayQuery(pay) {
+    return new Promise(async(resolve, reject) => {
+      Query(pay).then(response => {
+        resolve(response.data.valid)
+      }).catch(error => {
+        if (error.message.indexOf('timeout of') !== -1) {
+          this.warning = '支付超时查询支付中'
           const sleep = 6
           setTimeout(() => { // 等待时间后继续请求支付查询付款情况
             this.warning = '支付查询中'
-            this.AopF2F(pay).then(response => {
+            this.handerPayQuery(pay).then(response => {
               resolve(response)
             }).catch(error => {
               reject(error)
             })
           }, (sleep - 1) * 1000)// 等待
         } else {
-          const detail = error.response.data.detail
-          Message({
-            message: detail,
-            type: 'error',
-            duration: 5 * 1000
-          })
-          reject(err) // 返回处理后的错误信息
+          const err = errorPay.hander(error, this.order.method)
+          if (err === 'USERPAYING') {
+            this.warning = '等待用户付款中'
+            const sleep = 6
+            setTimeout(() => { // 等待时间后继续请求支付查询付款情况
+              this.warning = '支付查询中'
+              this.handerPayQuery(pay).then(response => {
+                resolve(response)
+              }).catch(error => {
+                reject(error)
+              })
+            }, (sleep - 1) * 1000)// 等待
+          } else {
+            // console.log(err)
+            reject(err) // 返回处理后的错误信息
+          }
         }
       })
     })

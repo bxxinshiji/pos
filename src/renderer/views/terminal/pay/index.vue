@@ -25,6 +25,18 @@
         </el-table-column>
         <el-table-column
           prop="stauts"
+          label="支付方式"
+          min-width="70"
+        >
+          <template slot-scope="scope">
+            <span slot="label">
+              <span v-if="scope.row.pay.method=='wechat'"><el-tag :class="scope.row.pay.method"><svg-icon :icon-class="scope.row.pay.method" :class="scope.row.pay.method"/> 微信</el-tag></span>
+              <span v-if="scope.row.pay.method=='alipay'"><el-tag :class="scope.row.pay.method"><svg-icon :icon-class="scope.row.pay.method" :class="scope.row.pay.method"/> 支付宝</el-tag></span>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="stauts"
           label="状态"
           min-width="70"
         >
@@ -51,7 +63,7 @@
       <el-row>
           <el-col :span="8.5">
             <div class="button">
-                  <el-button type="primary" @click="handerPayGet(currentOrder)">
+                  <el-button type="primary" @click="handerPayQuery(currentOrder)">
                     1 支付查询
                   </el-button>
                   <el-button type="warning" @click="handerLoadOrder(currentOrder)">
@@ -70,7 +82,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { AopF2F } from '@/api/pay'
+import { Query } from '@/api/pay'
 import errorPay from '@/utils/error-pay'
 import { StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -166,13 +178,21 @@ export default {
       }).catch(() => {
       })
     },
-    handerPayGet(currentOrder) {
+    handerPayQuery(currentOrder) {
       const pay = currentOrder.pay
-      AopF2F(pay).then(response => { // 远程支付开始
+      Query({
+        orderNo: pay.orderNo,
+        storeId: pay.storeId
+      }).then(response => { // 远程支付开始
         if (response.data.valid) {
           currentOrder.stauts = response.data.valid
           StautsUpdatePayOrder(pay.orderNo, response.data.valid)
           this.$notify({
+            type: 'success',
+            title: '支付成功',
+            message: '付款成功'
+          })
+          this.$message({
             type: 'success',
             title: '支付成功',
             message: '付款成功'
@@ -183,7 +203,7 @@ export default {
         if (err === 'USERPAYING') {
           err = '等待用户付款中'
         }
-        this.$notify({
+        this.$message({
           type: 'error',
           title: '支付失败',
           message: err
@@ -221,7 +241,7 @@ export default {
         this.handerCurrentRow(1)
       }
       if (e.key === '1' && this.currentOrder) { // 支付订单查询
-        this.handerPayGet(this.currentOrder)
+        this.handerPayQuery(this.currentOrder)
       }
       if (e.key === '2' && this.currentOrder) { // 载入订单
         this.$confirm('是否载入订单, 是否继续?【请勿重复载入一个订单】', '提示', {
@@ -261,5 +281,11 @@ export default {
     height: 100%;
     padding: 13px;
     font-size: 11px;
+  }
+  .wechat{
+    color: #67C23A;
+  }
+  .alipay{
+    color: #409EFF;
   }
 </style>
