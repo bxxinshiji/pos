@@ -186,7 +186,7 @@ const hander = {
         resolve(response.data.valid)
       }).catch(error => {
         if (error.message.indexOf('timeout of') !== -1) {
-          this.warning = '支付超时查询支付中'
+          this.warning = '超时查询支付中'
           const sleep = 6
           setTimeout(() => { // 等待时间后继续请求支付查询付款情况
             this.warning = '支付查询中'
@@ -210,7 +210,6 @@ const hander = {
               })
             }, (sleep - 1) * 1000)// 等待
           } else {
-            // console.log(err)
             reject(err) // 返回处理后的错误信息
           }
         }
