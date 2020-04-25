@@ -154,13 +154,27 @@ const hander = {
       await AopF2F(pay).then(response => { // 远程支付开始
         resolve(response.data.valid)
       }).catch(error => {
+        if (error.message.indexOf('Network Error') !== -1) {
+          this.warning = '服务器连接失败,重试中。'
+          const sleep = 6
+          setTimeout(() => { // 等待时间后继续请求支付查询付款情况
+            this.warning = '支付查询中'
+            this.handerAopF2F(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }, (sleep - 1) * 1000)// 等待
+          return
+        }
         if (error.message.indexOf('timeout of') !== -1) {
           this.warning = '超时查询支付中'
-          this.handerPayQuery(pay).then(response => {
+          this.handerAopF2F(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
           })
+          return
         } else {
           const err = errorPay.hander(error, pay.method)
           if (err === 'USERPAYING') {
@@ -177,6 +191,7 @@ const hander = {
           } else {
             reject(err) // 返回处理后的错误信息
           }
+          return
         }
       })
     })
