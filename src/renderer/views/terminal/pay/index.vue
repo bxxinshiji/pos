@@ -192,18 +192,13 @@ export default {
             title: '支付成功',
             message: '付款成功'
           })
-          this.$message({
-            type: 'success',
-            title: '支付成功',
-            message: '付款成功'
-          })
         }
       }).catch(error => {
         let err = errorPay.hander(error, pay.method)
         if (err === 'USERPAYING') {
           err = '等待用户付款中'
         }
-        this.$message({
+        this.$notify({
           type: 'error',
           title: '支付失败',
           message: err
