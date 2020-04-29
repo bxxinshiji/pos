@@ -45,7 +45,8 @@ export default {
       pays: [],
       error: '', // 错误信息
       scand: false, // 扫码付款是否开始
-      warning: '付款中' // 等待信息
+      warning: '付款中', // 等待信息
+      lock: false // 支付锁
     }
   },
   computed: {
@@ -104,12 +105,20 @@ export default {
     registerMemory() { // 注册键盘监听
       onkeydown.string = ''
       onkeydown.register(/[0-9;]/, 'Enter', () => {
-        const code = onkeydown.string
-        const regVipCard = /^((;)\d{20})$/
-        if (regVipCard.test(code)) { // 储值卡正则
-          this.cardPay(code)
+        if (this.lock) {
+          this.$message({
+            type: 'error',
+            message: '已锁定正在支付中请稍等...'
+          })
         } else {
-          this.scanPay(code) // 扫码
+          this.lock = true
+          const code = onkeydown.string
+          const regVipCard = /^((;)\d{20})$/
+          if (regVipCard.test(code)) { // 储值卡正则
+            this.cardPay(code)
+          } else {
+            this.scanPay(code) // 扫码
+          }
         }
       })
     },

@@ -30,6 +30,10 @@ const errorPay = {
         this.error = '交易结束，不可退款'
         return
       }
+      if (detail['sub_code'] === 'ACQ.TRADE_HAS_SUCCESS') { // 交易成功请重新查询
+        this.error = 'USERPAYING'
+        return
+      }
       switch (detail['code']) {
         case '10003':
           this.error = 'USERPAYING'

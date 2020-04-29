@@ -4,6 +4,7 @@ import { AopF2F, Query } from '@/api/pay'
 import { syncOrder } from '@/api/order'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
+import { Sleep } from '@/utils'
 import print from '@/utils/print'
 import errorPay from '@/utils/error-pay'
 
@@ -62,8 +63,10 @@ const hander = {
             if (pay.code) {
               await CardPay(pay).then(response => {
                 pay.status = true
+                this.lock = false // 解除支付锁定
                 resolve(pay)
               }).catch(error => {
+                this.lock = false // 解除支付锁定
                 reject(error)
               })
             } else {
@@ -78,9 +81,11 @@ const hander = {
             await this.payAopF2F(pay).then(response => {
               pay.status = response
               this.scand = false
+              this.lock = false // 解除支付锁定
               resolve(pay)
             }).catch(error => {
               this.scand = false
+              this.lock = false // 解除支付锁定
               reject(error)
             })
             break
@@ -153,23 +158,22 @@ const hander = {
     return new Promise(async(resolve, reject) => {
       await AopF2F(pay).then(response => { // 远程支付开始
         resolve(response.data.valid)
-      }).catch(error => {
+      }).catch(async error => {
         if (error.message.indexOf('Network Error') !== -1) {
-          this.warning = '服务器连接失败,重试中。'
+          this.warning = '服务器连接失败,等待中。'
           const sleep = 6
-          setTimeout(() => { // 等待时间后继续请求支付查询付款情况
-            this.warning = '支付查询中'
-            this.handerAopF2F(pay).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-          }, (sleep - 1) * 1000)// 等待
+          await Sleep((sleep - 1) * 1000)// 等待
+          this.warning = '支付查询中'
+          await this.handerAopF2F(pay).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
           return
         }
         if (error.message.indexOf('timeout of') !== -1) {
           this.warning = '超时查询支付中'
-          this.handerAopF2F(pay).then(response => {
+          await this.handerAopF2F(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
@@ -180,14 +184,13 @@ const hander = {
           if (err === 'USERPAYING') {
             this.warning = '等待用户付款中'
             const sleep = 6
-            setTimeout(() => { // 等待时间后继续请求支付查询付款情况
-              this.warning = '支付查询中'
-              this.handerPayQuery(pay).then(response => {
-                resolve(response)
-              }).catch(error => {
-                reject(error)
-              })
-            }, (sleep - 1) * 1000)// 等待
+            await Sleep((sleep - 1) * 1000)// 等待
+            this.warning = '支付查询中'
+            await this.handerPayQuery(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
           } else {
             reject(err) // 返回处理后的错误信息
           }
@@ -198,33 +201,32 @@ const hander = {
   },
   handerPayQuery(pay) {
     return new Promise(async(resolve, reject) => {
-      Query(pay).then(response => {
+      await Query(pay).then(response => {
         resolve(response.data.valid)
-      }).catch(error => {
+      }).catch(async error => {
         if (error.message.indexOf('timeout of') !== -1) {
           this.warning = '超时查询支付中'
           const sleep = 6
-          setTimeout(() => { // 等待时间后继续请求支付查询付款情况
-            this.warning = '支付查询中'
-            this.handerPayQuery(pay).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-          }, (sleep - 1) * 1000)// 等待
+          await Sleep((sleep - 1) * 1000)// 等待
+          this.warning = '支付查询中'
+          await this.handerPayQuery(pay).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
         } else {
           const err = errorPay.hander(error, this.order.method)
           if (err === 'USERPAYING') {
             this.warning = '等待用户付款中'
             const sleep = 6
-            setTimeout(() => { // 等待时间后继续请求支付查询付款情况
-              this.warning = '支付查询中'
-              this.handerPayQuery(pay).then(response => {
-                resolve(response)
-              }).catch(error => {
-                reject(error)
-              })
-            }, (sleep - 1) * 1000)// 等待
+            await Sleep((sleep - 1) * 1000)// 等待
+
+            this.warning = '支付查询中'
+            await this.handerPayQuery(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
           } else {
             reject(err) // 返回处理后的错误信息
           }

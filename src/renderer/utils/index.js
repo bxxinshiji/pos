@@ -225,3 +225,7 @@ export function pagination(Limit, Page) {
   }
   return pagination
 }
+// Sleep 自定义异步等待函数
+export function Sleep(time) {
+  return new Promise((resolve) => setTimeout(resolve, time))
+}
