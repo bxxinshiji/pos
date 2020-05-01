@@ -83,11 +83,11 @@
 <script>
 import { mapState } from 'vuex'
 import { Query } from '@/api/pay'
-import errorPay from '@/utils/error-pay'
 import { StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { List } from '@/model/api/payOrder'
 import { GetById } from '@/model/api/pay'
+import utilsPay from '@/utils/pay'
 export default {
   name: 'Order',
   components: {
@@ -182,26 +182,38 @@ export default {
       const pay = currentOrder.pay
       Query({
         orderNo: pay.orderNo,
-        storeId: pay.storeId
+        storeName: pay.storeName
       }).then(response => { // 远程支付开始
-        if (response.data.valid) {
-          currentOrder.stauts = response.data.valid
-          StautsUpdatePayOrder(pay.orderNo, response.data.valid)
+        utilsPay.hander(response.data, pay.method)
+        if (utilsPay.valid) {
+          currentOrder.stauts = utilsPay.valid
+          StautsUpdatePayOrder(pay.orderNo, utilsPay.valid)
           this.$notify({
             type: 'success',
             title: '支付成功',
             message: '付款成功'
           })
+        } else {
+          if (utilsPay.error.code === 'USERPAYING') {
+            this.$notify({
+              type: 'warning',
+              title: '等待用户付款中',
+              message: utilsPay.error.detail
+            })
+          } else {
+            this.$notify({
+              type: 'error',
+              title: '未支付',
+              message: utilsPay.error.detail
+            })
+          }
         }
       }).catch(error => {
-        let err = errorPay.hander(error, pay.method)
-        if (err === 'USERPAYING') {
-          err = '等待用户付款中'
-        }
+        const detail = error.response.data.detail
         this.$notify({
           type: 'error',
           title: '支付失败',
-          message: err
+          message: detail
         })
       })
     },

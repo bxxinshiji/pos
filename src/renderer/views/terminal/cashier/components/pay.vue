@@ -17,7 +17,6 @@
           <el-button v-if="pay.type!='pay'" type="primary" :disabled="pay.type!='cashPay'" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>
         </span>
       </el-alert>
-      <pay-html ref="pay"/>
     </span>
 </template>
 
@@ -33,11 +32,9 @@ const payKeyboard = store.state.settings.payKeyboard
 import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
 import Pay from '@/model/pay'
-import PayHtml from '@/components/Pay'
 
 export default {
   name: 'pay',
-  components: { PayHtml },
   props: {
   },
   data() {

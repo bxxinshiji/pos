@@ -73,7 +73,7 @@ export default {
       this.$refs.input.blur()
     },
     handerInput() {
-      this.cacheGoods.dataValues.total = parseInt(this.input * 100) // 只取整数部分【默认分为单位】
+      this.cacheGoods.dataValues.total = Math.round(this.input * 100) // 四舍五入取整【默认分为单位】
       this.$emit('cacheGoods', this.cacheGoods.dataValues)
       this.handlerClose()
     },

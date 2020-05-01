@@ -116,31 +116,33 @@ const order = {
       })
     })
     item.pays.forEach((pay, index) => {
-      const payType = Pays[pay.payId].type
-      const getAmount = (pay.getAmount / 100).toFixed(2)
-      const amount = (pay.amount / 100).toFixed(2)
-      const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 销售日期
-      const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
-      const SaleItemNo = item.dataValues.orderNo // 销售流水号
-      const UserCode = item.dataValues.userId // 收款员编号
-      const CurrDate = parseTime(item.dataValues.createdAt, '{y}{m}{d}')
-      const BcCode = 1 // 班次
-      const TranType = item.dataValues.type ? 1 : 3 // 交易类型 [1、销货 2、作废销货 3、退货] 4、作废退货
-      const SkNo = index + 1 // 支付序号
-      const ZfCode = addPreZero(pay.payId, 4) // 支付代码 补全4位
-      const ZfName = Pays[pay.payId].name //
-      const ZfType = payType //
-      const MoneyCode = '00' //
-      const MoneyName = '人民币' //
-      const HlRate = 100 //
-      const CardCode = (payType === 1 || payType === 4) ? pay.code : '' // 非本地会员卡或者远程会员卡付款时不上报code
-      const ZfAmt = amount //
-      const ZfAmtRmb = amount //
-      const SfAmt = getAmount//
-      const SfAmtRmb = getAmount //
-      const Tag = 0 //
-      this.sql = this.sql + ` INSERT INTO tXsSkItem(XsDate, XsTime, SaleItemNo, UserCode, CurrDate, BcCode, TranType, SkNo, ZfCode, ZfName, ZfType, MoneyCode, MoneyName, HlRate, CardCode, ZfAmt, ZfAmtRmb, SfAmt, SfAmtRmb, Tag)
+      if (pay.status) {
+        const payType = Pays[pay.payId].type
+        const getAmount = (pay.getAmount / 100).toFixed(2)
+        const amount = (pay.amount / 100).toFixed(2)
+        const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 销售日期
+        const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
+        const SaleItemNo = item.dataValues.orderNo // 销售流水号
+        const UserCode = item.dataValues.userId // 收款员编号
+        const CurrDate = parseTime(item.dataValues.createdAt, '{y}{m}{d}')
+        const BcCode = 1 // 班次
+        const TranType = item.dataValues.type ? 1 : 3 // 交易类型 [1、销货 2、作废销货 3、退货] 4、作废退货
+        const SkNo = index + 1 // 支付序号
+        const ZfCode = addPreZero(pay.payId, 4) // 支付代码 补全4位
+        const ZfName = Pays[pay.payId].name //
+        const ZfType = payType //
+        const MoneyCode = '00' //
+        const MoneyName = '人民币' //
+        const HlRate = 100 //
+        const CardCode = (payType === 1 || payType === 4) ? pay.code : '' // 非本地会员卡或者远程会员卡付款时不上报code
+        const ZfAmt = amount //
+        const ZfAmtRmb = amount //
+        const SfAmt = getAmount//
+        const SfAmtRmb = getAmount //
+        const Tag = 0 //
+        this.sql = this.sql + ` INSERT INTO tXsSkItem(XsDate, XsTime, SaleItemNo, UserCode, CurrDate, BcCode, TranType, SkNo, ZfCode, ZfName, ZfType, MoneyCode, MoneyName, HlRate, CardCode, ZfAmt, ZfAmtRmb, SfAmt, SfAmtRmb, Tag)
           values('` + XsDate + `','` + XsTime + `','` + SaleItemNo + `','` + UserCode + `','` + CurrDate + `','` + BcCode + `','` + TranType + `','` + SkNo + `','` + ZfCode + `','` + ZfName + `','` + ZfType + `','` + MoneyCode + `','` + MoneyName + `','` + HlRate + `','` + CardCode + `','` + ZfAmt + `','` + ZfAmtRmb + `','` + SfAmt + `','` + SfAmtRmb + `','` + Tag + `') `
+      }
     })
   },
   Create(item) {

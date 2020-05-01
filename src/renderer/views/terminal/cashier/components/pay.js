@@ -6,14 +6,12 @@ import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
 import { Sleep } from '@/utils'
 import print from '@/utils/print'
-import errorPay from '@/utils/error-pay'
+import utilsPay from '@/utils/pay'
 
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
 import orderSequelize from '@/model/order'
 const Order = orderSequelize.models.order
-
-import { v4 as uuidv4 } from 'uuid'
 
 // 完结订单
 const EndOrder = (order, self) => {
@@ -79,7 +77,7 @@ const hander = {
           case 'scanPay':
             this.scand = true
             await this.payAopF2F(pay).then(response => {
-              pay.status = response
+              pay.status = response || false
               this.scand = false
               this.lock = false // 解除支付锁定
               resolve(pay)
@@ -116,7 +114,8 @@ const hander = {
   payAopF2F(pay) {
     return new Promise(async(resolve, reject) => {
       const code = pay.code
-      pay.orderNo = uuidv4().replace(/\-/g, '') // 支付宝、微信等支付指定订单单号[UUID生成]
+      // pay.orderNo = uuidv4().replace(/\-/g, '') // 支付宝、微信等支付指定订单单号[UUID生成]
+      pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
       let method = ''
       const regAlipay = /^(?:2[5-9]|30)\d{14,18}$/
       if (regAlipay.test(code)) { // 支付宝支付
@@ -131,9 +130,9 @@ const hander = {
         await findCreatePayOrder(this.order, {
           storeName: this.scanStoreName,
           method: method,
-          authCode: code,
+          authCode: pay.code,
           title: this.orderTitle,
-          orderNo: this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}'),
+          orderNo: pay.orderNo,
           totalAmount: pay.amount,
           operatorId: this.username,
           terminalId: this.terminal
@@ -156,82 +155,90 @@ const hander = {
   },
   handerAopF2F(pay) {
     return new Promise(async(resolve, reject) => {
-      await AopF2F(pay).then(response => { // 远程支付开始
-        resolve(response.data.valid)
+      await AopF2F(pay).then(async response => { // 远程支付开始
+        await this.handerAopF2FResponse(response, pay).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
       }).catch(async error => {
-        if (error.message.indexOf('Network Error') !== -1) {
-          this.warning = '服务器连接失败,等待中。'
+        if (error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1) {
+          this.warning = '服务器连接失败,等待重试。'
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
-          this.warning = '支付查询中'
+          this.warning = '重新支付中'
           await this.handerAopF2F(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
           })
-          return
-        }
-        if (error.message.indexOf('timeout of') !== -1) {
-          this.warning = '超时查询支付中'
-          await this.handerAopF2F(pay).then(response => {
-            resolve(response)
-          }).catch(error => {
-            reject(error)
-          })
-          return
         } else {
-          const err = errorPay.hander(error, pay.method)
-          if (err === 'USERPAYING') {
-            this.warning = '等待用户付款中'
-            const sleep = 6
-            await Sleep((sleep - 1) * 1000)// 等待
-            this.warning = '支付查询中'
-            await this.handerPayQuery(pay).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-          } else {
-            reject(err) // 返回处理后的错误信息
-          }
-          return
+          const detail = error.response.data.detail
+          this.$notify({
+            type: 'error',
+            title: '支付失败',
+            message: detail
+          })
+          reject('支付失败请重新扫码')
         }
       })
     })
   },
-  handerPayQuery(pay) {
+  handerAopF2FQuery(pay) {
     return new Promise(async(resolve, reject) => {
-      await Query(pay).then(response => {
-        resolve(response.data.valid)
+      await Query(pay).then(async response => {
+        await this.handerAopF2FResponse(response, pay).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
       }).catch(async error => {
         if (error.message.indexOf('timeout of') !== -1) {
-          this.warning = '超时查询支付中'
+          this.warning = '查询超时,等待中。'
+        } else {
+          const detail = error.response.data.detail
+          this.$notify({
+            type: 'error',
+            title: '查询失败',
+            message: detail
+          })
+        }
+        const sleep = 6
+        await Sleep((sleep - 1) * 1000)// 等待
+        this.warning = '支付查询中'
+        await this.handerAopF2FQuery(pay).then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    })
+  },
+  handerAopF2FResponse(response, pay) {
+    return new Promise(async(resolve, reject) => {
+      utilsPay.hander(response.data, pay.method)
+      if (utilsPay.valid) {
+        resolve(utilsPay.valid)
+      } else {
+        if (utilsPay.error.code === 'USERPAYING') {
+          this.warning = '等待用户付款中'
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
           this.warning = '支付查询中'
-          await this.handerPayQuery(pay).then(response => {
+          await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
           })
         } else {
-          const err = errorPay.hander(error, this.order.method)
-          if (err === 'USERPAYING') {
-            this.warning = '等待用户付款中'
-            const sleep = 6
-            await Sleep((sleep - 1) * 1000)// 等待
-
-            this.warning = '支付查询中'
-            await this.handerPayQuery(pay).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-          } else {
-            reject(err) // 返回处理后的错误信息
-          }
+          this.$notify({
+            type: 'error',
+            title: '未支付',
+            message: utilsPay.error.detail
+          })
+          reject(utilsPay.error.detail)
         }
-      })
+      }
     })
   },
   scanPay(code) {
