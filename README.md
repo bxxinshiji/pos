@@ -26,6 +26,7 @@ npm install
 npm run dev
 
 # build electron application for production
+npm run rebuild
 npm run build
 
 # run unit & end-to-end tests
