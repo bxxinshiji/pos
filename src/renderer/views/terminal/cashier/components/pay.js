@@ -155,18 +155,19 @@ const hander = {
   },
   handerAopF2F(pay) {
     return new Promise(async(resolve, reject) => {
+      this.warning = '下单中'
       await AopF2F(pay).then(async response => { // 远程支付开始
-        await this.handerAopF2FResponse(response, pay).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
+        await this.handerAopF2FQuery(pay).then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
         })
       }).catch(async error => {
         if (error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1) {
-          this.warning = '服务器连接失败,等待重试。'
+          this.warning = '服务器超时,等待重试。'
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
-          this.warning = '重新支付中'
+          this.warning = '重新下单中'
           await this.handerAopF2F(pay).then(response => {
             resolve(response)
           }).catch(error => {
@@ -176,16 +177,17 @@ const hander = {
           const detail = error.response.data.detail
           this.$notify({
             type: 'error',
-            title: '支付失败',
+            title: '下单失败',
             message: detail
           })
-          reject('支付失败请重新扫码')
+          reject('下单失败请重新扫码')
         }
       })
     })
   },
   handerAopF2FQuery(pay) {
     return new Promise(async(resolve, reject) => {
+      this.warning = '支付查询中'
       await Query(pay).then(async response => {
         await this.handerAopF2FResponse(response, pay).then(res => {
           resolve(res)
