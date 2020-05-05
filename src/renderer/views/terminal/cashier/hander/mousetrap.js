@@ -9,7 +9,7 @@ const mousetrap = {
   registerMousetrap() {
     Object.keys(Keyboard).map(key => {
       if (hander.hasOwnProperty(key)) { // 方式不存在的方法注册
-        Mousetrap.bindGlobal(Keyboard[key], () => {
+        Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), () => {
           if (this.order.status) { // 根据订单状态初始化订单
             this.initOrder()
           } else {
@@ -22,7 +22,7 @@ const mousetrap = {
   unregisterMousetrap() {
     Object.keys(Keyboard).map(key => { // 注销快捷键
       if (hander.hasOwnProperty(key)) { // 方式不存在的方法注销
-        Mousetrap.unbindGlobal(Keyboard[key])
+        Mousetrap.unbindGlobal(Keyboard[key].toLowerCase())
       }
     })
   }

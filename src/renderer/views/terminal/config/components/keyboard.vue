@@ -132,7 +132,11 @@ export default {
     },
     onkeydown() {
       document.onkeydown = (event) => {
-        this.ruleForm[this.focusItem] = event.key // 设置聚焦项目快捷键
+        if (event.key === 'Backspace') {
+          this.ruleForm[this.focusItem] = ''
+        } else {
+          this.ruleForm[this.focusItem] = event.key // 设置聚焦项目快捷键
+        }
       }
     }
   }

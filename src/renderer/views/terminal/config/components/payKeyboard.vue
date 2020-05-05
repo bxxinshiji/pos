@@ -73,8 +73,11 @@ export default {
     },
     onkeydown() {
       document.onkeydown = (event) => {
-        console.log(123)
-        this.focusItem.key = event.key // 设置聚焦项目快捷键
+        if (event.key === 'Backspace') {
+          this.focusItem.key = ''
+        } else {
+          this.focusItem.key = event.key // 设置聚焦项目快捷键
+        }
       }
     }
   }

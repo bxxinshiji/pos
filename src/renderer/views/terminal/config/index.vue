@@ -164,6 +164,9 @@ export default {
   },
   created() {
   },
+  mounted() {
+    this.$store.dispatch('terminal/unregisterGlobalShortcut') // 注销注册全局快捷键
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -186,8 +189,10 @@ export default {
     },
     handleClick(tab, event) {
       this.tab = Number(tab.index)
-      console.log(this.tab)
     }
+  },
+  destroyed() {
+    this.$store.dispatch('terminal/registerGlobalShortcut') // 注销注册全局快捷键
   }
 }
 </script>

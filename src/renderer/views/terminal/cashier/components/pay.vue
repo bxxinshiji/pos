@@ -93,7 +93,7 @@ export default {
     registerMousetrap() { // 注册快捷键
       Object.keys(payKeyboard).map(key => {
         if (payKeyboard[key]) {
-          Mousetrap.bindGlobal(payKeyboard[key], () => {
+          Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
             this.handerPay(key)
           })
         }
@@ -123,7 +123,7 @@ export default {
       onkeydown.unregister() // 注销键盘监听
       Object.keys(payKeyboard).map(key => { // 注销快捷键
         if (payKeyboard[key]) {
-          Mousetrap.unbindGlobal(payKeyboard[key])
+          Mousetrap.unbindGlobal(payKeyboard[key].toLowerCase())
         }
       })
     },

@@ -42,7 +42,7 @@ const state = {
     goodsNumber: 'f8', // 商品数量
     addGoods: 'f9', // 添加商品可以条形码可以自编码
     pay: 'f10', // 支付缓存
-    index: 'f12' // 主页
+    index: 'Home' // 主页
   }, // 键盘快捷键
   payKeyboard: {
     '0': 'x',
