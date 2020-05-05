@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <el-tabs type="border-card">
+        <el-tabs type="border-card"  @tab-click="handleClick">
         <el-tab-pane label="系统设置">
-            <el-form :inline=true :model="sysForm" :rules="sysRules" ref="sysForm"  label-width="100px">
+            <el-form v-if="tab===0" :inline=true :model="sysForm" :rules="sysRules" ref="sysForm"  label-width="100px">
                 <el-form-item label="服务器API" prop="api">
                     <el-input 
                       v-model="sysForm.api" 
@@ -45,7 +45,7 @@
             </el-form>
         </el-tab-pane>
         <el-tab-pane label="SQL数据库">
-            <el-form :inline=true :model="sqlForm" :rules="sqlRules" ref="sqlForm" label-width="100px">
+            <el-form v-if="tab===1" :inline=true :model="sqlForm" :rules="sqlRules" ref="sqlForm" label-width="100px">
                 <el-form-item label="数据库地址" prop="sql2000_host">
                     <el-input v-model="sqlForm.sql2000_host"></el-input>
                 </el-form-item>
@@ -69,16 +69,16 @@
             </el-form>
         </el-tab-pane>
         <el-tab-pane label="打印机">
-          <printer/>
+          <printer v-if="tab===2"/>
         </el-tab-pane>
         <el-tab-pane label="快捷键">
-            <keyboard/>
+          <keyboard v-if="tab===3"/>
         </el-tab-pane>
         <el-tab-pane label="支付快捷键">
-            <payKeyboard/>
+          <payKeyboard v-if="tab===4"/>
         </el-tab-pane>
-        <el-tab-pane label="第三扫码支付">
-          <pay/>
+        <el-tab-pane label="扫码支付">
+          <pay v-if="tab===5"/>
         </el-tab-pane>
         </el-tabs>
     </div>
@@ -97,6 +97,7 @@ export default {
   components: { Printer, Keyboard, payKeyboard, pay },
   data() {
     return {
+      tab: 0,
       sqlForm: {
         sql2000_host: settings.sql2000_host,
         sql2000_port: settings.sql2000_port,
@@ -182,6 +183,10 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    handleClick(tab, event) {
+      this.tab = Number(tab.index)
+      console.log(this.tab)
     }
   }
 }

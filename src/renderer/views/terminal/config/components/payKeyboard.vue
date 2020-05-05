@@ -1,7 +1,7 @@
 <template>
     <el-form :inline=true :model="ruleForm"  ref="ruleForm" label-width="100px">
                 <el-form-item v-for="(item,index) in ruleForm.key" :label="item.name" :key="index" :prop="item.id">
-                    <el-input v-model="item.key">></el-input>
+                    <el-input v-model="item.key" @focus="handerFocus(item)" readonly></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item>
@@ -23,13 +23,17 @@ export default {
     return {
       ruleForm: {
         key: []
-      }
+      },
+      focusItem: {}
     }
   },
   computed: {
   },
   created() {
     this.getPay()
+  },
+  mounted() {
+    this.onkeydown()
   },
   methods: {
     getPay() {
@@ -63,6 +67,15 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    handerFocus(item) {
+      this.focusItem = item // 缓存聚焦项目
+    },
+    onkeydown() {
+      document.onkeydown = (event) => {
+        console.log(123)
+        this.focusItem.key = event.key // 设置聚焦项目快捷键
+      }
     }
   }
 }

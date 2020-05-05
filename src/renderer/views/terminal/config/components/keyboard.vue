@@ -1,16 +1,16 @@
 <template>
     <el-form :inline=true :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="关机" prop="shutDown">
-                    <el-input v-model="ruleForm.shutDown">></el-input>
+                    <el-input v-model="ruleForm.shutDown" @focus="handerFocus('shutDown')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="主页" prop="index">
-                    <el-input v-model="ruleForm.index"></el-input>
+                    <el-input v-model="ruleForm.index" @focus="handerFocus('index')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="聚焦输入框" prop="inputFoots">
-                    <el-input v-model="ruleForm.inputFoots"></el-input>
+                    <el-input v-model="ruleForm.inputFoots" @focus="handerFocus('inputFoots')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="销售状态" prop="salesStatus">
-                    <el-input v-model="ruleForm.salesStatus"></el-input>
+                    <el-input v-model="ruleForm.salesStatus" @focus="handerFocus('salesStatus')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="向上" prop="currentRowUp">
                     <el-input v-model="ruleForm.currentRowUp" :disabled=true></el-input>
@@ -19,22 +19,22 @@
                     <el-input v-model="ruleForm.currentRowDown" :disabled=true></el-input>
                 </el-form-item>
                 <el-form-item label="删除" prop="deleteGoods">
-                    <el-input v-model="ruleForm.deleteGoods"></el-input>
+                    <el-input v-model="ruleForm.deleteGoods" @focus="handerFocus('deleteGoods')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="总清" prop="emptyOrder">
-                    <el-input v-model="ruleForm.emptyOrder"></el-input>
+                    <el-input v-model="ruleForm.emptyOrder" @focus="handerFocus('emptyOrder')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="商品数量" prop="goodsNumber">
-                    <el-input v-model="ruleForm.goodsNumber"></el-input>
+                    <el-input v-model="ruleForm.goodsNumber" @focus="handerFocus('goodsNumber')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="挂单取单" prop="pushPullOrder">
-                    <el-input v-model="ruleForm.pushPullOrder"></el-input>
+                    <el-input v-model="ruleForm.pushPullOrder" @focus="handerFocus('pushPullOrder')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="支付" prop="pay">
-                    <el-input v-model="ruleForm.pay"></el-input>
+                    <el-input v-model="ruleForm.pay" @focus="handerFocus('pay')" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="添加商品" prop="addGoods">
-                    <el-input v-model="ruleForm.addGoods"></el-input>
+                    <el-input v-model="ruleForm.addGoods" @focus="handerFocus('addGoods')" readonly></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item>
@@ -89,13 +89,17 @@ export default {
         addGoods: [
           { required: true, message: '添加商品可以条形码可以自编码', trigger: 'blur' }
         ]
-      }
+      },
+      focusItem: ''
     }
   },
   computed: {
   },
   created() {
     this.initKeyboard()
+  },
+  mounted() {
+    this.onkeydown()
   },
   methods: {
     initKeyboard() {
@@ -122,6 +126,14 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    handerFocus(item) {
+      this.focusItem = item // 缓存聚焦项目
+    },
+    onkeydown() {
+      document.onkeydown = (event) => {
+        this.ruleForm[this.focusItem] = event.key // 设置聚焦项目快捷键
+      }
     }
   }
 }
