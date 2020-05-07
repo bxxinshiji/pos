@@ -252,10 +252,10 @@ const hander = {
       this.error = '扫码付款方式未设置'
       return
     }
-    if (this.payAmount < this.order.waitPay) {
-      this.error = '扫码付款必须大于待付款金额!【多笔付款请最后支付】'
-      return
-    }
+    // if (this.payAmount < this.order.waitPay) {
+    //   this.error = '扫码付款必须大于待付款金额!【多笔付款请最后支付】'
+    //   return
+    // }
     this.handerPay(this.scanPayId, code)
   },
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
