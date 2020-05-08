@@ -33,6 +33,9 @@
                 <el-form-item label="支付" prop="pay">
                     <el-input v-model="ruleForm.pay" @focus="handerFocus('pay')" readonly></el-input>
                 </el-form-item>
+                <el-form-item label="开钱箱" prop="cashdraw">
+                    <el-input v-model="ruleForm.cashdraw" @focus="handerFocus('cashdraw')" readonly></el-input>
+                </el-form-item>
                 <el-form-item label="添加商品" prop="addGoods">
                     <el-input v-model="ruleForm.addGoods" @focus="handerFocus('addGoods')" readonly></el-input>
                 </el-form-item>
@@ -88,6 +91,9 @@ export default {
         ],
         addGoods: [
           { required: true, message: '添加商品可以条形码可以自编码', trigger: 'blur' }
+        ],
+        cashdraw: [
+          { required: true, message: '开钱箱快捷键不允许为空', trigger: 'blur' }
         ]
       },
       focusItem: ''

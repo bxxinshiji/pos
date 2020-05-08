@@ -139,10 +139,10 @@ const hander = {
         type: 'success',
         message: '打开钱箱成功'
       })
-    }).catch(() => {
+    }).catch((err) => {
       Message({
         type: 'error',
-        message: '打开钱箱失败'
+        message: '打开钱箱失败: ' + err.message
       })
     })
   }
