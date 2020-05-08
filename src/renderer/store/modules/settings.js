@@ -33,15 +33,16 @@ const state = {
   Keyboard: {
     currentRowUp: 'up', // 向上选择商品
     currentRowDown: 'down', // 向下选择商品
-    shutDown: 'f1', // 关机
-    inputFoots: 'f2', // 聚焦
-    pushPullOrder: 'f3', // 挂单取单快
-    salesStatus: 'f4', // 销售状态(销货退货)
-    deleteGoods: 'f6', // 删除选择商品
-    emptyOrder: 'f7', // 清空商品
-    goodsNumber: 'f8', // 商品数量
-    addGoods: 'f9', // 添加商品可以条形码可以自编码
-    pay: 'f10', // 支付缓存
+    shutDown: 'F1', // 关机
+    inputFoots: '', // 聚焦
+    cashdraw: 'F2', // 开钱箱
+    pushPullOrder: 'F3', // 挂单取单快
+    salesStatus: 'F4', // 销售状态(销货退货)
+    deleteGoods: 'F6', // 删除选择商品
+    emptyOrder: 'F7', // 清空商品
+    goodsNumber: 'F8', // 商品数量
+    addGoods: 'F9', // 添加商品可以条形码可以自编码
+    pay: 'F10', // 支付缓存
     index: 'Home' // 主页
   }, // 键盘快捷键
   payKeyboard: {

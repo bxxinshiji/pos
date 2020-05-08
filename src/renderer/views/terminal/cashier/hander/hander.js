@@ -1,4 +1,5 @@
 import store from '@/store'
+import escpos from '@/utils/escpos'
 import { Message } from 'element-ui'
 
 const hander = {
@@ -131,6 +132,19 @@ const hander = {
         })
       }
     }
+  },
+  cashdraw() { // '打开钱箱
+    escpos.cashdraw().then(() => {
+      Message({
+        type: 'success',
+        message: '打开钱箱成功'
+      })
+    }).catch(() => {
+      Message({
+        type: 'error',
+        message: '打开钱箱失败'
+      })
+    })
   }
 }
 
