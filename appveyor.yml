@@ -31,6 +31,5 @@ build_script:
 
 test: off
 
-
 artifacts: 
-  - path: build\*
+  - path: build
