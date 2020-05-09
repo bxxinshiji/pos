@@ -30,12 +30,3 @@ build_script:
   - yarn build
 
 test: off
-
-deploy:
-- provider: GitHub
-  tag: github
-  auth_token:
-    secure: 1RVm+cz/ziU8P3oPZf8JrA2rbuZ3vhu2E/3Yz1c0qUfPFbAn+hxTgJY4m8MaH6yB
-  draft: true
-  prerelease: false
-  force_update: false
