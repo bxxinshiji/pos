@@ -20,7 +20,13 @@ const EndOrder = (order, self) => {
   }).then(orderRes => {
     store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
     if (print.switch()) {
-      print.hander(orderRes).then(response => {
+      let cashdraw = false
+      order.pays.forEach(pay => {
+        if (pay.name === '现金') {
+          cashdraw = true
+        }
+      })
+      print.hander(orderRes, cashdraw).then(response => {
         AddPrint(orderRes) // 增加打印次数
         Notification({
           title: '打印成功',
