@@ -22,12 +22,12 @@ init:
 install:
   - ps: Install-Product node 8 x64
   - git reset --hard HEAD
-  - yarn
+  - npm install
   - node --version
   - npm rebuild
 
 build_script:
   #- yarn test
-  - yarn build
+  - npm run build
 
 test: off
