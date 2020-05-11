@@ -27,7 +27,6 @@ install:
   - npm rebuild
 
 build_script:
-  #- yarn test
   - npm run build
 
 test: off
