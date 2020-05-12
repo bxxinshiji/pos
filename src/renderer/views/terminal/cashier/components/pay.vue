@@ -135,6 +135,9 @@ export default {
       if (e.keyCode === 27) { // esc关闭消息
         this.handleClose()
       }
+    },
+    destroyed() {
+      this.unregisterMousetrap() // 注销所有键盘监听和快捷键
     }
   }
 }
