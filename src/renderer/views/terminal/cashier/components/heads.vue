@@ -1,14 +1,17 @@
 <template>
     <el-row :gutter="20" class="heads">
-        <el-col class="user" :span="7">
+        <el-col class="user" :span="4">
           <el-row> 账号: {{ username }} </el-row> 
           <el-row> 名称: {{ name }} </el-row> 
         </el-col>
-        <el-col class="logo" :span="10">
+        <el-col class="user" :span="4">
+          <el-row> 收款: {{ scanStoreName }} </el-row> 
+        </el-col>
+        <el-col class="logo" :span="8">
           <svg-icon icon-class="xinshiji" />  
           <span>新世纪超市</span>
         </el-col>
-        <el-col class="stauts" :span="7">
+        <el-col class="stauts" :span="8">
             <el-row> 
               <svg-icon v-bind:class="{ active: onLine }" icon-class="router" />  
               <svg-icon v-bind:class="{ active: isInternet }" icon-class="internet" />  
@@ -36,6 +39,7 @@ export default {
       'username'
     ]),
     ...mapState({
+      scanStoreName: state => state.settings.scanStoreName,
       isPrinter: state => state.settings.printer.switch,
       date: state => state.healthy.date,
       onLine: state => state.healthy.onLine,
