@@ -107,3 +107,16 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
+import { globalShortcut } from 'electron'
+app.on('ready', () => {
+  let devTools = false
+  globalShortcut.register('F12', () => {
+    if (devTools) {
+      mainWindow.webContents.openDevTools()
+      devTools = false
+    } else {
+      mainWindow.webContents.closeDevTools()
+      devTools = true
+    }
+  })
+})
