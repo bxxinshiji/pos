@@ -10,8 +10,20 @@
       </script>
     <% } %>
   </head>
+  <style>
+    .loading {
+      color: #fff;
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <span class="loading">系统加载中...</span>
+    </div>
     <!-- Set `__static` path to static files in production -->
     <% if (!process.browser) { %>
       <script>
