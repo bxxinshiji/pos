@@ -123,10 +123,11 @@
 <script>
 import { mapState } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List } from '@/model/api/order'
+import { List, UpdateOrderNo } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
 import { AddPrint } from '@/model/api/order'
 import print from '@/utils/print'
+const Order = import('@/api/order')
 export default {
   name: 'Order',
   components: {
@@ -153,7 +154,8 @@ export default {
   },
   computed: {
     ...mapState({
-      orderInfo: state => state.terminal.orderInfo
+      orderInfo: state => state.terminal.orderInfo,
+      terminal: state => state.settings.terminal
     })
   },
   created() {
@@ -196,17 +198,6 @@ export default {
         this.currentOrder = this.rows[value]
       }
     },
-    MessageBox({ title, message }, type = 'error') {
-      this.$confirm(message, title, {
-        type: type,
-        showCancelButton: false,
-        showConfirmButton: false,
-        dangerouslyUseHTMLString: true,
-        center: true
-      }).then(() => {
-      }).catch(() => {
-      })
-    },
     handerPrint(currentOrder) {
       if (print.switch()) {
         print.hander(currentOrder).then(response => {
@@ -237,9 +228,19 @@ export default {
         })
         this.getList()
       }).catch(err => {
-        this.MessageBox({
-          title: '订单发布失败',
-          message: err
+        this.$confirm(err, '订单发布失败,是否确认使用新订单编号？', {
+          type: 'error',
+          dangerouslyUseHTMLString: true,
+          center: true
+        }).then(() => {
+          Order.then(o => {
+            o.OrderNo(this.terminal).then(order_no => {
+              UpdateOrderNo(currentOrder.id, order_no).then(() => {
+                this.getList()
+              })
+            })
+          })
+        }).catch(() => {
         })
       })
     },

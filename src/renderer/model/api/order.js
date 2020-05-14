@@ -139,3 +139,18 @@ export async function Info(userId) {
   })
   return info
 }
+
+// 更新订单编号
+export function UpdateOrderNo(orderId, orderNo) {
+  return new Promise((resolve, reject) => {
+    Order.update({ // 本地订单状态改为报送服务器
+      orderNo: orderNo
+    }, {
+      where: { id: orderId }
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
