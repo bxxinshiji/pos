@@ -169,9 +169,18 @@ export default {
         this.handerVipCardGet(value)
         this.$refs.foots.input = ''
       } else if (value) { // 添加商品
-        this.$refs.foots.input = ''
-        this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
-        this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
+        var number = /^[1-9]\d*$/ // 正则匹配正整数
+        if (number.test(value)) {
+          this.$refs.foots.input = ''
+          this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
+          this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '输入错误请重试,输入内容:' + value
+          })
+          this.$refs.foots.input = ''
+        }
       }
     },
     handerPay() {

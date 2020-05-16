@@ -68,9 +68,6 @@ export default {
     }
     document.addEventListener('keydown', this.keydown)
   },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.keydown)
-  },
   methods: {
     ...pay,
     initPay() {
@@ -135,10 +132,11 @@ export default {
       if (e.keyCode === 27) { // esc关闭消息
         this.handleClose()
       }
-    },
-    destroyed() {
-      this.unregisterMousetrap() // 注销所有键盘监听和快捷键
     }
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown)
+    this.unregisterMousetrap() // 注销所有键盘监听和快捷键
   }
 }
 </script>
