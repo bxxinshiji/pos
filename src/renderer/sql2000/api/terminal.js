@@ -12,9 +12,8 @@ import { Loading } from 'element-ui'
  */
 export async function SyncTerminal() {
   Terminal.PosCode = store.state.settings.terminal
-  store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
-
   if (Terminal.PosCode) {
+    store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
     await Terminal.Get()
     let status = 0 // 等待窗口锁
     // 更新用户信息

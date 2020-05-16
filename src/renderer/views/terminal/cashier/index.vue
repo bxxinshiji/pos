@@ -169,7 +169,7 @@ export default {
         this.handerVipCardGet(value)
         this.$refs.foots.input = ''
       } else if (value) { // 添加商品
-        var number = /^[1-9]\d*$/ // 正则匹配正整数
+        var number = /^[0-9]*$/ // 正则匹配正整数
         if (number.test(value)) {
           this.$refs.foots.input = ''
           this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
