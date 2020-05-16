@@ -19,6 +19,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Settle as accountsSettle } from '@/api/accounts'
+import Terminal from '@/sql2000/model/terminal'
 export default {
   name: 'terminal',
   data() {
@@ -79,6 +80,15 @@ export default {
             type: 'warning'
           }).then(() => {
             accountsSettle() // 结账
+            Terminal.PosCode = this.$store.state.settings.terminal
+            if (Terminal.PosCode) {
+              Terminal.Get().then(() => {
+                Terminal.PreJzDate = new Date()
+                Terminal.Save()
+              }).catch(error => {
+                console.log(error)
+              })
+            }
             this.logout()
           }).catch(() => {
             this.$message({

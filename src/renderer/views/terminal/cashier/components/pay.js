@@ -180,13 +180,11 @@ const hander = {
             reject(error)
           })
         } else {
-          const detail = error.response.data.detail
-          this.$notify({
-            type: 'error',
-            title: '下单失败',
-            message: detail
+          await this.handerAopF2FQuery(pay).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
           })
-          reject('下单失败请重新扫码')
         }
       })
     })

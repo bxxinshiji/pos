@@ -81,6 +81,7 @@ export async function SyncTerminal() {
         })
       }
       store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
+      Terminal.DlDate = new Date()
       Terminal.UserName = store.getters.name
       Terminal.UserCode = store.getters.username
       Terminal.PosState = '10'

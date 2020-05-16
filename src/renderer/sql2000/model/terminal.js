@@ -96,8 +96,8 @@ const terminal = {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
-      pool.DB.query(`UPDATE tXsPosState SET 
-        DlDate='` + parseTime(terminal.DlDate, '{y}-{m}-{d} {h}:{i}:{s}.{n}') + `',
+      const sql = `UPDATE tXsPosState SET 
+        DlDate='` + parseTime(terminal.DlDate, '{y}-{m}-{d} {h}:{i}:{s}') + `',
         IsBroadCast='` + terminal.IsBroadCast + `',
         IsCheckMode='` + terminal.IsCheckMode + `',
         IsChgCalDef='` + terminal.IsChgCalDef + `',
@@ -114,16 +114,17 @@ const terminal = {
         IsChgZfKind='` + terminal.IsChgZfKind + `',
         IsPosJz='` + terminal.IsPosJz + `',
         IsUsed='` + terminal.IsUsed + `',
-        JzDate='` + parseTime(terminal.JzDate, '{y}-{m}-{d} {h}:{i}:{s}.{n}') + `',
+        JzDate='` + parseTime(terminal.JzDate, '{y}-{m}-{d} {h}:{i}:{s}') + `',
         JzStatus='` + terminal.JzStatus + `',
         PosState='` + terminal.PosState + `',
-        PreJzDate='` + parseTime(terminal.PreJzDate, '{y}-{m}-{d} {h}:{i}:{s}.{n}') + `',
+        PreJzDate='` + parseTime(terminal.PreJzDate, '{y}-{m}-{d} {h}:{i}:{s}') + `',
         UserCode='` + terminal.UserCode + `',
         UserName='` + terminal.UserName + `',
-        ZxDate='` + parseTime(terminal.ZxDate, '{y}-{m}-{d} {h}:{i}:{s}.{n}') + `'
+        ZxDate='` + parseTime(terminal.ZxDate, '{y}-{m}-{d} {h}:{i}:{s}') + `'
         WHERE PosCode='` + terminal.PosCode + `'
-      `,
-      { type: Sequelize.QueryTypes.SELECT }
+      `
+      pool.DB.query(sql,
+        { type: Sequelize.QueryTypes.SELECT }
       ).then((response) => {
         resolve(response)
       }).catch(error => {
