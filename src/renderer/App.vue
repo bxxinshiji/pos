@@ -5,18 +5,21 @@
 </template>
 
 <script>
+
+const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
-// const Mousetrap = require('mousetrap')
-// require('@/utils/mousetrap-global-bind')
 export default {
   name: 'App',
   mounted() {
-    console.log(this.$electron, this.$electron.remote)
     this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.$store.dispatch('terminal/registerGlobalShortcut') // 注册全局快捷键
     // this.logout() // 软件启动先退出
     this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: false }) // 关闭头部
+
+    ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
+      this.$router.push({ path: '/' })
+    })
   },
   methods: {
     syncTerminal() {

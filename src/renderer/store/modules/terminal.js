@@ -208,10 +208,10 @@ const actions = {
     commit('SYNC_TERMINAL', value)
   },
   registerGlobalShortcut() {
-    const KeyboardIndex = store.state.settings.Keyboard.index
-    Mousetrap.bindGlobal(KeyboardIndex.toLowerCase(), () => { // 主页 快捷键
-      router.push({ path: '/' })
-    })
+    // const KeyboardIndex = store.state.settings.Keyboard.index
+    // Mousetrap.bindGlobal(KeyboardIndex.toLowerCase(), () => { // 主页 快捷键
+    //   router.push({ path: '/' })
+    // })
     const shutDown = store.state.settings.Keyboard.shutDown
     Mousetrap.bindGlobal(shutDown.toLowerCase(), () => { // 主页 快捷键
       MessageBox.confirm('关闭计算机 是否继续?', '提示', {

@@ -119,4 +119,8 @@ app.on('ready', () => {
       devTools = true
     }
   })
+  globalShortcut.register('home', () => {
+    mainWindow.webContents.send('main-process-home', 'home')
+    mainWindow.show()
+  })
 })
