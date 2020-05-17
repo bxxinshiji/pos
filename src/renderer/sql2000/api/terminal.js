@@ -88,6 +88,7 @@ export async function SyncTerminal() {
       Terminal.Save()
     }
   } catch (err) {
+    console.log(err)
     store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
   }
 }

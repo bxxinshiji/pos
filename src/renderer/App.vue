@@ -11,6 +11,7 @@ import { SyncTerminal } from '@/api/terminal'
 export default {
   name: 'App',
   mounted() {
+    console.log(this.$electron, this.$electron.remote)
     this.$store.dispatch('healthy/intervalHealthy') // 健康监测启动
     this.syncTerminal()
     this.$store.dispatch('terminal/registerGlobalShortcut') // 注册全局快捷键

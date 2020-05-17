@@ -83,6 +83,9 @@ export default {
             Terminal.PosCode = this.$store.state.settings.terminal
             if (Terminal.PosCode) {
               Terminal.Get().then(() => {
+                Terminal.PosState = '70'
+                Terminal.UserName = ''
+                Terminal.UserCode = ''
                 Terminal.PreJzDate = new Date()
                 Terminal.Save()
               }).catch(error => {
