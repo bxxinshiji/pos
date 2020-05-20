@@ -204,7 +204,7 @@ export default {
   justify-content: space-between;
   font-size: (100vh/100vw)*2vw;
   .name{
-    width: 15%;
+    width: 17%;
   }
   .pay{
     width: 35%;
@@ -213,7 +213,7 @@ export default {
     width: 35%;
   }
   .status{
-    width: 15%;
+    width: 13%;
     text-align:right;
   }
 }
