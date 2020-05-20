@@ -56,7 +56,7 @@ const terminal = {
         const item = response[0]
         handerItem(item)
         // terminal.CurrVer = item.CurrVer
-        terminal.DlDate = item.DlDate
+        terminal.DlDate = item.DlDate ? item.DlDate : new Date()
         terminal.IsBroadCast = item.IsBroadCast
         terminal.IsCheckMode = item.IsCheckMode
         terminal.IsChgCalDef = item.IsChgCalDef
@@ -74,16 +74,16 @@ const terminal = {
         terminal.IsPosJz = item.IsPosJz
         terminal.IsUsed = item.IsUsed
         // terminal.JzBgnDate = item.JzBgnDate
-        terminal.JzDate = item.JzDate
+        terminal.JzDate = item.JzDate ? item.JzDate : new Date()
         // terminal.JzEndDate = item.JzEndDate
         terminal.JzStatus = item.JzStatus
         // terminal.LastChgDate = item.LastChgDate
         terminal.PosCode = item.PosCode
         terminal.PosState = item.PosState
-        terminal.PreJzDate = item.PreJzDate
+        terminal.PreJzDate = item.PreJzDate ? item.PreJzDate : new Date()
         terminal.UserCode = item.UserCode
         terminal.UserName = item.UserName
-        terminal.ZxDate = item.ZxDate
+        terminal.ZxDate = item.ZxDate ? item.ZxDate : new Date()
         resolve(terminal)
       }).catch(error => {
         reject(error)

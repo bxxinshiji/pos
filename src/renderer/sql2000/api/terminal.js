@@ -85,6 +85,7 @@ export async function SyncTerminal() {
       Terminal.UserName = store.getters.name
       Terminal.UserCode = store.getters.username
       Terminal.PosState = '10'
+      console.log(Terminal)
       Terminal.Save()
     }
   } catch (err) {
