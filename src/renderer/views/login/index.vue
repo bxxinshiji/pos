@@ -70,7 +70,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-
+const ipcRenderer = require('electron').ipcRenderer
 export default {
   name: 'Login',
   data() {
@@ -109,6 +109,9 @@ export default {
   },
   mounted() {
     this.usernameFocus()
+    ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
+      this.usernameFocus()
+    })
   },
   methods: {
     usernameFocus() {
