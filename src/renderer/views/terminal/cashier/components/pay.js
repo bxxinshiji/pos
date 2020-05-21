@@ -76,7 +76,6 @@ const hander = {
             // } else {
             //   reject(new Error('请刷卡!会员卡号不允许为空'))
             // }
-            pay.status = true
             this.lock = false // 解除支付锁定
             resolve(pay)
             break
@@ -120,19 +119,23 @@ const hander = {
       this.error = error
     })
   },
-  cardPayHander(pays) {
+  handerPays(pays) { // 处理订单支付
     return new Promise(async(resolve, reject) => {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]
-        if (pay.type === 'cardPay') {
+        if (pay.type === 'cardPay' && !pay.status) {
           if (pay.code) {
             await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
+              pay.status = true
             }).catch(error => {
               reject(error)
             })
           } else {
             reject(new Error('订单结算失败,会员卡号为空!'))
           }
+        }
+        if (!pay.status) {
+          reject(new Error('支付方式: ' + pay.name + ' 未支付'))
         }
       }
       resolve(pays)
@@ -334,10 +337,10 @@ const hander = {
   },
   async handerOrder() {
     if (this.order.waitPay === 0) {
-      this.cardPayHander(this.order.pays).then(() => {
+      this.handerPays(this.order.pays).then(() => { // 处理订单支付
         EndOrder(this.order, this)
       }).catch(error => {
-        MessageBox.confirm('会员卡扣款失败' + error.message, '订单结算失败', {
+        MessageBox.confirm(error.message, '支付处理失败', {
           type: 'error',
           showCancelButton: false,
           showConfirmButton: false,

@@ -139,9 +139,7 @@ const actions = {
       total = waitPay = total + good.total
     })
     state.order.pays.forEach((pay, index) => {
-      if (pay.status) { // 支付失败支付状态待支付-自动结算订单问题
-        waitPay = waitPay - pay.amount
-      }
+      waitPay = waitPay - pay.amount
       getAmount = getAmount + pay.getAmount
     })
     commit('SET_ORDER_KEY', { key: 'number', value: number })
