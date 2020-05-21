@@ -64,18 +64,21 @@ const hander = {
       if (!pay.status) {
         switch (pay.type) {
           case 'cardPay':
-            if (pay.code) {
-              await CardPay(pay).then(response => {
-                pay.status = true
-                this.lock = false // 解除支付锁定
-                resolve(pay)
-              }).catch(error => {
-                this.lock = false // 解除支付锁定
-                reject(error)
-              })
-            } else {
-              reject(new Error('请刷卡!会员卡号不允许为空'))
-            }
+            // if (pay.code) {
+            //   await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
+            //     pay.status = true
+            //     this.lock = false // 解除支付锁定
+            //     resolve(pay)
+            //   }).catch(error => {
+            //     this.lock = false // 解除支付锁定
+            //     reject(error)
+            //   })
+            // } else {
+            //   reject(new Error('请刷卡!会员卡号不允许为空'))
+            // }
+            pay.status = true
+            this.lock = false // 解除支付锁定
+            resolve(pay)
             break
           case 'remoteCardPay':
             console.log('remoteCardPay')
@@ -115,6 +118,24 @@ const hander = {
       }
     }).catch(error => {
       this.error = error
+    })
+  },
+  cardPayHander(pays) {
+    return new Promise(async(resolve, reject) => {
+      for (let index = 0; index < pays.length; index++) {
+        const pay = pays[index]
+        if (pay.type === 'cardPay') {
+          if (pay.code) {
+            await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
+            }).catch(error => {
+              reject(error)
+            })
+          } else {
+            reject(new Error('订单结算失败,会员卡号为空!'))
+          }
+        }
+      }
+      resolve(pays)
     })
   },
   payAopF2F(pay) {
@@ -313,7 +334,18 @@ const hander = {
   },
   async handerOrder() {
     if (this.order.waitPay === 0) {
-      EndOrder(this.order, this)
+      this.cardPayHander(this.order.pays).then(() => {
+        EndOrder(this.order, this)
+      }).catch(error => {
+        MessageBox.confirm('会员卡扣款失败' + error.message, '订单结算失败', {
+          type: 'error',
+          showCancelButton: false,
+          showConfirmButton: false,
+          center: true
+        }).then(() => {
+        }).catch(() => {
+        })
+      })
     } else {
       this.handleClose() // 关闭页面防止  修改 BUG 多种支付时第二次无法输入需求金额问题【每种支付确认后自动关闭页面】
       Message({
