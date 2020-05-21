@@ -110,7 +110,7 @@ app.on('ready', () => {
 import { globalShortcut } from 'electron'
 app.on('ready', () => {
   let devTools = false
-  globalShortcut.register('f12', () => {
+  globalShortcut.register('tab', () => {
     if (devTools) {
       mainWindow.webContents.openDevTools()
       devTools = false
