@@ -83,6 +83,7 @@ export default {
   },
   mounted() {
     this.focus()
+    document.addEventListener('keydown', this.keydown)
     if (Object.keys(this.loadOrder).length > 0) { // 判断是否使用加载的缓存订单
       this.$store.dispatch('terminal/changePullLoadOrder')
     } else {
@@ -119,7 +120,9 @@ export default {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: true })
     },
     focus() { // 聚焦
-      this.$refs.foots.focus()
+      setTimeout(() => {
+        this.$refs.foots.focus()
+      }, 100)// 聚焦延时
     },
     blur() { // 失焦点
       this.$refs.foots.blur()
@@ -198,9 +201,15 @@ export default {
     },
     handerCacheGoods(cacheGoods) { // 缓存商品价格处理
       this.$refs.goods.addGoods(cacheGoods)
+    },
+    keydown(e) {
+      if (e.keyCode === 27) { // esc 自动聚焦
+        this.focus()
+      }
     }
   },
   destroyed() {
+    document.removeEventListener('keydown', this.keydown)
     this.unregisterMousetrap()// 注销按键监听
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
     this.$store.dispatch('terminal/changeLoadOrder', this.order) // 离开页面载入未付款订单

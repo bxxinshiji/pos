@@ -32,14 +32,15 @@
         </el-col>
 
         <el-col :span="8">
-          未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
-        </el-col>
-        <el-col :span="8">
           订单: <b style="color:#67C23A">{{orderInfo.count}}</b> 笔
         </el-col>
         <el-col :span="8">
           退款: <b style="color:#0fb9b1">{{orderInfo.returns}}</b> 笔
         </el-col>
+        <el-col :span="8">
+          未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
+        </el-col>
+        
         <el-col :span="2.7">
           总金额: <b style="color:#F56C6C">{{(orderInfo.total / 100).toFixed(2)}}</b> 元
         </el-col>
