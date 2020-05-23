@@ -17,12 +17,20 @@
         <el-col :span="8">
             <b>今日汇总</b>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="16">
             <b style="color:#455A64">{{ date | parseTime('{y}-{m}-{d} {h}:{i}:{s} 星期{a}') }}</b>
+        </el-col>
+
+        <el-col :span="8">
+          账号: <b style="color:#455A64">{{ username }}</b>
+        </el-col>
+        <el-col :span="8">
+          名称: <b style="color:#455A64">{{ name }}</b>
         </el-col>
         <el-col :span="8">
             <b style="color:#455A64">版本: {{ version }}</b>
         </el-col>
+
         <el-col :span="8">
           未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
         </el-col>
@@ -67,6 +75,7 @@ export default {
   computed: {
     ...mapGetters([
       'name',
+      'username',
       'isTerminal'
     ]),
     ...mapState({
