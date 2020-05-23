@@ -95,7 +95,16 @@ export default {
     },
     keydown(e) {
       const cont = Math.ceil(this.total / this.pageSize)
-      if (e.key === 'End') { // 下一页
+      if (e.key === 'ArrowLeft') { // 上一页
+        let currentPage = this.currentPage
+        if (this.currentPage < cont) {
+          currentPage--
+        } else {
+          currentPage = 1
+        }
+        this.handleCurrentChange(currentPage)
+      }
+      if (e.key === 'ArrowRight') { // 下一页
         let currentPage = this.currentPage
         if (this.currentPage < cont) {
           currentPage++

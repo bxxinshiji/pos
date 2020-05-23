@@ -88,6 +88,11 @@ const hander = {
               pay.status = response || false
               this.scand = false
               this.lock = false // 解除支付锁定
+              Notification({
+                title: '支付成功',
+                message: '订单金额:' + pay.amount,
+                type: 'success'
+              })
               resolve(pay)
             }).catch(error => {
               this.scand = false
@@ -104,13 +109,42 @@ const hander = {
     })
   },
   cardPay(code) {
-    VipCardGet(code).then(response => {
+    const getVipAmount = (pays, cardNo) => { // 查询次会员卡已付款多少钱
+      let amount = 0
+      pays.forEach(pay => {
+        if (pay.code === cardNo) {
+          amount += pay.amount
+        }
+      })
+      return amount
+    }
+    VipCardGet(code).then(res => {
       const payAmount = this.payAmount
-      if (response.amount * 100 < this.payAmount) {
-        this.$store.dispatch('terminal/changePayAmount', parseInt(response.amount * 100)) // 根据会员卡余额自定义输收款金额
+      const beforeAmount = getVipAmount(this.order.pays, res.cardNo) // 之前已缓存付款金额
+      const vipAmount = parseInt(res.amount * 100) - beforeAmount
+      if (vipAmount * 100 < this.payAmount) {
+        this.$store.dispatch('terminal/changePayAmount', vipAmount) // 根据会员卡余额自定义输收款金额
       }
       if (this.payAmount) {
-        this.handerPay(response.id, response.cardNo)
+        const afterAmount = parseInt(res.amount * 100) - beforeAmount - this.payAmount // 付款后余额
+        this.$confirm( // 会员卡支付信息确认
+          '<p>会员卡余额: <b style="color:#67C23A">' + res.amount.toFixed(2) + ' 元</b></p>' +
+          '<p>会员卡编码: <b>' + res.cardNo + '</b></p>' +
+          '<p>会员卡名称: <b>' + res.name + '</b></p>' +
+          '<p>支付后余额: <b style="color:#F56C6C">' + (afterAmount / 100).toFixed(2) + ' 元</b></p>' +
+          '<p>本笔支付: <b style="color:#E6A23C">' + ((beforeAmount + this.payAmount) / 100).toFixed(2) + ' 元</b></p>' +
+          '<p>本次支付: <b style="color:#409EFF">' + (this.payAmount / 100).toFixed(2) + ' 元</b></p>'
+          , '会员卡支付信息', {
+            type: 'success',
+            dangerouslyUseHTMLString: true
+          }).then(() => {
+          this.handerPay(res.id, res.cardNo)
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: '会员卡支付已取消'
+          })
+        })
       } else {
         this.$store.dispatch('terminal/changePayAmount', payAmount) // 无法付款时恢复 付款金额
         this.error = '账户余额为零'
@@ -119,7 +153,7 @@ const hander = {
       this.error = error
     })
   },
-  handerPays(pays) { // 处理订单支付
+  handerPays(pays) { // 处理未支付订单
     return new Promise(async(resolve, reject) => {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]

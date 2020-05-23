@@ -3,7 +3,7 @@
       <el-table
         ref="table"
         :data="rows"
-        height="72vh"
+        height="80vh"
         size="mini"
         highlight-current-row
       >
@@ -96,26 +96,9 @@
           </el-col>
           <el-col :span="15.5">
             <div class="black-info ">
-                  快捷键: 2 发布、3 打印、 End 下一页、 PgUp 首页、 PgDn 最后一页、↑ 向上、↓ 向下
+                  快捷键: 2 发布、3 打印、 PgUp 首页、 PgDn 最后一页、← 上页、→ 下页、↑ 向上、↓ 向下
             </div>
           </el-col>
-      </el-row>
-      <el-row :gutter="20" class="orderInfo">
-        <el-col :span="2.4">
-            <span>今日汇总</span>
-        </el-col>
-        <el-col :span="2.4">
-          <span>订单: {{orderInfo.count}} 笔</span>
-        </el-col>
-        <el-col :span="2.4">
-          <span>退款: {{orderInfo.returns}} 笔</span>
-        </el-col>
-        <el-col :span="2.4">
-          <span>总金额: {{(orderInfo.total / 100).toFixed(2)}} 元</span>
-        </el-col>
-        <el-col :span="2.4" v-for="(pay,key) in orderInfo.pays" :key="key">
-          <span>{{pay.name}}: </span><span>{{(pay.amount / 100).toFixed(2) }} 元</span>
-        </el-col>
       </el-row>
     </div>
 </template>
@@ -154,7 +137,6 @@ export default {
   },
   computed: {
     ...mapState({
-      orderInfo: state => state.terminal.orderInfo,
       terminal: state => state.settings.terminal
     })
   },
@@ -163,7 +145,6 @@ export default {
   mounted() {
     document.addEventListener('keydown', this.keydown)
     this.getList()
-    this.$store.dispatch('terminal/changeOrderInfo')
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.keydown)
@@ -283,11 +264,6 @@ export default {
     color: #ffffff;
     height: 100%;
     padding: 13px;
-    font-size: 11px;
-  }
-  .orderInfo{
-    padding: 1vw;
-    color: #303133;
-    font-size: 12px;
+    font-size: 10px;
   }
 </style>

@@ -3,7 +3,7 @@
       <el-table
         ref="table"
         :data="rows"
-        height="72vh"
+        height="80vh"
         size="mini"
         highlight-current-row
       >
@@ -73,7 +73,7 @@
           </el-col>
           <el-col :span="15.5">
             <div class="black-info ">
-                  快捷键: 1、支付查询  2、载入订单  End 下一页、 PgUp 首页、 PgDn 最后一页、↑ 向上、↓ 向下
+                  快捷键: 1、支付查询  2、载入订单、 PgUp 首页、 PgDn 最后一页、← 上页、→ 下页、↑ 向上、↓ 向下
             </div>
           </el-col>
       </el-row>
@@ -280,14 +280,14 @@ export default {
     padding: 0px 16px;
   }
   .black-info {
-    height: 40px;
+    height: 30px;
     padding: 1vw;
     border-radius:4px;
     background-color: #303133;
     color: #ffffff;
     height: 100%;
     padding: 13px;
-    font-size: 11px;
+    font-size: 10px;
   }
   .wechat{
     color: #67C23A;

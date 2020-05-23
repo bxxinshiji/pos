@@ -57,11 +57,11 @@
         <el-col :span="2">
           <svg-icon v-bind:class="{ active: isSql2000 }" icon-class="sql" />  
         </el-col> 
-        <el-col :span="4">
-          <span>{{isTerminal ? ' 终端模式' : ' 客户端模式'}}</span>
-        </el-col> 
-         <el-col :span="12">
+        <el-col :span="12">
           <span>{{ date | parseTime('{y}-{m}-{d} {h}:{i}:{s} 星期{a}') }} </span>
+        </el-col> 
+        <el-col :span="4">
+          <span class="version">版本: {{version}} </span>
         </el-col> 
       </el-row>
     </el-form>
@@ -92,6 +92,7 @@ export default {
       'isTerminal'
     ]),
     ...mapState({
+      version: state => state.settings.version,
       date: state => state.healthy.date,
       onLine: state => state.healthy.onLine,
       isInternet: state => state.healthy.isInternet,
@@ -277,6 +278,9 @@ $light_gray:#eee;
   }
   .active{
     color: @el-success
+  }
+  .version{
+    font-size: 12px;
   }
 }
 </style>

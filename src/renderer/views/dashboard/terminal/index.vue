@@ -13,11 +13,37 @@
         {{keyboard.key}} {{keyboard.name}}
       </span>
     </div>
+    <el-row :gutter="20" class="orderInfo">
+        <el-col :span="8">
+            <b>今日汇总</b>
+        </el-col>
+        <el-col :span="8">
+            <b style="color:#455A64">{{ date | parseTime('{y}-{m}-{d} {h}:{i}:{s} 星期{a}') }}</b>
+        </el-col>
+        <el-col :span="8">
+            <b style="color:#455A64">版本: {{ version }}</b>
+        </el-col>
+        <el-col :span="8">
+          未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
+        </el-col>
+        <el-col :span="8">
+          订单: <b style="color:#67C23A">{{orderInfo.count}}</b> 笔
+        </el-col>
+        <el-col :span="8">
+          退款: <b style="color:#0fb9b1">{{orderInfo.returns}}</b> 笔
+        </el-col>
+        <el-col :span="2.7">
+          总金额: <b style="color:#F56C6C">{{(orderInfo.total / 100).toFixed(2)}}</b> 元
+        </el-col>
+        <el-col :span="2.7" v-for="(pay,key) in orderInfo.pays" :key="key">
+          <span>{{pay.name}}: </span><b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元
+        </el-col>
+      </el-row>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Settle as accountsSettle } from '@/api/accounts'
 import Terminal from '@/sql2000/model/terminal'
 export default {
@@ -42,12 +68,18 @@ export default {
     ...mapGetters([
       'name',
       'isTerminal'
-    ])
+    ]),
+    ...mapState({
+      version: state => state.settings.version,
+      orderInfo: state => state.terminal.orderInfo,
+      date: state => state.healthy.date
+    })
   },
   created() {
   },
   mounted() {
     document.addEventListener('keydown', this.keydown)
+    this.$store.dispatch('terminal/changeOrderInfo')
   },
   methods: {
     handler(handler) {
@@ -184,6 +216,14 @@ export default {
   }
   .inventory{
     background: #0fb9b1;
+  }
+}
+.orderInfo{
+  padding: 2vw;
+  color: #303133;
+  font-size: 15px;
+  .el-col{
+    margin-bottom: 2vh;
   }
 }
 </style>

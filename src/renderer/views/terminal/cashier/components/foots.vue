@@ -75,7 +75,7 @@
         <el-col :span="8">
           <div class="payable background-danger" @click="handerPay">
             <el-row class="total"> 
-              <span>收 款</span>
+              <span>需 收</span>
               <span></span>
               <span>数 量: {{ order.number.toFixed(2) }}</span>
             </el-row>
