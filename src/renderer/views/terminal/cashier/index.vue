@@ -127,8 +127,8 @@ export default {
     blur() { // 失焦点
       this.$refs.foots.blur()
     },
-    initOrder() {
-      this.$store.dispatch('terminal/changeInitOrder').then(() => {
+    async initOrder() {
+      await this.$store.dispatch('terminal/changeInitOrder').then(() => {
         this.$store.dispatch('terminal/changeCurrentGoods', {}) // 选中商品情况
       }).catch(error => {
         this.blur()
@@ -161,20 +161,19 @@ export default {
         })
       })
     },
-    handerInput(value) {
+    async handerInput(value) {
       // 完成订单状态清空订单
       if (this.order.status) {
-        this.initOrder()
+        await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
       }
+      this.$refs.foots.input = ''
       // 储值卡正则
       var regVipCard = /^((;)\d{20})$/
       if (regVipCard.test(value)) { // 储值卡查询
         this.handerVipCardGet(value)
-        this.$refs.foots.input = ''
       } else if (value) { // 添加商品
         var number = /^[0-9]*$/ // 正则匹配正整数
         if (number.test(value)) {
-          this.$refs.foots.input = ''
           this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
           this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
         } else {
@@ -182,7 +181,6 @@ export default {
             type: 'warning',
             message: '输入错误请重试,输入内容:' + value
           })
-          this.$refs.foots.input = ''
         }
       }
     },
