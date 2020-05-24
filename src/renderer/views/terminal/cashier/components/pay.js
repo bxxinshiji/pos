@@ -90,7 +90,7 @@ const hander = {
               this.lock = false // 解除支付锁定
               Notification({
                 title: '支付成功',
-                message: '订单金额:' + pay.amount,
+                message: '订单金额: ' + (pay.amount / 100).toFixed(2) + ' 元',
                 type: 'success'
               })
               resolve(pay)
