@@ -232,11 +232,13 @@ const hander = {
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
           this.warning = '重新下单中'
-          await this.handerAopF2F(pay).then(response => {
-            resolve(response)
-          }).catch(error => {
-            reject(error)
-          })
+          if (this.isPay) { // 页面关闭后不在下单
+            await this.handerAopF2F(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }
         } else {
           await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)

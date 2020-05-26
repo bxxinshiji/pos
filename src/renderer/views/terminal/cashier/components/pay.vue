@@ -48,6 +48,7 @@ export default {
   },
   computed: {
     ...mapState({
+      isPay: state => state.terminal.isPay,
       order: state => state.terminal.order,
       payAmount: state => state.terminal.payAmount,
       scanStoreName: state => state.settings.scanStoreName,
