@@ -122,7 +122,7 @@ const hander = {
       const payAmount = this.payAmount
       const beforeAmount = getVipAmount(this.order.pays, res.cardNo) // 之前已缓存付款金额
       const vipAmount = parseInt(res.amount * 100) - beforeAmount
-      if (vipAmount * 100 < this.payAmount) {
+      if (vipAmount < this.payAmount) {
         this.$store.dispatch('terminal/changePayAmount', vipAmount) // 根据会员卡余额自定义输收款金额
       }
       if (this.payAmount) {
