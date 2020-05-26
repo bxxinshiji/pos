@@ -232,7 +232,7 @@ const hander = {
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
           this.warning = '重新下单中'
-          if (this.isPay) { // 页面关闭后不在下单
+          if (this.isPay) { // 支付页面关闭后不再下单
             await this.handerAopF2F(pay).then(response => {
               resolve(response)
             }).catch(error => {
@@ -272,11 +272,13 @@ const hander = {
         const sleep = 6
         await Sleep((sleep - 1) * 1000)// 等待
         this.warning = '支付查询中'
-        await this.handerAopF2FQuery(pay).then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
+        if (this.isPay) { // 支付页面关闭后不再查询
+          await this.handerAopF2FQuery(pay).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+        }
       })
     })
   },
