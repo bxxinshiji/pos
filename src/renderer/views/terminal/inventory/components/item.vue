@@ -164,7 +164,7 @@ export default {
 .el-table /deep/ th{
     color: @el-warning;
     font-size:2.5vh;
-    background-color: @syntax-background-color;
+    background-color: #000;
 }
 .el-scrollbar__wrap {
   overflow-x: hidden;
@@ -172,11 +172,11 @@ export default {
 .el-table /deep/ tr{
     font-size:2.5vh;
     color: @el-success;
-    background-color: @syntax-background-color;
+    background-color: #000;
 }
 .el-table {
     font-size:2.5vh;
-    background-color: @syntax-background-color;
+    background-color: #000;
 }
 .el-table /deep/ .el-table__body tr.current-row>td{
   color: @el-danger;
@@ -184,7 +184,7 @@ export default {
 }
 // 取消背景色
 .el-table /deep/ .el-table__body tr.current-row>td,.el-table /deep/ .el-table__body tr.hover-row>td{
-  background-color: @syntax-background-color;
+  background-color: #000;
 }
 
 // 自动移滚动条样式
@@ -198,6 +198,6 @@ export default {
 }
 .goods ::-webkit-scrollbar-track{
   border-radius: 1em;
-  background-color: @syntax-background-color;
+  background-color: #000;
 }
 </style>

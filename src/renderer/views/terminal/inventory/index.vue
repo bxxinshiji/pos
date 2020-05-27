@@ -118,7 +118,7 @@ export default {
 <style lang="less" scoped>
   @import "~@/assets/less/atom/syntax-variables.less";
   .container {
-    background-color: @syntax-background-color;
+    background-color: #000;
     color: @syntax-text-color;
     height:100vh;
     padding: 1vw;
