@@ -1,8 +1,8 @@
 import { Notification } from 'element-ui'
+const { Op } = require('sequelize')
 import store from '@/store'
-import { All, Create, Empty } from '@/model/api/orderPD'
+import { All, Create, Publish } from '@/model/api/orderPD'
 import { syncOrder } from '@/api/orderPD'
-
 const hander = {
   // 输入框聚焦
   inputFoots(self) {
@@ -35,18 +35,30 @@ const hander = {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        All().then(orders => {
+        const createdAt = { // 获取当天订单
+          [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
+          [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
+        }
+        All({
+          createdAt: createdAt,
+          publish: false
+        }).then(orders => {
           if (orders.length > 0) {
             syncOrder(orders).then(() => {
-              Empty().then(() => {
+              Publish({
+                createdAt: createdAt,
+                publish: false
+              }).then(() => {
                 self.$refs.foots.information() // 更新info
               })
+              // Empty().then(() => {
+              //   self.$refs.foots.information() // 更新info
+              // })
               self.$message({
                 type: 'success',
                 message: '上传盘点订单数据成功'
               })
             }).catch(error => {
-              console.log(error)
               Notification({
                 title: '上传盘点订单数据错误',
                 message: error,
@@ -57,7 +69,7 @@ const hander = {
           } else {
             self.$message({
               type: 'error',
-              message: '盘点订单数据为空'
+              message: '盘点未上报订单数据为空'
             })
           }
         }).catch(error => {

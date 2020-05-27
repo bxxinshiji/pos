@@ -45,9 +45,10 @@ export function Create(order) {
   })
 }
 
-export function All() {
+export function All(where = {}) {
   return new Promise((resolve, reject) => {
     Order.findAll({
+      where: where,
       include: [Order.Goods, Order.Pays]
     }).then(response => {
       resolve(response)
@@ -56,6 +57,22 @@ export function All() {
     })
   })
 }
+
+// Publish 发布订单
+export function Publish(where) {
+  return new Promise((resolve, reject) => {
+    Order.update({ // 本地订单状态改为报送服务器
+      publish: true
+    }, {
+      where: where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 // AddPrint 增加打印次数
 export function AddPrint(order) {
   return new Promise((resolve, reject) => {

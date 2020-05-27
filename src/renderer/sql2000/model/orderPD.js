@@ -16,16 +16,18 @@ const order = {
   async CreateOrderGoodsSQL(item) {
     const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 销售日期
     const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
-    const JzDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 结账日期
+    const JzDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 结账日期
     const SaleItemNo = item.dataValues.orderNo // 销售流水号
     const UserCode = item.dataValues.userId // 收款员编号
     const CurrDate = parseTime(item.dataValues.createdAt, '{y}{m}{d}')
+    const ClerkCode = ' '
     const BcCode = 1 // 班次
     const PageNo = 1 // 页号
+
     await GoodsSnapshot(item.goods) // 合并商品快照
     for (let index = 0; index < item.goods.length; index++) {
       const goods = item.goods[index]
-      const price = (goods.price / 100).toFixed(2)
+      const price = goods.price
       const total = (goods.total / 100).toFixed(2)
 
       const LnNo = goods.no // 行号
@@ -34,20 +36,26 @@ const order = {
       const YsAmt = total // 应收金额
 
       const PluCode = goods.pluCode // 商品ID
+      const BarCode = goods.BarCode ? goods.BarCode : '' // 条码
       const PluName = goods.name // 商品名称
       const PluAbbr = goods.name // 商品别名
       const DepCode = goods.depCode // 部门ID
       const ClsCode = goods.ClsCode // 品类ID
       const SupCode = goods.SupCode // 供应商ID
+      const BrandCode = ' '
+      const Unit = goods.unit
+      const Spec = goods.spec
       const TaxRate = goods.JTaxRate // 销项税率
       const MgType = goods.MgType //
       const IsDecimal = goods.IsDecimal // 十进制
-      const Tag = goods.Tag
+      const Tag = goods.Tag ? goods.Tag : ''
+      const BakData1 = ' ' // 备用信息
+      const BakData2 = ' ' // 备用信息
       const BakData3 = 0 // 备用信息
 
-      this.sql = this.sql + ` INSERT INTO tXsPosPD (XsDate ,XsTime ,JzDate, SaleItemNo ,UserCode ,CurrDate ,BcCode ,PageNo ,LnNo ,PluCode ,PluName ,PluAbbr ,DepCode ,ClsCode ,SupCode ,TaxRate ,SPrice ,XsCount ,YsAmt ,MgType ,IsDecimal ,Tag ,BakData3,IsGenDno ) 
-        values ('` + XsDate + `', '` + XsTime + `','` + JzDate + `', '` + SaleItemNo + `', '` + UserCode + `', '` + CurrDate + `', '` + BcCode + `', '` + PageNo + `', '` + LnNo + `', '` + PluCode + `', '` + PluName + `', 
-          '` + PluAbbr + `', '` + DepCode + `', '` + ClsCode + `', '` + SupCode + `', '` + TaxRate + `', '` + SPrice + `', '` + XsCount + `', '` + YsAmt + `', '` + MgType + `', '` + IsDecimal + `', '` + Tag + `', '` + BakData3 + `','0') `
+      this.sql = this.sql + ` INSERT INTO tXsPosPD (XsDate ,XsTime ,JzDate, SaleItemNo ,UserCode ,CurrDate ,ClerkCode ,BcCode ,PageNo ,LnNo ,PluCode ,BarCode ,PluName ,PluAbbr ,DepCode ,ClsCode ,SupCode  ,BrandCode  ,Unit  ,Spec ,TaxRate ,SPrice ,XsCount ,YsAmt ,MgType ,IsDecimal ,Tag ,BakData1 ,BakData2 ,BakData3,IsGenDno ) 
+        values ('` + XsDate + `', '` + XsTime + `','` + JzDate + `', '` + SaleItemNo + `', '` + UserCode + `', '` + CurrDate + `',  '` + ClerkCode + `', '` + BcCode + `', '` + PageNo + `', '` + LnNo + `', '` + PluCode + `', '` + BarCode + `', '` + PluName + `', 
+          '` + PluAbbr + `', '` + DepCode + `', '` + ClsCode + `', '` + SupCode + `',  '` + BrandCode + `',  '` + Unit + `',  '` + Spec + `', '` + TaxRate + `', '` + SPrice + `', '` + XsCount + `', '` + YsAmt + `', '` + MgType + `', '` + IsDecimal + `', '` + Tag + `', '` + BakData1 + `', '` + BakData2 + `', '` + BakData3 + `','1') `
       // 数据库 INSERT end
     }
     // 商品循环 end'
