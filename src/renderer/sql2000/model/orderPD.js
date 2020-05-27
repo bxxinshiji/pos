@@ -15,7 +15,7 @@ const order = {
   },
   async CreateOrderGoodsSQL(item) {
     const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 销售日期
-    const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s} {h}:{i}:{s}') // 销售时间
+    const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
     const JzDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d}') // 结账日期
     const SaleItemNo = item.dataValues.orderNo // 销售流水号
     const UserCode = item.dataValues.userId // 收款员编号
@@ -52,7 +52,6 @@ const order = {
     }
     // 商品循环 end'
   },
-
   Create(orders) {
     return new Promise(async(resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
@@ -60,7 +59,6 @@ const order = {
       }
       this.sql = '' // 初始化 防止 sql重复
       await this.CreateOrderSQL(orders)
-
       pool.DB.query(this.sql,
         { type: Sequelize.QueryTypes.INSERT }
       ).then(response => {

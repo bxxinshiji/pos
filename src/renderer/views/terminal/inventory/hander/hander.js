@@ -46,6 +46,7 @@ const hander = {
                 message: '上传盘点订单数据成功'
               })
             }).catch(error => {
+              console.log(error)
               Notification({
                 title: '上传盘点订单数据错误',
                 message: error,
