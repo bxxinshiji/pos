@@ -30,7 +30,7 @@ const hander = {
         })
       })
     } else {
-      self.$confirm('上传会覆盖之前上传未处理数据', '上传盘点数据', {
+      self.$confirm('上传未上报盘点数据', '上传盘点数据', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
