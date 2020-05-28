@@ -55,7 +55,7 @@ const order = {
 
       this.sql = this.sql + ` INSERT INTO tXsPosPD (XsDate ,XsTime ,JzDate, SaleItemNo ,UserCode ,CurrDate ,ClerkCode ,BcCode ,PageNo ,LnNo ,PluCode ,BarCode ,PluName ,PluAbbr ,DepCode ,ClsCode ,SupCode  ,BrandCode  ,Unit  ,Spec ,TaxRate ,SPrice ,XsCount ,YsAmt ,MgType ,IsDecimal ,Tag ,BakData1 ,BakData2 ,BakData3,IsGenDno ) 
         values ('` + XsDate + `', '` + XsTime + `','` + JzDate + `', '` + SaleItemNo + `', '` + UserCode + `', '` + CurrDate + `',  '` + ClerkCode + `', '` + BcCode + `', '` + PageNo + `', '` + LnNo + `', '` + PluCode + `', '` + BarCode + `', '` + PluName + `', 
-          '` + PluAbbr + `', '` + DepCode + `', '` + ClsCode + `', '` + SupCode + `',  '` + BrandCode + `',  '` + Unit + `',  '` + Spec + `', '` + TaxRate + `', '` + SPrice + `', '` + XsCount + `', '` + YsAmt + `', '` + MgType + `', '` + IsDecimal + `', '` + Tag + `', '` + BakData1 + `', '` + BakData2 + `', '` + BakData3 + `','1') `
+          '` + PluAbbr + `', '` + DepCode + `', '` + ClsCode + `', '` + SupCode + `',  '` + BrandCode + `',  '` + Unit + `',  '` + Spec + `', '` + TaxRate + `', '` + SPrice + `', '` + XsCount + `', '` + YsAmt + `', '` + MgType + `', '` + IsDecimal + `', '` + Tag + `', '` + BakData1 + `', '` + BakData2 + `', '` + BakData3 + `','0') `
       // 数据库 INSERT end
     }
     // 商品循环 end'
