@@ -37,6 +37,7 @@ const EAN13 = {
   },
   // 自定义条码解析
   Decode: (code) => {
+    EAN13.custom = false // 默认非称重类类条码
     if (!EAN13.checks(code).check) { // 不合格返回
       return EAN13
     }
