@@ -129,6 +129,58 @@ const print = {
     this.contents = contents
 
     return contents
+  },
+  accounts() { // 结账打印
+    return new Promise((resolve, reject) => {
+      this.accountsHandler()
+      escpos.print(this.contents, { device: 'USB' }).then(response => {
+        resolve(response)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async accountsHandler() { // 订单处理信息
+    var contents = config.accountsTemplate.split('\n')
+    await store.dispatch('terminal/changeOrderInfo')
+    const settings = store.state.settings
+    const orderInfo = store.state.terminal.orderInfo
+    orderInfo.pays.push({ // 收款汇总
+      type: 'cashPay',
+      name: '总金额',
+      amount: orderInfo.total
+    })
+    const pays = [] // 重构收款汇总信息判断是否显示
+    orderInfo.pays.forEach(element => {
+      if (store.state.settings.isTotal || element.type !== 'cashPay') {
+        pays.push({
+          type: element.type,
+          name: element.name,
+          amount: element.amount
+        })
+      }
+    })
+
+    contents = contents.map(element => {
+      var type = 'text'
+      element = element.replace(/{{\s*storeId\s*}}/g, settings.scanStoreName)
+      element = element.replace(/{{\s*userId}\s*}/g, store.state.user.username)
+      element = element.replace(/{{\s*terminal\s*}}/g, settings.terminal)
+      if (/{{\s*pays.*}}/.test(element)) {
+        const paysExp = element.match(/{{\s*pays.*}}/g)[0]
+        element = element.replace(/{{\s*pays.*}}/, paysHander(paysExp, pays))
+      }
+      element = element.replace(/{{\s*count\s*}}/g, orderInfo.count)
+      element = element.replace(/{{\s*returns\s*}}/g, orderInfo.returns)
+      element = element.replace(/{{\s*publish\s*}}/g, orderInfo.publish)
+      element = element.replace(/{{\s*createdAt\s*}}/g, parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'))
+
+      return {
+        type,
+        contents: element
+      }
+    })
+    this.contents = contents
   }
 }
 export default print

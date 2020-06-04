@@ -196,9 +196,16 @@ const actions = {
     commit('SET_CURRENT_GOODS', goods)
   },
   changeOrderInfo({ commit }) {
-    OrderModel.then(m => {
-      m.Info(store.state.user.username).then(info => {
-        commit('SET_ORDER_INFO', info)
+    return new Promise((resolve, reject) => {
+      OrderModel.then(m => {
+        m.Info(store.state.user.username).then(info => {
+          commit('SET_ORDER_INFO', info)
+          resolve(info)
+        }).catch(err => {
+          reject(err)
+        })
+      }).catch(err => {
+        reject(err)
       })
     })
   },

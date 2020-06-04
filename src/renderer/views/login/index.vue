@@ -152,6 +152,7 @@ export default {
     }
   },
   destroyed() {
+    ipcRenderer.removeAllListeners('main-process-home')// 移除事件监听
   }
 }
 </script>

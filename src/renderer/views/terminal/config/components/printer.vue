@@ -31,7 +31,7 @@
             style="width:362px"
             ></el-input>
         </el-form-item>
-        <br>
+
         <el-form-item>
             <el-button type="primary" @click="submitPrint()">测试打印</el-button>
             <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -77,6 +77,19 @@
             <div>getAmount 实收金额</div>
           </el-collapse-item>
         </el-collapse>
+        <el-form-item label="结账模板" prop="data">
+            <el-input 
+            v-model="ruleForm.accountsTemplate"
+            type="textarea"
+            :autosize="{ minRows: 12, maxRows: 18}"
+            style="width:362px"
+            ></el-input>
+        </el-form-item>
+         <el-form-item>
+            <el-button type="primary" @click="submitAccounts()">测试打印</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
     </el-form>
 </template>
 
@@ -168,6 +181,19 @@ export default {
         this.$message({
           type: 'error',
           message: '打印失败: ' + err.message
+        })
+      })
+    },
+    submitAccounts() {
+      print.accounts().then(response => {
+        this.$message({
+          type: 'success',
+          message: '结账打印成功'
+        })
+      }).catch(err => {
+        this.$message({
+          type: 'error',
+          message: '结账打印失败: ' + err.message
         })
       })
     }

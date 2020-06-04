@@ -38,15 +38,17 @@
           退款: <b style="color:#0fb9b1">{{orderInfo.returns}}</b> 笔
         </el-col>
         <el-col :span="8">
-          未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
+          未发布: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
         </el-col>
         
         <el-col :span="2.7" v-if="isTotal">
           总金额: <b style="color:#F56C6C">{{(orderInfo.total / 100).toFixed(2)}}</b> 元
         </el-col>
-        <el-col :span="2.7" v-for="(pay,key) in orderInfo.pays" :key="key">
-          <span v-if="isTotal || pay.type != 'cashPay'">{{pay.name}}: <b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元</span>
-        </el-col>
+        <span v-for="(pay,key) in orderInfo.pays" :key="key" >
+          <el-col :span="2.7" v-if="isTotal || pay.type !== 'cashPay'">
+            <span>{{pay.name}}: <b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元</span>
+          </el-col>
+        </span>
       </el-row>
   </div>
 </template>
@@ -55,6 +57,7 @@
 import { mapGetters, mapState } from 'vuex'
 import { Settle as accountsSettle } from '@/api/accounts'
 import Terminal from '@/sql2000/model/terminal'
+import print from '@/utils/print'
 export default {
   name: 'terminal',
   data() {
@@ -139,8 +142,21 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            if (print.switch()) {
+              print.accounts().then(response => { // 打印结账数据
+                this.$message({
+                  type: 'success',
+                  message: '结账打印成功'
+                })
+              }).catch(err => {
+                this.$message({
+                  type: 'error',
+                  message: '结账打印失败: ' + err.message
+                })
+              })
+            }
             accountsSettle() // 结账
-            Terminal.PosCode = this.$store.state.settings.terminal
+            Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
             if (Terminal.PosCode) {
               Terminal.Get().then(() => {
                 Terminal.PosState = '70'
