@@ -18,7 +18,7 @@ const EndOrder = (order, self) => {
   Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
-    async() => {
+    const handler = async() => {
       if (print.switch()) {
         let cashdraw = false
         order.pays.forEach(pay => { // 钱箱控制
@@ -45,9 +45,11 @@ const EndOrder = (order, self) => {
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
       syncOrder(orderRes) // 异步同步服务器订单
     }
+    handler()
     order.status = true // 订单完结
     self.handleClose() // 关闭页面
   }).catch(error => {
+    console.log(error)
     // 删除出错关联插入订单数据
     // Order.destroy({ where: { orderNo: order.orderNo }})
     MessageBox.confirm('未知错误请重新下单,或加载订单。' + error.message, '创建订单错误', {
