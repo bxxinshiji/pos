@@ -41,11 +41,11 @@
           未上报: <b style="color:#F56C6C">{{orderInfo.publish}}</b> 笔
         </el-col>
         
-        <el-col :span="2.7">
+        <el-col :span="2.7" v-if="isTotal">
           总金额: <b style="color:#F56C6C">{{(orderInfo.total / 100).toFixed(2)}}</b> 元
         </el-col>
         <el-col :span="2.7" v-for="(pay,key) in orderInfo.pays" :key="key">
-          <span>{{pay.name}}: </span><b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元
+          <span v-if="isTotal || pay.type != 'cashPay'">{{pay.name}}: <b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元</span>
         </el-col>
       </el-row>
   </div>
@@ -65,10 +65,10 @@ export default {
         { name: '支付查询', key: '2', label: 'pay' },
         { name: '盘点商品', key: '3', label: 'inventory' },
         { name: '修改密码', key: '4', label: 'password' },
-        { name: '系统配置', key: '5', label: 'config' },
+        // { name: '系统配置', key: '5', label: 'config' },
         { name: '暂离退出', key: '6', label: 'out' },
-        { name: '结账退出', key: '7', label: 'accounts' },
-        { name: '退出软件', key: '8', label: 'quit' }
+        { name: '结账退出', key: '7', label: 'accounts' }
+        // { name: '退出软件', key: '8', label: 'quit' }
         // { name: '关机', key: '9', label: 'off' }
       ]
     }
@@ -82,7 +82,8 @@ export default {
     ...mapState({
       version: state => state.settings.version,
       orderInfo: state => state.terminal.orderInfo,
-      date: state => state.healthy.date
+      date: state => state.healthy.date,
+      isTotal: state => state.settings.isTotal
     })
   },
   created() {
@@ -90,8 +91,25 @@ export default {
   mounted() {
     document.addEventListener('keydown', this.keydown)
     this.$store.dispatch('terminal/changeOrderInfo')
+    this.initKeyboards()
   },
   methods: {
+    initKeyboards() {
+      if (this.username === '0000') {
+        this.keyboards = [
+          { name: '收银台', key: '0', label: 'cashier' },
+          { name: '订单查询', key: '1', label: 'order' },
+          { name: '支付查询', key: '2', label: 'pay' },
+          { name: '盘点商品', key: '3', label: 'inventory' },
+          { name: '修改密码', key: '4', label: 'password' },
+          { name: '系统配置', key: '5', label: 'config' },
+          { name: '暂离退出', key: '6', label: 'out' },
+          { name: '结账退出', key: '7', label: 'accounts' },
+          { name: '退出软件', key: '8', label: 'quit' }
+        // { name: '关机', key: '9', label: 'off' }
+        ]
+      }
+    },
     handler(handler) {
       switch (handler) {
         case 'cashier':

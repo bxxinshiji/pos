@@ -6,8 +6,7 @@ const EAN13 = {
   code: '',
   checksum: '', // 获取校验位
   check: false, // 检测条码是否合格
-
-  custom: false, // 自定义条码:是否是自定义条码
+  custom: false, // 自定义条码:是否是自定义称重条码
   goods: {
     serial: '', // 自定义条码: 货号
     pluCode: '', // 自定义条码: PLU号
@@ -18,8 +17,8 @@ const EAN13 = {
   // Calculate the checksum digit
   // https://en.wikipedia.org/wiki/International_Article_Number_(EAN)#Calculation_of_checksum_digit
   // 获取校验位
-  checksums: (code) => {
-    EAN13.code = code
+  checksums(code) {
+    this.code = code
     const res = code
       .substr(0, 12)
       .split('')
@@ -27,19 +26,31 @@ const EAN13 = {
       .reduce((sum, a, idx) => (
         idx % 2 ? sum + a * 3 : sum + a
       ), 0)
-    EAN13.checksum = (10 - (res % 10)) % 10
-    return EAN13
+    this.checksum = (10 - (res % 10)) % 10
+    return this
   },
   // 检测是否合格
-  checks: (code, c = 12) => {
-    EAN13.check = Number(EAN13.checksums(code).checksum) === Number(code[c])
-    return EAN13
+  checks(code, c = 12) {
+    this.check = Number(this.checksums(code).checksum) === Number(code[c])
+    return this
+  },
+  init() {
+    this.checksum = '' // 获取校验位
+    this.check = false // 检测条码是否合格
+    this.custom = false // 自定义条码:是否是自定义称重条码
+    this.goods = {
+      serial: '', // 自定义条码: 货号
+      pluCode: '', // 自定义条码: PLU号
+      total: 0, // 自定义条码: 总价
+      price: 0, // 自定义条码: 单价
+      number: 0 // // 自定义条码: 重量或数量
+    }
   },
   // 自定义条码解析
-  Decode: (code) => {
-    EAN13.custom = false // 默认非称重类类条码
-    if (!EAN13.checks(code).check) { // 不合格返回
-      return EAN13
+  Decode(code) {
+    this.init() // 初始化数据
+    if (!this.checks(code).check) { // 不合格返回
+      return this
     }
     /**
      * reg
@@ -52,40 +63,40 @@ const EAN13 = {
      * C 校验位
      */
     // 称重类条形码
-    if (code[0] + code[1] === EAN13.reg[0] + EAN13.reg[1]) {
-      EAN13.custom = true
+    if (code[0] + code[1] === this.reg[0] + this.reg[1]) {
+      this.custom = true
       // 初始化商品数据
-      EAN13.goods = {
+      this.goods = {
         pluCode: '', // 自定义条码: PLU号
         total: 0, // 自定义条码: 总价
         price: 0, // 自定义条码: 单价
         serial: '', // 自定义条码: 货号
         number: 0 // // 自定义条码: 重量或数量
       }
-      EAN13.reg.split('')
+      this.reg.split('')
         .map((value, idx) => {
           switch (value) {
             case 'A':
-              EAN13.goods.serial = EAN13.goods.serial + code[idx]
+              this.goods.serial = this.goods.serial + code[idx]
               break
             case 'P':
-              EAN13.goods.pluCode = EAN13.goods.pluCode + code[idx]
+              this.goods.pluCode = this.goods.pluCode + code[idx]
               break
             case 'B':
-              EAN13.goods.total = Number(EAN13.goods.total + code[idx])
+              this.goods.total = Number(this.goods.total + code[idx])
               break
             case 'Q':
-              EAN13.goods.number = Number(EAN13.goods.number + code[idx])
+              this.goods.number = Number(this.goods.number + code[idx])
               break
             case 'U':
-              EAN13.goods.price = Number(EAN13.goods.price + code[idx])
+              this.goods.price = Number(this.goods.price + code[idx])
               break
             default:
               break
           }
         })
     }
-    return EAN13
+    return this
   }
 }
 export { EAN13 }

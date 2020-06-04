@@ -25,6 +25,9 @@
                     <el-form-item label="PLU商品输入" prop="isPlucode">
                       <el-switch v-model="sysForm.isPlucode"></el-switch>
                     </el-form-item>
+                    <el-form-item label="总金额汇总" prop="isTotal">
+                      <el-switch v-model="sysForm.isTotal"></el-switch>
+                    </el-form-item>
                 </span>
                 <br>
                 <el-form-item>
@@ -127,7 +130,8 @@ export default {
         isTerminal: settings.isTerminal,
         terminal: settings.terminal,
         barcodeReg: settings.barcodeReg,
-        isPlucode: settings.isPlucode
+        isPlucode: settings.isPlucode,
+        isTotal: settings.isTotal
       },
       sysRules: {
         api: [

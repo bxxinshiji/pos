@@ -124,7 +124,7 @@ export async function Info(userId) {
     info.publish = response || 0
   })
   await Pays.findAll({
-    attributes: ['name', [sequelize.fn('SUM', sequelize.col('amount')), 'amount']],
+    attributes: ['name', 'type', [sequelize.fn('SUM', sequelize.col('amount')), 'amount']],
     group: 'payId',
     include: [{ // include关键字表示关联查询
       model: Order, // 指定关联的model

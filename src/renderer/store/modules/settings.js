@@ -22,6 +22,7 @@ const state = {
   macAddress: '', // mac 地址
   barcodeReg: '27PPPPPBBBBBC', // 条形码识别规则
   isPlucode: false,
+  isTotal: false, // 总金额汇总显示【默认关闭】
   scanStoreName: '', // 支付商户用户名
   scanPayId: 0, //  扫码支付ID
   orderTitle: '扫码支付商品',
