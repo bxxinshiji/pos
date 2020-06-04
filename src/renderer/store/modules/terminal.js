@@ -172,7 +172,7 @@ const actions = {
     Order.then(o => {
       o.OrderNo(terminal).then(order_no => {
         commit('SET_ORDER_KEY', { key: 'userId', value: store.state.user.username })
-        commit('SET_ORDER_KEY', { key: 'terminal', value: state.settings.terminal })
+        commit('SET_ORDER_KEY', { key: 'terminal', value: store.state.settings.terminal })
         commit('SET_ORDER_KEY', { key: 'orderNo', value: order_no })
       })
     })
