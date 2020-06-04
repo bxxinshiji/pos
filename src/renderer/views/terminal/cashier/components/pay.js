@@ -18,33 +18,35 @@ const EndOrder = (order, self) => {
   Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
-    store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-    if (print.switch()) {
-      let cashdraw = false
-      order.pays.forEach(pay => {
-        if (pay.name === '现金') {
-          cashdraw = true
-        }
-      })
-      print.hander(orderRes, cashdraw).then(response => {
-        AddPrint(orderRes) // 增加打印次数
-        Notification({
-          title: '打印成功',
-          message: '订单:' + order.orderNo,
-          type: 'success'
+    async() => {
+      if (print.switch()) {
+        let cashdraw = false
+        order.pays.forEach(pay => { // 钱箱控制
+          if (pay.name === '现金') {
+            cashdraw = true
+          }
         })
-      }).catch(err => {
-        Notification({
-          title: '打印失败',
-          message: err.message,
-          type: 'error',
-          duration: 15000
+        print.hander(orderRes, cashdraw).then(response => {
+          AddPrint(orderRes) // 增加打印次数
+          Notification({
+            title: '打印成功',
+            message: '订单:' + order.orderNo,
+            type: 'success'
+          })
+        }).catch(err => {
+          Notification({
+            title: '打印失败',
+            message: err.message,
+            type: 'error',
+            duration: 15000
+          })
         })
-      })
+      }
+      store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+      syncOrder(orderRes) // 异步同步服务器订单
     }
     order.status = true // 订单完结
     self.handleClose() // 关闭页面
-    syncOrder(orderRes) // 异步同步服务器订单
   }).catch(error => {
     // 删除出错关联插入订单数据
     // Order.destroy({ where: { orderNo: order.orderNo }})
