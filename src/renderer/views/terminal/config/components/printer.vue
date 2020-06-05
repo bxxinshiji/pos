@@ -90,6 +90,25 @@
             <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
+        <el-collapse  accordion>
+          <el-collapse-item title="默认文本 text " name="1">
+            <div>变量:</div>
+            <div>商户账号 {<span>{</span>storeId}} </div>
+            <div>收款员ID {<span>{</span>userId}} </div>
+            <div>终端ID {<span>{</span>terminal}} </div>
+            <div>订单 {<span>{</span>count}} </div>
+            <div>退款 {<span>{</span>returns}} </div>
+            <div>未发布 {<span>{</span>publish}} </div>
+            <div>时间 {<span>{</span>createdAt}} </div>
+          </el-collapse-item>
+          <el-collapse-item title="支付模块 pays" name="5">
+            <div>例:{<span>{</span>pays(name|12,amount|9)}}</div>
+            <div>pays 使用支付模块</div>
+            <div>|后面数字为最短长度,不足自动空格补齐。其中 name| 后面数字会限定长度</div>
+            <div>name 收款方式名称</div>
+            <div>amount 金额</div>
+          </el-collapse-item>
+        </el-collapse>
     </el-form>
 </template>
 
