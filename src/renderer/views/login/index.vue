@@ -116,8 +116,10 @@ export default {
   },
   methods: {
     usernameFocus() {
-      this.$refs.username.focus()
-      this.$refs.username.select()
+      if (this.$refs.username) {
+        this.$refs.username.focus()
+        this.$refs.username.select()
+      }
     },
     passwordFocus() {
       this.$refs.password.focus()
@@ -150,9 +152,6 @@ export default {
         }
       })
     }
-  },
-  destroyed() {
-    ipcRenderer.removeAllListeners('main-process-home')// 移除事件监听
   }
 }
 </script>

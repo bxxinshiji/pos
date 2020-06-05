@@ -109,16 +109,16 @@ app.on('ready', () => {
  */
 import { globalShortcut } from 'electron'
 app.on('ready', () => {
-  let devTools = false
-  globalShortcut.register('tab', () => {
-    if (devTools) {
-      mainWindow.webContents.openDevTools()
-      devTools = false
-    } else {
-      mainWindow.webContents.closeDevTools()
-      devTools = true
-    }
-  })
+  // let devTools = false
+  // globalShortcut.register('tab', () => {
+  //   if (devTools) {
+  //     mainWindow.webContents.openDevTools()
+  //     devTools = false
+  //   } else {
+  //     mainWindow.webContents.closeDevTools()
+  //     devTools = true
+  //   }
+  // })
   globalShortcut.register('home', () => {
     mainWindow.webContents.send('main-process-home', 'home')
     mainWindow.show()
