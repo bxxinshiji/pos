@@ -64,7 +64,7 @@
               <el-col :span="12" class="good">
                 <span>订单: {{orderInfo.count}} 笔</span>
                 <span>未上报: {{orderInfo.publish}} 笔</span>
-                <span>总金额: {{(orderInfo.total / 100).toFixed(2)}} 元</span>
+                <!-- <span>总金额: {{(orderInfo.total / 100).toFixed(2)}} 元</span> -->
               </el-col>
               <el-col :span="12" class="good">
                 <span>退款: {{orderInfo.returns}} 笔</span>
