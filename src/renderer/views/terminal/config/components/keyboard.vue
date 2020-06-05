@@ -6,9 +6,6 @@
                 <el-form-item label="主页" prop="index">
                     <el-input v-model="ruleForm.index" @focus="handerFocus('index')" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="聚焦输入框" prop="inputFoots">
-                    <el-input v-model="ruleForm.inputFoots" @focus="handerFocus('inputFoots')" readonly></el-input>
-                </el-form-item>
                 <el-form-item label="销售状态" prop="salesStatus">
                     <el-input v-model="ruleForm.salesStatus" @focus="handerFocus('salesStatus')" readonly></el-input>
                 </el-form-item>
@@ -59,9 +56,6 @@ export default {
         ],
         index: [
           { required: true, message: '主页快捷键不允许为空', trigger: 'blur' }
-        ],
-        inputFoots: [
-          { required: true, message: '聚焦快捷键不允许为空', trigger: 'blur' }
         ],
         salesStatus: [
           { required: true, message: '销售状态快捷键不允许为空', trigger: 'blur' }
