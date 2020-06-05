@@ -48,13 +48,11 @@
 </template>
 
 <script>
-import store from '@/store'
-const Keyboard = store.state.settings.Keyboard
 export default {
   name: 'Keyboard',
   data() {
     return {
-      ruleForm: Keyboard,
+      ruleForm: this.$store.state.settings.Keyboard,
       rules: {
         shutDown: [
           { required: true, message: '关机快捷键不允许为空', trigger: 'blur' }
@@ -109,11 +107,11 @@ export default {
   },
   methods: {
     initKeyboard() {
-      if (!Keyboard.currentRowUp) {
-        Keyboard.currentRowUp = 'up'
+      if (!this.ruleForm.currentRowUp) {
+        this.ruleForm.currentRowUp = 'up'
       }
-      if (!Keyboard.currentRowDown) {
-        Keyboard.currentRowDown = 'down'
+      if (!this.ruleForm.currentRowDown) {
+        this.ruleForm.currentRowDown = 'down'
       }
     },
     submitForm(formName) {
@@ -145,6 +143,9 @@ export default {
         }
       }
     }
+  },
+  destroyed() {
+    document.onkeydown = undefined // 注销快捷键
   }
 }
 </script>

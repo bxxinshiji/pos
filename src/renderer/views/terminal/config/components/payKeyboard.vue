@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import store from '@/store'
-const payKeyboard = store.state.settings.payKeyboard
 import sequelize from '@/model/pay'
 const pay = sequelize.models.pay
 
@@ -21,6 +19,7 @@ export default {
   name: 'payKeyboard',
   data() {
     return {
+      payKeyboard: this.$store.state.settings.payKeyboard,
       ruleForm: {
         key: []
       },
@@ -42,7 +41,7 @@ export default {
           this.ruleForm.key.push({
             id: String(item.id ? item.id : '0'),
             name: item.name ? item.name : '',
-            key: payKeyboard[item.id]
+            key: this.payKeyboard[item.id]
           })
         })
       })
@@ -80,6 +79,9 @@ export default {
         }
       }
     }
+  },
+  destroyed() {
+    document.onkeydown = undefined // 注销快捷键
   }
 }
 </script>

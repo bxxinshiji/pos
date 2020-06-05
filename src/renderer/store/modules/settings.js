@@ -36,28 +36,27 @@ const state = {
     currentRowUp: 'up', // 向上选择商品
     currentRowDown: 'down', // 向下选择商品
     shutDown: 'F1', // 关机
-    inputFoots: '', // 聚焦
     cashdraw: 'F2', // 开钱箱
     pushPullOrder: 'F3', // 挂单取单快
     salesStatus: 'F4', // 销售状态(销货退货)
-    deleteGoods: 'F6', // 删除选择商品
-    emptyOrder: 'F7', // 清空商品
-    goodsNumber: 'F8', // 商品数量
-    addGoods: 'F9', // 添加商品可以条形码可以自编码
-    pay: 'F10', // 支付缓存
+    deleteGoods: 'F5', // 删除选择商品
+    emptyOrder: 'F6', // 清空商品
+    goodsNumber: 'F7', // 商品数量
+    addGoods: 'F8', // 添加商品可以条形码可以自编码
+    pay: 'F9', // 支付缓存
     index: 'Home' // 主页
   }, // 键盘快捷键
   payKeyboard: {
-    '0': 'x',
+    '0': 'F10',
     '1': '',
     '2': '',
     '3': '',
     '4': '',
-    '5': 's',
-    '6': 'y',
+    '5': '',
+    '6': 'F11',
     '7': '',
     '8': '',
-    '9': 'v'
+    '9': ''
   }, // 支付快捷键
   // sql2000
   sql2000_host: '',
