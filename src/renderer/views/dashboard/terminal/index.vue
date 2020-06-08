@@ -100,10 +100,10 @@ export default {
     initKeyboards() {
       if (this.username === '0000') {
         this.keyboards = [
-          { name: '收银台', key: '0', label: 'cashier' },
+          // { name: '收银台', key: '0', label: 'cashier' },
           { name: '订单查询', key: '1', label: 'order' },
           { name: '支付查询', key: '2', label: 'pay' },
-          { name: '盘点商品', key: '3', label: 'inventory' },
+          // { name: '盘点商品', key: '3', label: 'inventory' },
           { name: '修改密码', key: '4', label: 'password' },
           { name: '系统配置', key: '5', label: 'config' },
           { name: '暂离退出', key: '6', label: 'out' },

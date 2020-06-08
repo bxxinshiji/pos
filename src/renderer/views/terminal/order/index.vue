@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { List, UpdateOrderNo } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
@@ -136,6 +136,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'username'
+    ]),
     ...mapState({
       terminal: state => state.settings.terminal
     })
@@ -151,6 +154,9 @@ export default {
   },
   methods: {
     getList() {
+      if (this.username === '0000') { // 管理员账号不进行用户筛选
+        this.listQuery.where = {}
+      }
       List(this.listQuery).then(response => {
         this.total = response.count
         this.rows = response.rows
