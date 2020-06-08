@@ -268,8 +268,8 @@ const hander = {
         } else {
           const detail = error.response.data.detail
           this.$notify({
-            type: 'error',
-            title: '查询失败',
+            type: 'warning',
+            title: '查询失败，等待继续查询...',
             message: detail
           })
         }
@@ -289,9 +289,14 @@ const hander = {
   handerAopF2FResponse(response, pay) {
     return new Promise(async(resolve, reject) => {
       utilsPay.hander(response.data, pay.method)
-      if (utilsPay.valid) {
+      console.log(utilsPay)
+
+      if (utilsPay.valid === 1) {
         resolve(utilsPay.valid)
       } else {
+        if (utilsPay.valid === -1) { // 订单关闭更新订单状态
+          StautsUpdatePayOrder(pay.orderNo, -1)
+        }
         if (utilsPay.error.code === 'USERPAYING') {
           this.warning = '等待用户付款中'
           const sleep = 6

@@ -154,7 +154,7 @@ const print = {
     })
     const pays = [] // 重构收款汇总信息判断是否显示
     orderInfo.pays.forEach(element => {
-      if (store.state.settings.isTotal || element.type !== 'cashPay') {
+      if (store.state.settings.isTotal || element.payId > 0) { // 不显示现金
         pays.push({
           type: element.type,
           name: element.name,

@@ -180,6 +180,8 @@ export default {
       }
     },
     handerPrint(currentOrder) {
+      const printer = this.$store.state.settings.printer.switch // 强制打开打印机
+      this.$store.state.settings.printer.switch = true
       if (print.switch()) {
         print.hander(currentOrder).then(response => {
           AddPrint(currentOrder).then(response => { // 增加打印次数
@@ -190,13 +192,20 @@ export default {
             message: '订单:' + this.currentOrder.orderNo,
             type: 'success'
           })
+          this.$store.state.settings.printer.switch = printer
         }).catch(err => {
+          switch (err.message) {
+            case 'Can not find printer':
+              err.message = '没有找到打印机设备'
+              break
+          }
           this.$notify({
             title: '打印失败',
             message: err.message,
             type: 'error',
             duration: 15000
           })
+          this.$store.state.settings.printer.switch = printer
         })
       }
     },

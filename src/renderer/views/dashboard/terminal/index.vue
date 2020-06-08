@@ -45,7 +45,7 @@
           总金额: <b style="color:#F56C6C">{{(orderInfo.total / 100).toFixed(2)}}</b> 元
         </el-col>
         <span v-for="(pay,key) in orderInfo.pays" :key="key" >
-          <el-col :span="2.7" v-if="isTotal || pay.type !== 'cashPay'">
+          <el-col :span="2.7" v-if="isTotal || pay.payId > 0"><!-- //不显示现金 -->
             <span>{{pay.name}}: <b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元</span>
           </el-col>
         </span>
@@ -142,33 +142,39 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            const printer = this.$store.state.settings.printer.switch // 强制打开打印机
+            this.$store.state.settings.printer.switch = true
             if (print.switch()) {
               print.accounts().then(response => { // 打印结账数据
                 this.$message({
                   type: 'success',
                   message: '结账打印成功'
                 })
-              }).catch(err => {
-                this.$message({
-                  type: 'error',
-                  message: '结账打印失败: ' + err.message
+                this.$store.state.settings.printer.switch = printer
+              }).catch(() => {
+                this.$store.state.settings.printer.switch = printer
+              })
+            }
+            accountsSettle().then(response => { // 结账
+              Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
+              if (Terminal.PosCode) {
+                Terminal.Get().then(() => {
+                  Terminal.PosState = '70'
+                  Terminal.UserName = ''
+                  Terminal.UserCode = ''
+                  Terminal.PreJzDate = new Date()
+                  Terminal.Save()
+                }).catch(error => {
+                  console.log(error)
                 })
+              }
+              this.logout()
+            }).catch(error => {
+              this.$message({
+                type: 'error',
+                message: '结账打印失败: ' + error.message
               })
-            }
-            accountsSettle() // 结账
-            Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
-            if (Terminal.PosCode) {
-              Terminal.Get().then(() => {
-                Terminal.PosState = '70'
-                Terminal.UserName = ''
-                Terminal.UserCode = ''
-                Terminal.PreJzDate = new Date()
-                Terminal.Save()
-              }).catch(error => {
-                console.log(error)
-              })
-            }
-            this.logout()
+            })
           }).catch(() => {
             this.$message({
               type: 'info',

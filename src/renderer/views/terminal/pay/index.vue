@@ -42,11 +42,21 @@
         >
           <template slot-scope="scope">
             <el-tag 
+              v-if="Number(scope.row.stauts)===-1"
               size="medium"
-              :type="scope.row.stauts?'success':'warning'"
-            >
-             {{ scope.row.stauts?'支付成功':'待付款' }}
-            </el-tag>
+              type="danger"
+            >订单关闭</el-tag>
+            <el-tag 
+              v-if="Number(scope.row.stauts)===0"
+              size="medium"
+              type="warning"
+            >代付款</el-tag>
+            <el-tag 
+              v-if="Number(scope.row.stauts)===1"
+              size="medium"
+              type="success"
+            >支付成功</el-tag>
+            
           </template>
         </el-table-column>
         <el-table-column
@@ -183,7 +193,7 @@ export default {
       Query({
         orderNo: pay.orderNo,
         storeName: pay.storeName
-      }).then(response => { // 远程支付开始
+      }).then(response => { // 远程支付查询开始
         utilsPay.hander(response.data, pay.method)
         if (utilsPay.valid) {
           currentOrder.stauts = utilsPay.valid
