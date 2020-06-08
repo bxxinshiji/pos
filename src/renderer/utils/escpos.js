@@ -71,21 +71,17 @@ const escpos = {
   },
   cashdraw() { // 开钱箱
     return new Promise((resolve, reject) => {
-      if (config.switch) {
-        try {
-          escpos.init()
-          const devicer = escpos.devicer
-          const printer = escpos.printer
-          devicer.open(function() {
-            printer.cashdraw()
-            printer.cut().close() // 切纸、关闭
-          })
-          resolve()
-        } catch (err) {
-          reject(err)
-        }
-      } else {
-        reject(new Error('打印机未开启'))
+      try {
+        escpos.init()
+        const devicer = escpos.devicer
+        const printer = escpos.printer
+        devicer.open(function() {
+          printer.cashdraw()
+          printer.cut().close() // 切纸、关闭
+        })
+        resolve()
+      } catch (err) {
+        reject(err)
       }
     })
   }

@@ -76,14 +76,11 @@ const print = {
     return config.switch
   },
   contents: [],
-  hander(order, cashdraw = false) {
+  hander(order) {
     return new Promise(async(resolve, reject) => {
       this.contents = []
       await GoodsSnapshot(order.goods) // 合并商品快照
       this.order(order) // 计算订单
-      if (cashdraw) {
-        escpos.cashdraw() // 开钱箱
-      }
       escpos.print(this.contents, { device: 'USB' }).then(response => {
         resolve(response)
       }).catch(err => {

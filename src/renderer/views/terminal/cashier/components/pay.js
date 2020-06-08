@@ -6,6 +6,8 @@ import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
 import { Sleep } from '@/utils'
 import print from '@/utils/print'
+import escpos from '@/utils/escpos'
+
 import utilsPay from '@/utils/pay'
 
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
@@ -19,14 +21,18 @@ const EndOrder = (order, self) => {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
     const handler = async() => {
+      order.pays.forEach(pay => { // 钱箱控制
+        if (pay.name === '现金') {
+          escpos.cashdraw().then(() => {
+            Message({
+              type: 'success',
+              message: '打开钱箱成功'
+            })
+          })
+        }
+      })
       if (print.switch()) {
-        let cashdraw = false
-        order.pays.forEach(pay => { // 钱箱控制
-          if (pay.name === '现金') {
-            cashdraw = true
-          }
-        })
-        print.hander(orderRes, cashdraw).then(response => {
+        print.hander(orderRes).then(response => {
           AddPrint(orderRes) // 增加打印次数
           Notification({
             title: '打印成功',
