@@ -8,6 +8,7 @@
 
 const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
+import { SyncPayOrder } from '@/api/pay'
 export default {
   name: 'App',
   mounted() {
@@ -28,7 +29,10 @@ export default {
       }, 5 * 1000)// 等待 5 秒后第一次同步数据
       setInterval(() => {
         SyncTerminal()
-      }, 30000)
+      }, 30 * 1000)
+      setInterval(() => {
+        SyncPayOrder()
+      }, 60 * 1000) // 1 分钟同步一次代付款订单状态
     },
     async logout() {
       await this.$store.dispatch('user/logout')

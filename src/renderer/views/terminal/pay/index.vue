@@ -93,9 +93,8 @@
 <script>
 import { mapState } from 'vuex'
 import { Query } from '@/api/pay'
-import { StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
+import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List } from '@/model/api/payOrder'
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
 export default {
@@ -195,9 +194,9 @@ export default {
         storeName: pay.storeName
       }).then(response => { // 远程支付查询开始
         utilsPay.hander(response.data, pay.method)
-        if (utilsPay.valid) {
-          currentOrder.stauts = utilsPay.valid
-          StautsUpdatePayOrder(pay.orderNo, utilsPay.valid)
+        currentOrder.stauts = utilsPay.valid
+        StautsUpdatePayOrder(pay.orderNo, utilsPay.valid)
+        if (utilsPay.valid === 1) {
           this.$notify({
             type: 'success',
             title: '支付成功',
@@ -211,11 +210,20 @@ export default {
               message: utilsPay.error.detail
             })
           } else {
-            this.$notify({
-              type: 'error',
-              title: '未支付',
-              message: utilsPay.error.detail
-            })
+            if (utilsPay.valid === 0) {
+              this.$notify({
+                type: 'error',
+                title: '未支付',
+                message: utilsPay.error.detail
+              })
+            }
+            if (utilsPay.valid === -1) {
+              this.$notify({
+                type: 'error',
+                title: '订单关闭',
+                message: utilsPay.error.detail
+              })
+            }
           }
         }
       }).catch(error => {
