@@ -213,34 +213,37 @@ const actions = {
     commit('SYNC_TERMINAL', value)
   },
   registerGlobalShortcut() {
-    // const KeyboardIndex = store.state.settings.Keyboard.index
-    // Mousetrap.bindGlobal(KeyboardIndex.toLowerCase(), () => { // 主页 快捷键
-    //   router.push({ path: '/' })
-    // })
     const shutDown = store.state.settings.Keyboard.shutDown
     Mousetrap.bindGlobal(shutDown.toLowerCase(), () => { // 主页 快捷键
-      MessageBox.confirm('关闭计算机 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async() => {
-        // 先退出在关机
-        await store.dispatch('user/logout')
-        router.push(`/login`)
-        switch (process.platform) {
-          case 'win32':
-            require('child_process').exec('shutdown /s /t 0')
-            break
-          default:
-            require('child_process').exec('sudo shutdown -h now')
-            break
-        }
-      }).catch(() => {
+      if (store.state.terminal.isPay) { // 支付中禁止操作
         Message({
-          type: 'info',
-          message: '已取消关机'
+          type: 'warning',
+          message: '支付锁定中,请勿进行其他操作!'
         })
-      })
+      } else {
+        MessageBox.confirm('关闭计算机 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          // 先退出在关机
+          await store.dispatch('user/logout')
+          router.push(`/login`)
+          switch (process.platform) {
+            case 'win32':
+              require('child_process').exec('shutdown /s /t 0')
+              break
+            default:
+              require('child_process').exec('sudo shutdown -h now')
+              break
+          }
+        }).catch(() => {
+          Message({
+            type: 'info',
+            message: '已取消关机'
+          })
+        })
+      }
     })
   },
   unregisterGlobalShortcut() {

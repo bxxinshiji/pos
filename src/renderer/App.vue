@@ -19,7 +19,14 @@ export default {
     this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: false }) // 关闭头部
 
     ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
-      this.$router.push({ path: '/' })
+      if (this.$store.state.terminal.isPay) { // 支付中禁止操作
+        this.$message({
+          type: 'warning',
+          message: '支付锁定中,请勿进行其他操作!'
+        })
+      } else {
+        this.$router.push({ path: '/' })
+      }
     })
   },
   methods: {

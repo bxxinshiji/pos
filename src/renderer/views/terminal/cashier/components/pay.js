@@ -93,10 +93,8 @@ const hander = {
             console.log('remoteCardPay')
             break
           case 'scanPay':
-            this.scand = true
             await this.payAopF2F(pay).then(response => {
               pay.status = response || false
-              this.scand = false
               this.lock = false // 解除支付锁定
               Notification({
                 title: '支付成功',
@@ -105,7 +103,6 @@ const hander = {
               })
               resolve(pay)
             }).catch(error => {
-              this.scand = false
               this.lock = false // 解除支付锁定
               reject(error)
             })
@@ -157,10 +154,12 @@ const hander = {
         })
       } else {
         this.$store.dispatch('terminal/changePayAmount', payAmount) // 无法付款时恢复 付款金额
-        this.error = '账户余额为零'
+        this.status = 'error'
+        this.payingInfo = '账户余额为零'
       }
     }).catch(error => {
-      this.error = error
+      this.status = 'error'
+      this.payingInfo = error
     })
   },
   handerPays(pays) { // 处理未支付订单
@@ -229,7 +228,7 @@ const hander = {
   },
   handerAopF2F(pay) {
     return new Promise(async(resolve, reject) => {
-      this.warning = '下单中'
+      this.payingInfo = '扫码支付下单中'
       await AopF2F(pay).then(async response => { // 远程支付开始
         await this.handerAopF2FQuery(pay).then(response => {
           resolve(response)
@@ -237,11 +236,11 @@ const hander = {
           reject(error)
         })
       }).catch(async error => {
-        if (error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1) {
-          this.warning = '服务器超时,等待重试。'
+        if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1) && this.status === 'paying') { // 下单超时并且在付款状态中、非付款状态自动进入查询
+          this.payingInfo = '服务器超时,等待重试。'
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
-          this.warning = '重新下单中'
+          this.payingInfo = '重新下单中'
           if (this.isPay) { // 支付页面关闭后不再下单
             await this.handerAopF2F(pay).then(response => {
               resolve(response)
@@ -261,7 +260,7 @@ const hander = {
   },
   handerAopF2FQuery(pay) {
     return new Promise(async(resolve, reject) => {
-      this.warning = '支付查询中'
+      this.payingInfo = '扫码支付查询中'
       await Query(pay).then(async response => {
         await this.handerAopF2FResponse(response, pay).then(res => {
           resolve(res)
@@ -269,25 +268,24 @@ const hander = {
           reject(err)
         })
       }).catch(async error => {
+        if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
+          this.status = 'off'
+          reject(error)
+        }
         if (error.message.indexOf('timeout of') !== -1) {
-          this.warning = '查询超时,等待中。'
-        } else {
-          const detail = error.response.data.detail
-          this.$notify({
-            type: 'warning',
-            title: '查询失败，等待继续查询...',
-            message: detail
-          })
+          this.payingInfo = '查询超时,等待中。'
         }
         const sleep = 6
         await Sleep((sleep - 1) * 1000)// 等待
-        this.warning = '支付查询中'
+        this.payingInfo = '扫码支付查询中'
         if (this.isPay) { // 支付页面关闭后不再查询
           await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
           })
+        } else {
+          reject(error)
         }
       })
     })
@@ -301,11 +299,15 @@ const hander = {
         if (utilsPay.valid === -1) { // 订单关闭更新订单状态
           StautsUpdatePayOrder(pay.orderNo, -1)
         }
+        if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
+          this.status = 'off'
+          reject(new Error('关闭支付'))
+        }
         if (utilsPay.error.code === 'USERPAYING') {
-          this.warning = '等待用户付款中'
+          this.payingInfo = '等待用户付款中'
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
-          this.warning = '支付查询中'
+          this.payingInfo = '扫码支付查询中'
           await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
@@ -314,7 +316,7 @@ const hander = {
         } else {
           this.$notify({
             type: 'error',
-            title: '未支付',
+            title: '未知错误',
             message: utilsPay.error.detail
           })
           reject(utilsPay.error.detail)
@@ -324,17 +326,15 @@ const hander = {
   },
   scanPay(code) {
     if (!this.scanStoreName) {
-      this.error = '请设置付款商家'
+      this.status = 'error'
+      this.payingInfo = '请设置付款商家'
       return
     }
     if (!this.scanPayId) {
-      this.error = '扫码付款方式未设置'
+      this.status = 'error'
+      this.payingInfo = '扫码付款方式未设置'
       return
     }
-    // if (this.payAmount < this.order.waitPay) {
-    //   this.error = '扫码付款必须大于待付款金额!【多笔付款请最后支付】'
-    //   return
-    // }
     this.handerPay(this.scanPayId, code)
   },
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
@@ -371,7 +371,8 @@ const hander = {
               status: false // 现金支付时默认支付状态成功
             }
           } else {
-            this.error = '退货只允许现金形式'
+            this.status = 'error'
+            this.payingInfo = '退货只允许现金形式'
             return
           }
         }
@@ -380,7 +381,8 @@ const hander = {
           this.$store.dispatch('terminal/handerOrder') // 更新订单信息
           this.handerOrder() // 处理订单支付
         }).catch(error => {
-          this.error = error
+          this.status = 'error'
+          this.payingInfo = error
           return
         })
       }

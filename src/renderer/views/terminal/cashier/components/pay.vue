@@ -6,8 +6,18 @@
         :closable="false"
       >
         <div class="info">
-          <span v-if="scand" class="warning"><i class="fa fa-spinner fa-pulse fa-fw"></i>  {{warning}}</span>
-          <span v-if="error" class="error"><i class="fa fa-times-circle fa-fw"></i> {{error}}</span>
+          <span :class="status">
+            <i v-if="status==='wait'" class="fa fa-jpy"></i> 
+            <i v-if="status==='waitClose'" class="fa fa-refresh fa-pulse"></i> 
+            <i v-if="status==='off'" class="fa fa-power-off"></i> 
+            {{info}}
+          </span>
+          <br>
+          <span :class="status">
+            <i v-if="status==='paying'" class="fa fa-spinner fa-pulse"></i> 
+            <i v-if="status==='error'" class="fa fa-times-circle"></i> 
+            {{payingInfo}}
+          </span>
           <div class="payAmount"> 
             <span class="id"> 收款金额: </span>
             <span>{{ (payAmount / 100).toFixed(2) }} </span>
@@ -40,10 +50,11 @@ export default {
   data() {
     return {
       pays: [],
-      error: '', // 错误信息
-      scand: false, // 扫码付款是否开始
-      warning: '付款中', // 等待信息
-      lock: false // 支付锁
+      lock: false, // 支付锁[扫码、会员卡会锁定]
+      info: '等待付款操作',
+      payingInfo: '',
+      status: 'wait' // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
+      // 等待关闭时间[off 不进行关闭, wait、准备关闭中查询完成或者错误将进入关闭倒计时, start 开始关闭]
     }
   },
   computed: {
@@ -57,6 +68,16 @@ export default {
       terminal: state => state.settings.terminal,
       username: state => state.user.username
     })
+  },
+  watch: {
+    status: {
+      handler: function(val, oldVal) {
+        if (this.status === 'off') {
+          this.handleClose()
+        }
+      },
+      deep: true
+    }
   },
   created() {
     this.initPay()
@@ -84,9 +105,8 @@ export default {
       })
     },
     initInfo() {
-      this.error = '' // 错误信息
-      this.scand = false // 扫码付款是否开始
-      this.warning = '付款中' // 等待信息
+      this.status = 'paying'
+      this.info = '付款中'
     },
     registerMousetrap() { // 注册快捷键
       Object.keys(payKeyboard).map(key => {
@@ -131,7 +151,12 @@ export default {
     },
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
-        this.handleClose()
+        if (this.lock) {
+          this.status = 'waitClose'
+          this.info = '支付关闭中...'
+        } else {
+          this.handleClose()
+        }
       }
     }
   },
@@ -184,7 +209,19 @@ export default {
 .alipay{
   color: #409EFF;
 }
+.wait{
+  color: #409EFF;
+}
+.paying{
+  color: #E6A23C;
+}
 .error{
   color: #F56C6C;
+}
+.waitClose{
+  color: #909399;
+}
+.off{
+  color: #303133;
 }
 </style>
