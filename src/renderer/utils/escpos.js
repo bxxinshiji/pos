@@ -35,9 +35,9 @@ const escpos = {
     escpos.devicer = devicer
     escpos.printer = new init.Printer(devicer, options) // 初始化打印机
   },
-  print(data) {
+  print(data, valid = false) {
     return new Promise((resolve, reject) => {
-      if (config.switch) {
+      if (config.switch || valid) {
         try {
           escpos.init()
           const devicer = escpos.devicer

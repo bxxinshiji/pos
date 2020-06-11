@@ -152,7 +152,7 @@ export default {
     },
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
-        if (this.lock) {
+        if (this.lock) { // 付款锁定中关闭
           const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
           setTimeout(() => {
             this.status = 'waitClose'

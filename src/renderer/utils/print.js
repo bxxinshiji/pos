@@ -76,12 +76,12 @@ const print = {
     return config.switch
   },
   contents: [],
-  hander(order) {
+  hander(order, valid = false) {
     return new Promise(async(resolve, reject) => {
       this.contents = []
       await GoodsSnapshot(order.goods) // 合并商品快照
       this.order(order) // 计算订单
-      escpos.print(this.contents, { device: 'USB' }).then(response => {
+      escpos.print(this.contents, valid).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)
@@ -128,11 +128,11 @@ const print = {
 
     return contents
   },
-  accounts() { // 结账打印
+  accounts(valid = false) { // 结账打印
     return new Promise(async(resolve, reject) => {
       this.contents = []
       await this.accountsHandler()
-      escpos.print(this.contents, { device: 'USB' }).then(response => {
+      escpos.print(this.contents, valid).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)

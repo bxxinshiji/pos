@@ -142,19 +142,14 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            const printer = this.$store.state.settings.printer.switch // 强制打开打印机
-            this.$store.state.settings.printer.switch = true
-            if (print.switch()) {
-              print.accounts().then(response => { // 打印结账数据
-                this.$message({
-                  type: 'success',
-                  message: '结账打印成功'
-                })
-                this.$store.state.settings.printer.switch = printer
-              }).catch(() => {
-                this.$store.state.settings.printer.switch = printer
+            print.accounts(true).then(response => { // 打印结账数据
+              this.$message({
+                type: 'success',
+                message: '结账打印成功'
               })
-            }
+            }).catch((error) => {
+              console.log(error)
+            })
             accountsSettle().then(response => { // 结账
               Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
               if (Terminal.PosCode) {
