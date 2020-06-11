@@ -10,6 +10,9 @@ const hander = {
     this.valid = data.valid ? 1 : 0
     this.content = data.content ? JSON.parse(data.content) : ''
     this.error = data.error
+    if (this.error.code === 'Query.GetOrder') {
+      this.valid = -1 // 订单状态关闭
+    }
     if (this.content) {
       switch (method) {
         case 'alipay':
