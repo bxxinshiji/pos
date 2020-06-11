@@ -53,8 +53,8 @@ export default {
       lock: false, // 支付锁[扫码、会员卡会锁定]
       info: '等待付款操作',
       payingInfo: '',
-      status: 'wait' // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
-      // 等待关闭时间[off 不进行关闭, wait、准备关闭中查询完成或者错误将进入关闭倒计时, start 开始关闭]
+      status: 'wait', // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
+      startTime: new Date() // 支付开始时间
     }
   },
   computed: {
@@ -107,6 +107,7 @@ export default {
     initInfo() {
       this.status = 'paying'
       this.info = '付款中'
+      this.startTime = new Date()
     },
     registerMousetrap() { // 注册快捷键
       Object.keys(payKeyboard).map(key => {
@@ -152,8 +153,12 @@ export default {
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
         if (this.lock) {
-          this.status = 'waitClose'
-          this.info = '支付关闭中...'
+          const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
+          setTimeout(() => {
+            this.status = 'waitClose'
+            this.info = '关闭支付中...'
+          }, down)// 等待 5 秒后第一次同步数据
+          this.info = '开始关闭支付请稍等...'
         } else {
           this.handleClose()
         }
