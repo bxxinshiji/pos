@@ -74,15 +74,22 @@ const hander = {
   },
   // 删除指定商品
   deleteGoods(self) {
-    self.$refs.goods.deleteGoods()
-    self.$message({
-      type: 'success',
-      message: '删除指定商品成功'
-    })
+    if (self.order.pays.length === 0) {
+      self.$refs.goods.deleteGoods()
+      self.$message({
+        type: 'success',
+        message: '删除指定商品成功'
+      })
+    } else {
+      self.$message({
+        type: 'warning',
+        message: '付款中禁止删除商品'
+      })
+    }
   },
   // 清空订单
   emptyOrder(self) {
-    self.$confirm('此操作将情空全部商品, 是否继续?', '提示', {
+    self.$confirm('此操作将情空全部商品和付款, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'

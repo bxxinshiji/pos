@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { parseTime } from '@/utils'
 const ping = require('ping')
 /**
  * navigator 设备情况
@@ -23,7 +24,23 @@ export async function isInternet() {
   })
   return status
 }
-
+export async function syncDateTime(dateTime) { // 同步系统时间
+  if (Math.abs(dateTime - new Date()) > 5 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
+    switch (process.platform) {
+      case 'win32':
+        require('child_process').exec('date ' + parseTime(dateTime, '{y}-{m}-{d}'))
+        require('child_process').exec('time ' + parseTime(dateTime, '{h}:{i}:{s}'))
+        break
+      // case 'darwin':
+        // 修改是需要密码所以无法修改系统时间
+        // require('child_process').exec('sudo date ' + parseTime(dateTime, '{m}{d}{h}{i}{y}'))
+        // break
+      default:
+        console.log('暂时只支持win系统同步时间')
+        break
+    }
+  }
+}
 /**
  * isServer 服务器状态
  * @returns {Promise}
@@ -36,8 +53,10 @@ export async function isServer(url = null) {
     method: 'post',
     data: {
     }
-  }).then(() => {
-    status = true
+  }).then(res => {
+    status = res.data.valid
+    const dateTime = new Date(res.data.time)
+    syncDateTime(dateTime)
   }).catch(() => {
     status = false
   })
