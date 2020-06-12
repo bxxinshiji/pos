@@ -293,31 +293,34 @@ const hander = {
   handerAopF2FResponse(response, pay) {
     return new Promise(async(resolve, reject) => {
       utilsPay.hander(response.data, pay.method)
-      if (utilsPay.valid === 1) {
-        resolve(utilsPay.valid)
-      } else {
-        if (utilsPay.valid === -1) { // 订单关闭更新订单状态
+      const sleep = 6
+      switch (utilsPay.valid) {
+        case -1:// 订单关闭更新订单状态
           StautsUpdatePayOrder(pay.orderNo, -1)
-        }
-        if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
-          this.status = 'off'
-          reject(new Error('关闭支付'))
-        }
-        if (utilsPay.valid === 0) { // 代付款订单再次查询
+          reject(new Error('订单已关闭'))
+          break
+        case 0:
+          if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
+            this.status = 'off'
+          }
           if (utilsPay.error.code === 'USERPAYING') {
             this.payingInfo = '等待用户付款中'
           } else {
             this.payingInfo = utilsPay.error.detail
           }
-          const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
           this.payingInfo = '扫码支付查询中'
-          await this.handerAopF2FQuery(pay).then(response => {
-            resolve(response)
-          }).catch(error => {
-            reject(error)
-          })
-        }
+          if (this.isPay) { // 支付页面关闭后不再查询
+            await this.handerAopF2FQuery(pay).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }
+          break
+        case 1:
+          resolve(utilsPay.valid)
+          break
       }
     })
   },
