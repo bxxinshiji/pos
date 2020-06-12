@@ -44,7 +44,10 @@ export function parseTime(time, cFormat) {
     let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
     if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
-    if (result.length > 0 && value < 10) {
+    if (result.length > 0 && value < 10) { // 不足两位自动补齐两位
+      value = '0' + value
+    }
+    if (result === '{n}' && String(value).length === 2) { // 毫秒自动补齐三位
       value = '0' + value
     }
     return value || 0

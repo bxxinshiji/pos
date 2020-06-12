@@ -11,7 +11,13 @@
         <el-table-column
           label="单号"
           prop="orderNo"
-          min-width="115"
+          width="175"
+        >
+        </el-table-column>
+        <el-table-column
+          label="用户"
+          prop="operatorId"
+          width="50"
         >
         </el-table-column>
         <el-table-column

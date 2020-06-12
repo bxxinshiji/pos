@@ -303,8 +303,12 @@ const hander = {
           this.status = 'off'
           reject(new Error('关闭支付'))
         }
-        if (utilsPay.error.code === 'USERPAYING') {
-          this.payingInfo = '等待用户付款中'
+        if (utilsPay.valid === 0) { // 代付款订单再次查询
+          if (utilsPay.error.code === 'USERPAYING') {
+            this.payingInfo = '等待用户付款中'
+          } else {
+            this.payingInfo = utilsPay.error.detail
+          }
           const sleep = 6
           await Sleep((sleep - 1) * 1000)// 等待
           this.payingInfo = '扫码支付查询中'
@@ -313,13 +317,6 @@ const hander = {
           }).catch(error => {
             reject(error)
           })
-        } else {
-          this.$notify({
-            type: 'error',
-            title: '未知错误',
-            message: utilsPay.error.detail
-          })
-          reject(utilsPay.error.detail)
         }
       }
     })
