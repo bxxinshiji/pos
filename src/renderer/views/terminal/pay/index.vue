@@ -199,38 +199,34 @@ export default {
         orderNo: pay.orderNo,
         storeName: pay.storeName
       }).then(response => { // 远程支付查询开始
-        utilsPay.hander(response.data, pay.method)
-        currentOrder.stauts = utilsPay.valid
-        StautsUpdatePayOrder(pay.orderNo, utilsPay.valid)
-        if (utilsPay.valid === 1) {
-          this.$notify({
-            type: 'success',
-            title: '支付成功',
-            message: '付款成功'
-          })
-        } else {
-          if (utilsPay.error.code === 'USERPAYING') {
+        const data = response.data
+        switch (data.order.stauts) {
+          case 'CLOSED':
+            currentOrder.stauts = -1
+            this.$notify({
+              type: 'error',
+              title: '订单已关闭',
+              message: '订单已关闭或已退款'
+            })
+            StautsUpdatePayOrder(pay.orderNo, -1)
+            break
+          case 'USERPAYING':
+            currentOrder.stauts = 0
             this.$notify({
               type: 'warning',
               title: '等待用户付款中',
-              message: utilsPay.error.detail
+              message: utilsPay.error.detail || '等待用户付款中'
             })
-          } else {
-            if (utilsPay.valid === 0) {
-              this.$notify({
-                type: 'error',
-                title: '未支付',
-                message: utilsPay.error.detail
-              })
-            }
-            if (utilsPay.valid === -1) {
-              this.$notify({
-                type: 'error',
-                title: '订单关闭',
-                message: utilsPay.error.detail
-              })
-            }
-          }
+            break
+          case 'SUCCESS':
+            currentOrder.stauts = 1
+            this.$notify({
+              type: 'success',
+              title: '支付成功',
+              message: '付款成功'
+            })
+            StautsUpdatePayOrder(pay.orderNo, 1)
+            break
         }
       }).catch(error => {
         const detail = error.response.data.detail

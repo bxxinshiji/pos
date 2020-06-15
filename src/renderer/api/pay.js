@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
-import utilsPay from '@/utils/pay'
+
 export function AopF2F(data) {
   return new Promise((resolve, reject) => {
     request({
@@ -54,8 +54,17 @@ export function SyncPayOrder() { // 同步所有代付款订单状态
           orderNo: pay.orderNo,
           storeName: pay.storeName
         }).then(response => { // 远程支付查询开始
-          utilsPay.hander(response.data, pay.method)
-          StautsUpdatePayOrder(pay.orderNo, utilsPay.valid)
+          const data = response.data
+          switch (data.order.stauts) {
+            case 'CLOSED':
+              StautsUpdatePayOrder(pay.orderNo, -1)
+              break
+            case 'USERPAYING':
+              break
+            case 'SUCCESS':
+              StautsUpdatePayOrder(pay.orderNo, 1)
+              break
+          }
         })
       })
     }

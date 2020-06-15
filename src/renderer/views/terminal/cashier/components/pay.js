@@ -8,8 +8,6 @@ import { Sleep } from '@/utils'
 import print from '@/utils/print'
 import escpos from '@/utils/escpos'
 
-import utilsPay from '@/utils/pay'
-
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
 import orderSequelize from '@/model/order'
@@ -147,17 +145,20 @@ const hander = {
           }).then(() => {
           this.handerPay(res.id, res.cardNo)
         }).catch(() => {
+          this.lock = false // 接触锁定
           this.$message({
             type: 'warning',
             message: '会员卡支付已取消'
           })
         })
       } else {
+        this.lock = false // 接触锁定
         this.$store.dispatch('terminal/changePayAmount', payAmount) // 无法付款时恢复 付款金额
         this.status = 'error'
         this.payingInfo = '账户余额为零'
       }
     }).catch(error => {
+      this.lock = false // 接触锁定
       this.status = 'error'
       this.payingInfo = error
     })
@@ -292,22 +293,18 @@ const hander = {
   },
   handerAopF2FResponse(response, pay) {
     return new Promise(async(resolve, reject) => {
-      utilsPay.hander(response.data, pay.method)
       const sleep = 6
-      switch (utilsPay.valid) {
-        case -1:// 订单关闭更新订单状态
+      const data = response.data
+      switch (data.order.stauts) {
+        case 'CLOSED':
           StautsUpdatePayOrder(pay.orderNo, -1)
-          reject(new Error('订单已关闭'))
+          reject('订单已关闭')
           break
-        case 0:
+        case 'USERPAYING':
           if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
             this.status = 'off'
           }
-          if (utilsPay.error.code === 'USERPAYING') {
-            this.payingInfo = '等待用户付款中'
-          } else {
-            this.payingInfo = utilsPay.error.detail
-          }
+          this.payingInfo = '等待用户付款中'
           await Sleep((sleep - 1) * 1000)// 等待
           this.payingInfo = '扫码支付查询中'
           if (this.isPay) { // 支付页面关闭后不再查询
@@ -318,8 +315,8 @@ const hander = {
             })
           }
           break
-        case 1:
-          resolve(utilsPay.valid)
+        case 'SUCCESS':
+          resolve(true)
           break
       }
     })
