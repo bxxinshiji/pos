@@ -238,7 +238,7 @@ export default {
       })
     },
     handerLoadOrder(currentOrder) {
-      if (currentOrder.stauts) {
+      if (currentOrder.stauts === 1) {
         const pay = currentOrder.pay
         const order = currentOrder.order
         order.pays.push({
