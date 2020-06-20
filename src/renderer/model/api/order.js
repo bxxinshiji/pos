@@ -5,6 +5,9 @@ const Order = sequelize.models.order
 const Goods = sequelize.models.good
 const Pays = sequelize.models.pay
 const Snapshots = sequelize.models.snapshot
+
+import paySequelize from '@/model/payOrder'
+const PayOrder = paySequelize.models.payOrder
 import { pagination } from '@/utils/index'
 
 export function List(listQuery) {
@@ -136,6 +139,15 @@ export async function Info(userId) {
     }]
   }).then(response => {
     info.pays = response
+  })
+  await PayOrder.sum('totalAmount', { // 查询支付成功的实际金额
+    where: {
+      operatorId: userId,
+      stauts: 1,
+      createdAt: createdAt
+    }
+  }).then(response => {
+    info.payTotal = response || 0
   })
   return info
 }

@@ -49,6 +49,9 @@
             <span>{{pay.name}}: <b style="color:#409EFF">{{(pay.amount / 100).toFixed(2) }}</b> 元</span>
           </el-col>
         </span>
+        <el-col :span="24">
+            <span>实际扫码金额 <b style="color:#F56C6C">{{(orderInfo.payTotal / 100).toFixed(2) }}</b> 元</span>
+        </el-col>
       </el-row>
   </div>
 </template>

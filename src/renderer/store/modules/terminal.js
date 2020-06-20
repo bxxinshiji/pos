@@ -33,7 +33,8 @@ const state = {
     returns: 0, // 退款
     total: 0, // 总金额
     publish: 0, // 未上报
-    pays: []
+    pays: [],
+    payTotal: 0 // 实际扫码支付总金额
   },
   syncTerminal: true // 是否允许同步终端
 }
