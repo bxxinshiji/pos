@@ -23,9 +23,16 @@ export function findCreate(order, pay) {
   return new Promise((resolve, reject) => {
     PayOrder.create({ // 不存在创建订单
       orderNo: pay.orderNo,
-      pay: pay,
-      order: order,
-      stauts: false
+      method: pay.method,
+      authCode: pay.authCode,
+      totalAmount: pay.totalAmount,
+      operatorId: pay.operatorId,
+      terminalId: pay.terminalId,
+      storeName: pay.storeName,
+      storeId: pay.storeId,
+      title: pay.title,
+      stauts: false,
+      order: order
     }).then(response => {
       resolve(response)
     }).catch(error => {

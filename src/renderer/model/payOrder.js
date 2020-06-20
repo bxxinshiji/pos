@@ -17,16 +17,26 @@ sequelize.authenticate().then(() => {
 // 订单
 sequelize.define('payOrder', {
   orderNo: { type: Sequelize.STRING, unique: true }, // 订单编号
-  pay: Sequelize.JSON, // 支付数据
-  order: Sequelize.JSON, // 订单数据
+  method: Sequelize.STRING, // 支付方式 alipay wechat
+  authCode: Sequelize.STRING, // 付款码
+  totalAmount: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  }, // 付款金额 一般指实付金额找零之前 比如 付款100 找零20  这里字段记录100
+  operatorId: Sequelize.STRING, // 终端编号
+  terminalId: Sequelize.STRING, // 用户ID
+  storeName: Sequelize.STRING, // 收款商户账号
+  storeId: Sequelize.STRING, // 收款商户账号UUID
+  title: Sequelize.STRING, // 订单名称
   stauts: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
-  }
+  },
+  order: Sequelize.JSON // 订单数据
 }, {})
 
 // 初始化数据模型
 sequelize.sync({
-  // force: true
+  alter: true
 })
 export default sequelize

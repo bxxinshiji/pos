@@ -26,7 +26,7 @@
           min-width="80"
         >
           <template slot-scope="scope">
-            {{ (scope.row.pay.totalAmount / 100).toFixed(2) }}
+            {{ (scope.row.totalAmount / 100).toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -36,8 +36,8 @@
         >
           <template slot-scope="scope">
             <span slot="label">
-              <span v-if="scope.row.pay.method=='wechat'"><el-tag :class="scope.row.pay.method"><svg-icon :icon-class="scope.row.pay.method" :class="scope.row.pay.method"/> 微信</el-tag></span>
-              <span v-if="scope.row.pay.method=='alipay'"><el-tag :class="scope.row.pay.method"><svg-icon :icon-class="scope.row.pay.method" :class="scope.row.pay.method"/> 支付宝</el-tag></span>
+              <span v-if="scope.row.method=='wechat'"><el-tag :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 微信</el-tag></span>
+              <span v-if="scope.row.method=='alipay'"><el-tag :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 支付宝</el-tag></span>
             </span>
           </template>
         </el-table-column>
@@ -194,10 +194,9 @@ export default {
       })
     },
     handerPayQuery(currentOrder) {
-      const pay = currentOrder.pay
       Query({
-        orderNo: pay.orderNo,
-        storeName: pay.storeName
+        orderNo: currentOrder.orderNo,
+        storeName: currentOrder.storeName
       }).then(response => { // 远程支付查询开始
         const data = response.data
         switch (data.order.stauts) {
@@ -208,7 +207,7 @@ export default {
               title: '订单已关闭',
               message: '订单已关闭或已退款'
             })
-            StautsUpdatePayOrder(pay.orderNo, -1)
+            StautsUpdatePayOrder(currentOrder.orderNo, -1)
             break
           case 'USERPAYING':
             currentOrder.stauts = 0
@@ -225,7 +224,7 @@ export default {
               title: '支付成功',
               message: '付款成功'
             })
-            StautsUpdatePayOrder(pay.orderNo, 1)
+            StautsUpdatePayOrder(currentOrder.orderNo, 1)
             break
         }
       }).catch(error => {
@@ -238,15 +237,14 @@ export default {
       })
     },
     handerLoadOrder(currentOrder) {
-      if (currentOrder.stauts === 1) {
-        const pay = currentOrder.pay
+      if (Number(currentOrder.stauts) === 1) {
         const order = currentOrder.order
         order.pays.push({
           payId: this.scanPayInfo.id, // 支付方式
           name: this.scanPayInfo.name, // 支付方式名称
           type: this.scanPayInfo.type, // 支付方式
-          code: pay.authCode, // 会员卡
-          amount: pay.totalAmount, // 支付金额
+          code: currentOrder.authCode, // 会员卡
+          amount: currentOrder.totalAmount, // 支付金额
           getAmount: '', // 收到的钱[现金可以多少其他不允许]
           orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
           status: currentOrder.stauts // 现金支付时默认支付状态成功

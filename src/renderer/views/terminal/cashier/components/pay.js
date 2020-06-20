@@ -211,9 +211,19 @@ const hander = {
           operatorId: this.username,
           terminalId: this.terminal
         }).then(async res => {
-          await this.handerAopF2F(res.pay).then(response => {
+          const pay = {
+            orderNo: res.orderNo,
+            method: res.method,
+            authCode: res.authCode,
+            totalAmount: res.totalAmount,
+            operatorId: res.operatorId,
+            storeName: res.storeName,
+            storeId: res.storeId,
+            title: res.title
+          }
+          await this.handerAopF2F(pay).then(response => {
             if (response) {
-              StautsUpdatePayOrder(res.pay.orderNo, response)
+              StautsUpdatePayOrder(pay.orderNo, response)
             }
             resolve(response)
           }).catch(error => {
@@ -231,6 +241,7 @@ const hander = {
     return new Promise(async(resolve, reject) => {
       this.payingInfo = '扫码支付下单中'
       await AopF2F(pay).then(async response => { // 远程支付开始
+        this.payingInfo = '下单成功查询中'
         await this.handerAopF2FQuery(pay).then(response => {
           resolve(response)
         }).catch(error => {
@@ -250,6 +261,7 @@ const hander = {
             })
           }
         } else {
+          this.payingInfo = '下单错误支付查询中'
           await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
@@ -261,7 +273,6 @@ const hander = {
   },
   handerAopF2FQuery(pay) {
     return new Promise(async(resolve, reject) => {
-      this.payingInfo = '扫码支付查询中'
       await Query(pay).then(async response => {
         await this.handerAopF2FResponse(response, pay).then(res => {
           resolve(res)
@@ -278,7 +289,7 @@ const hander = {
         }
         const sleep = 6
         await Sleep((sleep - 1) * 1000)// 等待
-        this.payingInfo = '扫码支付查询中'
+        this.payingInfo = '查询错误再次支付查询中'
         if (this.isPay) { // 支付页面关闭后不再查询
           await this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
