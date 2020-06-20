@@ -172,7 +172,7 @@ const print = {
       element = element.replace(/{{\s*count\s*}}/g, orderInfo.count)
       element = element.replace(/{{\s*returns\s*}}/g, orderInfo.returns)
       element = element.replace(/{{\s*publish\s*}}/g, orderInfo.publish)
-      element = element.replace(/{{\s*payTotal\s*}}/g, orderInfo.payTotal)
+      element = element.replace(/{{\s*payTotal\s*}}/g, (orderInfo.payTotal / 100).toFixed(2))
       element = element.replace(/{{\s*createdAt\s*}}/g, parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'))
 
       return {
