@@ -6,18 +6,18 @@
         :closable="false"
       >
         <div class="info">
+          <span class="useTime">
+              <span v-if="useTime.Date">{{useTime.Date}} 天</span>
+              <span v-if="useTime.Hours">{{useTime.Hours}} 小时</span>
+              <span v-if="useTime.Minutes">{{useTime.Minutes}} 分</span>
+              <span v-if="useTime.Seconds">{{useTime.Seconds}} 秒</span>
+          </span>
           <span :class="status">
             <svg-icon v-if="method" :icon-class="method" :class="method"/>
             <i v-if="status==='wait'" class="fa fa-jpy"></i> 
             <i v-if="status==='waitClose'" class="fa fa-refresh fa-pulse"></i> 
             <i v-if="status==='off'" class="fa fa-power-off"></i> 
             {{info}}
-            <span class="useTime">
-              <span v-if="useTime.Date">{{useTime.Date}} 天</span>
-              <span v-if="useTime.Hours">{{useTime.Hours}} 小时</span>
-              <span v-if="useTime.Minutes">{{useTime.Minutes}} 分</span>
-              <span v-if="useTime.Seconds">{{useTime.Seconds}} 秒</span>
-            </span>
           </span>
           <br>
           <span :class="status">
@@ -207,7 +207,15 @@ export default {
   font-size: (100vh/100vw)*2.7vw;
 }
 .info{
+  position: relative;
   text-align:center;
+  .useTime{
+    position:absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 2vh;
+    color: #909399;
+  }
   .payAmount{
     margin:0 auto;
     font-size: 6vh;
@@ -220,10 +228,6 @@ export default {
     color: #E6A23C;
     margin:0 auto;
   }
-}
-.useTime{
-  font-size: 2vh;
-  color: #909399;
 }
 .wechat{
   color: #67C23A;
