@@ -7,6 +7,7 @@ import { parseTime } from '@/utils/index'
 import { Sleep } from '@/utils'
 import print from '@/utils/print'
 import escpos from '@/utils/escpos'
+import log from '@/utils/log'
 
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
@@ -19,6 +20,7 @@ const EndOrder = (order, self) => {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
     const handler = async() => {
+      log.scope('EndOrder.then').info(JSON.stringify(order))
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
           escpos.cashdraw().then(() => {
@@ -53,7 +55,7 @@ const EndOrder = (order, self) => {
     order.status = true // 订单完结
     self.handleClose() // 关闭页面
   }).catch(error => {
-    console.log(error)
+    log.scope('EndOrder.error').error(JSON.stringify(error) + '\n' + JSON.stringify(order))
     // 删除出错关联插入订单数据
     // Order.destroy({ where: { orderNo: order.orderNo }})
     MessageBox.confirm('未知错误请重新下单,或加载订单。' + error.message, '创建订单错误', {
@@ -158,6 +160,7 @@ const hander = {
         this.payingInfo = '账户余额为零'
       }
     }).catch(error => {
+      log.scope('cardPay.VipCardGet').error(JSON.stringify(code))
       this.lock = false // 接触锁定
       this.status = 'error'
       this.payingInfo = error
@@ -172,6 +175,7 @@ const hander = {
             await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
               pay.status = true
             }).catch(error => {
+              log.scope('handerPays.CardPay').error(JSON.stringify(error))
               reject(error)
             })
           } else {
@@ -223,7 +227,9 @@ const hander = {
           }
           await this.handerAopF2F(pay).then(response => {
             if (response) {
-              StautsUpdatePayOrder(pay.orderNo, response)
+              StautsUpdatePayOrder(pay.orderNo, response).catch(error => {
+                log.scope('handerAopF2F.StautsUpdatePayOrder').error(JSON.stringify(error))
+              })
             }
             resolve(response)
           }).catch(error => {
@@ -241,6 +247,7 @@ const hander = {
     return new Promise(async(resolve, reject) => {
       this.payingInfo = '扫码支付下单中'
       await AopF2F(pay).then(async response => { // 远程支付开始
+        log.scope('handerAopF2FQuery.AopF2F').info(JSON.stringify(pay) + '\n' + JSON.stringify(response))
         this.payingInfo = '下单成功查询中'
         await this.handerAopF2FQuery(pay).then(response => {
           resolve(response)
@@ -248,6 +255,7 @@ const hander = {
           reject(error)
         })
       }).catch(async error => {
+        log.scope('handerAopF2F.AopF2F.error').error(JSON.stringify(error))
         if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1) && this.status === 'paying') { // 下单超时并且在付款状态中、非付款状态自动进入查询
           this.payingInfo = '服务器超时,等待重试。'
           const sleep = 6
@@ -274,12 +282,14 @@ const hander = {
   handerAopF2FQuery(pay) {
     return new Promise(async(resolve, reject) => {
       await Query(pay).then(async response => {
+        log.scope('handerAopF2FQuery.Query').info(JSON.stringify(pay) + '\n' + JSON.stringify(response))
         await this.handerAopF2FResponse(response, pay).then(res => {
           resolve(res)
         }).catch(err => {
           reject(err)
         })
       }).catch(async error => {
+        log.scope('handerAopF2FQuery.Query.error').error(JSON.stringify(error))
         if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
           this.status = 'off'
           reject(error)
@@ -336,11 +346,13 @@ const hander = {
     if (!this.scanStoreName) {
       this.status = 'error'
       this.payingInfo = '请设置付款商家'
+      this.lock = false
       return
     }
     if (!this.scanPayId) {
       this.status = 'error'
       this.payingInfo = '扫码付款方式未设置'
+      this.lock = false
       return
     }
     this.handerPay(this.scanPayId, code)
@@ -384,11 +396,13 @@ const hander = {
             return
           }
         }
+        log.scope('payHander.payInfo').info(JSON.stringify(payInfo))
         this.payHander(payInfo).then(response => {
           this.order.pays.push(response)
           this.$store.dispatch('terminal/handerOrder') // 更新订单信息
           this.handerOrder() // 处理订单支付
         }).catch(error => {
+          log.scope('payHander.error').warn(JSON.stringify(error))
           this.status = 'error'
           this.payingInfo = error
           return
@@ -401,6 +415,7 @@ const hander = {
       this.handerPays(this.order.pays).then(() => { // 处理订单支付
         EndOrder(this.order, this)
       }).catch(error => {
+        log.scope('handerPays.error').error(JSON.stringify(error))
         MessageBox.confirm(error.message, '支付处理失败', {
           type: 'error',
           showCancelButton: false,

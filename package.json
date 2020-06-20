@@ -1,6 +1,6 @@
 {
   "name": "pos",
-  "version": "1.2.36",
+  "version": "1.2.37",
   "author": "bigrocs <bigrocs@qq.com>",
   "description": "桌面终端",
   "license": "MIT",
@@ -69,6 +69,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
+    "electron-log": "^4.2.2",
     "electron-store": "^5.1.0",
     "element-ui": "2.7.2",
     "escpos": "^3.0.0-alpha.1",
