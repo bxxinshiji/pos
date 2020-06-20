@@ -7,10 +7,17 @@
       >
         <div class="info">
           <span :class="status">
+            <svg-icon v-if="method" :icon-class="method" :class="method"/>
             <i v-if="status==='wait'" class="fa fa-jpy"></i> 
             <i v-if="status==='waitClose'" class="fa fa-refresh fa-pulse"></i> 
             <i v-if="status==='off'" class="fa fa-power-off"></i> 
             {{info}}
+            <span class="useTime">
+              <span v-if="useTime.Date">{{useTime.Date}} 天</span>
+              <span v-if="useTime.Hours">{{useTime.Hours}} 小时</span>
+              <span v-if="useTime.Minutes">{{useTime.Minutes}} 分</span>
+              <span v-if="useTime.Seconds">{{useTime.Seconds}} 秒</span>
+            </span>
           </span>
           <br>
           <span :class="status">
@@ -42,6 +49,7 @@ const payKeyboard = store.state.settings.payKeyboard
 import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
 import Pay from '@/model/pay'
+import { useTime } from '@/utils'
 
 export default {
   name: 'pay',
@@ -54,7 +62,9 @@ export default {
       info: '等待付款操作',
       payingInfo: '',
       status: 'wait', // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
-      startTime: new Date() // 支付开始时间
+      startTime: new Date(), // 支付开始时间
+      useTime: 0,
+      method: '' // 支付方式显示
     }
   },
   computed: {
@@ -89,6 +99,9 @@ export default {
       this.handerOrder()
     }
     document.addEventListener('keydown', this.keydown)
+    setInterval(() => {
+      this.useTime = useTime(this.startTime)
+    }, 1000)
   },
   methods: {
     ...pay,
@@ -207,6 +220,10 @@ export default {
     color: #E6A23C;
     margin:0 auto;
   }
+}
+.useTime{
+  font-size: 2vh;
+  color: #909399;
 }
 .wechat{
   color: #67C23A;

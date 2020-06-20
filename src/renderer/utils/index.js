@@ -97,7 +97,23 @@ export function formatTime(time, option) {
     )
   }
 }
-
+/**
+ * @param {number} startTime
+ * @returns {string}
+ */
+export function useTime(startTime) {
+  // 小于10的数，前边增加一个0
+  var now = new Date().getTime()
+  var run = now - startTime
+  // 总秒
+  var sumSeconds = parseInt(run / 1000)
+  return {
+    Date: parseInt(sumSeconds / 86400),
+    Hours: parseInt(sumSeconds % 86400 / 3600),
+    Minutes: parseInt(sumSeconds / 60 % 60),
+    Seconds: parseInt(sumSeconds % 60)
+  }
+}
 /**
  * @param {string} url
  * @returns {Object}

@@ -190,20 +190,20 @@ const hander = {
       const code = pay.code
       // pay.orderNo = uuidv4().replace(/\-/g, '') // 支付宝、微信等支付指定订单单号[UUID生成]
       pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
-      let method = ''
+      this.method = ''
       const regAlipay = /^(?:2[5-9]|30)\d{14,18}$/
       if (regAlipay.test(code)) { // 支付宝支付
-        method = 'alipay'
+        this.method = 'alipay'
       }
       const regWechat = /^1[0-5]\d{16}$/
       if (regWechat.test(code)) { // 微信支付
-        method = 'wechat'
+        this.method = 'wechat'
       }
-      if (method) {
+      if (this.method) {
         // 查找创建 PayOrder
         await findCreatePayOrder(this.order, {
           storeName: this.scanStoreName,
-          method: method,
+          method: this.method,
           authCode: pay.code,
           title: this.orderTitle,
           orderNo: pay.orderNo,
