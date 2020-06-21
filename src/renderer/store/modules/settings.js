@@ -21,7 +21,7 @@ const state = {
   terminal: '', // 终端号
   macAddress: '', // mac 地址
   barcodeReg: '27PPPPPBBBBBC', // 条形码识别规则
-  log: 2, // 日志大小默认2MB
+  log: 10, // 日志大小默认10MB
   isPlucode: false,
   isTotal: false, // 总金额汇总显示【默认关闭】
   scanStoreName: '', // 支付商户用户名

@@ -206,24 +206,25 @@ const hander = {
       if (this.method) {
         // 查找创建 PayOrder
         await findCreatePayOrder(this.order, {
-          storeName: this.scanStoreName,
+          orderNo: pay.orderNo,
           method: this.method,
           authCode: pay.code,
           title: this.orderTitle,
-          orderNo: pay.orderNo,
           totalAmount: pay.amount,
           operatorId: this.username,
-          terminalId: this.terminal
+          terminalId: this.terminal,
+          storeName: this.scanStoreName
         }).then(async res => {
           const pay = {
             orderNo: res.orderNo,
             method: res.method,
             authCode: res.authCode,
+            title: res.title,
             totalAmount: res.totalAmount,
             operatorId: res.operatorId,
+            terminalId: this.terminal,
             storeName: res.storeName,
-            storeId: res.storeId,
-            title: res.title
+            storeId: res.storeId
           }
           await this.handerAopF2F(pay).then(response => {
             if (response) {
