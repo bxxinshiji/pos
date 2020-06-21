@@ -22,6 +22,9 @@
                     <el-form-item label="条码规则" prop="barcodeReg">
                       <el-input v-model="sysForm.barcodeReg" placeholder="自定义条形码识别规则"></el-input> 
                     </el-form-item>
+                    <el-form-item label="日志大小" prop="log">
+                      <el-input v-model="sysForm.log" placeholder="系统报错日志大小" @input="handerOnInput"><template slot="append">MB</template></el-input> 
+                    </el-form-item>
                     <el-form-item label="PLU商品输入" prop="isPlucode">
                       <el-switch v-model="sysForm.isPlucode"></el-switch>
                     </el-form-item>
@@ -130,6 +133,7 @@ export default {
         isTerminal: settings.isTerminal,
         terminal: settings.terminal,
         barcodeReg: settings.barcodeReg,
+        log: settings.log,
         isPlucode: settings.isPlucode,
         isTotal: settings.isTotal
       },
@@ -159,6 +163,9 @@ export default {
         ],
         barcodeReg: [
           { required: true, message: '请输入条码识别规则', trigger: 'blur' }
+        ],
+        log: [
+          { required: true, message: '请输入日志大小', trigger: 'blur' }
         ]
       }
 
@@ -193,6 +200,9 @@ export default {
     },
     handleClick(tab, event) {
       this.tab = Number(tab.index)
+    },
+    handerOnInput(value) {
+      this.sysForm.log = value.replace(/[^0-9.]/g, '')
     }
   },
   destroyed() {

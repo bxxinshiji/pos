@@ -21,6 +21,7 @@ const state = {
   terminal: '', // 终端号
   macAddress: '', // mac 地址
   barcodeReg: '27PPPPPBBBBBC', // 条形码识别规则
+  log: 2, // 日志大小默认2MB
   isPlucode: false,
   isTotal: false, // 总金额汇总显示【默认关闭】
   scanStoreName: '', // 支付商户用户名
@@ -112,6 +113,10 @@ function init() {
   const barcodeReg = Store.get('settings.barcodeReg')
   if (barcodeReg) {
     state.barcodeReg = barcodeReg
+  }
+  const log = Store.get('settings.log')
+  if (log) {
+    state.log = log
   }
   state.isPlucode = Store.get('settings.isPlucode')
   const printer = Store.get('settings.printer')
