@@ -27,7 +27,7 @@ const order = {
     await GoodsSnapshot(item.goods) // 合并商品快照
     for (let index = 0; index < item.goods.length; index++) {
       const goods = item.goods[index]
-      const price = goods.price
+      const price = (goods.price / 100).toFixed(2)
       const total = (goods.total / 100).toFixed(2)
 
       const LnNo = goods.no // 行号

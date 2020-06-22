@@ -23,11 +23,12 @@ export async function SyncPlu() {
       await SQLGoods.List(editAt).then(async response => {
         if (response) {
           response.forEach(item => {
+            item.price = Math.round(item.price * 100)
             goods.push({
               pluCode: item.pluCode,
               barCode: item.barCode,
               depCode: item.depCode,
-              price: Math.round(item.price * 100),
+              price: item.price,
               name: item.name,
               unit: item.unit,
               spec: item.spec,
