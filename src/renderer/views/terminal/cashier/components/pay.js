@@ -121,6 +121,7 @@ const hander = {
       return amount
     }
     VipCardGet(code).then(res => {
+      log.scope('cardPay.VipCardGet.then').info(JSON.stringify(res))
       const payAmount = this.payAmount
       const beforeAmount = getVipAmount(this.order.pays, res.cardNo) // 之前已缓存付款金额
       const vipAmount = parseInt(res.amount * 100) - beforeAmount
@@ -155,7 +156,7 @@ const hander = {
         this.payingInfo = '账户余额为零'
       }
     }).catch(error => {
-      log.scope('cardPay.VipCardGet').error(JSON.stringify(code))
+      log.scope('cardPay.VipCardGet.error').error(JSON.stringify(code))
       this.lock = false // 接触锁定
       this.status = 'error'
       this.payingInfo = error
