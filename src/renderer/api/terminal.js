@@ -8,9 +8,9 @@ export function Login(data) {
   return user.Auth(data)
 }
 // SyncTerminal 同步终端数据
-export function SyncTerminal(data) {
+export function SyncTerminal(enforce = false) {
   if (store.state.terminal.syncTerminal) {
-    return SQL2000SyncTerminal(data)
+    return SQL2000SyncTerminal(enforce)
   }
 }
 

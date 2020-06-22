@@ -7,16 +7,19 @@ import { Message } from 'element-ui'
 const Goods = sequelize.models.good
 const BarCodes = sequelize.models.barCode
 
-export async function SyncPlu() {
+export async function SyncPlu(enforce = false) {
   return new Promise(async(resolve, reject) => {
     let goods = []
-    let editAt = ''
+    let editAt = new Date('2004')
     await Goods.findOne({
       attributes: ['editAt'],
       order: [['editAt', 'DESC']]
     }).then(res => {
-      editAt = res ? res.editAt : new Date('2004')
+      editAt = res || res.editAt
     })
+    if (enforce) { // 强制执行时更新所有商品信息
+      editAt = new Date('2004')
+    }
     const CurrentDate = (new Date()).getFullYear()
     for (let index = editAt.getFullYear(); index <= CurrentDate; index++) {
       editAt = new Date(String(index))

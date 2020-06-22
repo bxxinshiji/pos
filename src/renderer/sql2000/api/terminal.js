@@ -10,7 +10,7 @@ import { Loading } from 'element-ui'
  * @ 根据终端状态启动数据同步
  * @ 默认 30 秒 更新一次 path src/renderer/App.vue
  */
-export async function SyncTerminal() {
+export async function SyncTerminal(enforce = false) {
   try {
     Terminal.PosCode = store.state.settings.terminal
     if (Terminal.PosCode) {
@@ -18,7 +18,7 @@ export async function SyncTerminal() {
       await Terminal.Get()
       let status = 0 // 等待窗口锁
       // 更新用户信息
-      if (Terminal.IsChgUser === '1') {
+      if (Terminal.IsChgUser === '1' || enforce) {
         status++
         const loadingInstance = Loading.service({
           text: '更新用户信息中...',
@@ -39,13 +39,13 @@ export async function SyncTerminal() {
         })
       }
       // 更新商品信息
-      if (Terminal.IsChgPlu === '1') {
+      if (Terminal.IsChgPlu === '1' || enforce) {
         status++
         const loadingInstance = Loading.service({
           text: '更新商品信息中...',
           background: 'rgba(0, 0, 0, 0.7)'
         })
-        await SyncPlu().then(() => {
+        await SyncPlu(enforce).then(() => {
           Terminal.IsChgPlu = '0'
           Terminal.Save()
           loadingInstance.text = '商品信息更新完成'
@@ -60,7 +60,7 @@ export async function SyncTerminal() {
         })
       }
       // 更新支付信息
-      if (Terminal.IsChgZfKind === '1') {
+      if (Terminal.IsChgZfKind === '1' || enforce) {
         status++
         const loadingInstance = Loading.service({
           text: '更新支付信息中...',

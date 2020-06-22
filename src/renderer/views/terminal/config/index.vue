@@ -31,11 +31,15 @@
                     <el-form-item label="总金额汇总" prop="isTotal">
                       <el-switch v-model="sysForm.isTotal"></el-switch>
                     </el-form-item>
+
                 </span>
                 <br>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('sysForm')">保存</el-button>
                     <el-button @click="resetForm('sysForm')">重置</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button :loading="loading"  type="primary" @click="syncTerminal()">强制更新终端数据</el-button>
                 </el-form-item>
                 <el-collapse  accordion>
                   <el-collapse-item title="条码规则:" name="1">
@@ -98,11 +102,14 @@ import Printer from './components/printer.vue'
 import Keyboard from './components/keyboard.vue'
 import payKeyboard from './components/payKeyboard.vue'
 import pay from './components/pay.vue'
+import { SyncTerminal } from '@/api/terminal'
+
 export default {
   name: 'Config',
   components: { Printer, Keyboard, payKeyboard, pay },
   data() {
     return {
+      loading: false,
       tab: 0,
       sqlForm: {
         sql2000_host: settings.sql2000_host,
@@ -203,6 +210,14 @@ export default {
     },
     handerOnInput(value) {
       this.sysForm.log = value.replace(/[^0-9.]/g, '')
+    },
+    syncTerminal() {
+      this.loading = true
+      SyncTerminal(true).then(() => {
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     }
   },
   destroyed() {
