@@ -143,11 +143,11 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            log.scope('quit').info('用户: ' + this.loginForm.username + ' 登录成功')
+            log.scope('user/login').info('用户: ' + this.loginForm.username + ' 登录成功')
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(error => {
-            log.scope('quit').error('用户: ' + this.loginForm.username + ' 登录失败,' + 'ERROR:' + error.message)
+            log.scope('user/login').error('用户: ' + this.loginForm.username + ' 登录失败,' + 'ERROR:' + error.message)
             this.loading = false
           })
         } else {
