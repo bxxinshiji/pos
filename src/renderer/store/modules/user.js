@@ -74,7 +74,7 @@ const actions = {
             commit('SET_TOKEN', user)
             resolve(valid)
           } else {
-            reject('密码错误')
+            reject(new Error('密码错误'))
             Message.closeAll()
             Message({
               message: '密码错误',
@@ -128,7 +128,7 @@ const actions = {
           const { data } = response
 
           if (!data) {
-            reject('Verification failed, please Login again.')
+            reject(new Error('Verification failed, please Login again.'))
           }
           // 用户相关信息设置
           const { username, name, avatar, id } = data.user

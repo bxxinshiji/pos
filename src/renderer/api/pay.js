@@ -49,30 +49,19 @@ export function SyncPayOrder() { // 同步所有代付款订单状态
     if (response.count > 0) {
       const rows = response.rows
       rows.forEach(res => {
-        const pay = {
-          orderNo: res.orderNo,
-          method: res.method,
-          authCode: res.authCode,
-          title: res.title,
-          totalAmount: res.totalAmount,
-          operatorId: res.operatorId,
-          terminalId: this.terminal,
-          storeName: res.storeName,
-          storeId: res.storeId
-        }
         Query({
-          orderNo: pay.orderNo,
-          storeName: pay.storeName
+          orderNo: res.orderNo,
+          storeName: res.storeName
         }).then(response => { // 远程支付查询开始
           const data = response.data
           switch (data.order.stauts) {
             case 'CLOSED':
-              StautsUpdatePayOrder(pay.orderNo, -1)
+              StautsUpdatePayOrder(res.orderNo, -1)
               break
             case 'USERPAYING':
               break
             case 'SUCCESS':
-              StautsUpdatePayOrder(pay.orderNo, 1)
+              StautsUpdatePayOrder(res.orderNo, 1)
               break
           }
         })

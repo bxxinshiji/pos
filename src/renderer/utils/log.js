@@ -8,11 +8,11 @@ var path = require('path')
 log.transports.console.level = 'error'
 // 日志大小
 log.transports.file.maxSize = store.state.settings.log * 1024 * 1024 // 100m
+log.fileName = 'main.log'
 // 日志路径
 // 日志文件名，默认：main.log
 log.transports.file.resolvePath = () => {
-  return path.join(exePath('log'), 'main.log')
+  return path.join(exePath('log'), log.fileName)
 }
-console.log(log.transports.file.maxSize)
 
 export default log

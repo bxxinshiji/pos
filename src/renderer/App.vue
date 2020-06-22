@@ -9,6 +9,8 @@
 const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
 import { SyncPayOrder } from '@/api/pay'
+import log from '@/utils/log'
+log.fileName = 'app.log'
 export default {
   name: 'App',
   mounted() {
@@ -28,6 +30,7 @@ export default {
         this.$router.push({ path: '/' })
       }
     })
+    log.scope('mounted').info('系统启动')
   },
   methods: {
     syncTerminal() {

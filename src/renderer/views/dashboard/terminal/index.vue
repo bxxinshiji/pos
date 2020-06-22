@@ -61,6 +61,9 @@ import { mapGetters, mapState } from 'vuex'
 import { Settle as accountsSettle } from '@/api/accounts'
 import Terminal from '@/sql2000/model/terminal'
 import print from '@/utils/print'
+import log from '@/utils/log'
+log.fileName = 'dashboard.log'
+
 export default {
   name: 'terminal',
   data() {
@@ -137,9 +140,11 @@ export default {
           this.$router.push({ path: '/terminal/password' })
           break
         case 'out':
+          log.scope('quit').info('用户: ' + this.username + ' 暂离退出')
           this.logout()
           break
         case 'accounts':
+          log.scope('accounts').info('用户: ' + this.username + ' 结账')
           this.$confirm('结账退出 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -151,6 +156,7 @@ export default {
                 message: '结账打印成功'
               })
             }).catch((error) => {
+              log.scope('accounts').error('用户: ' + this.username + ' 结账打印失败失败,' + JSON.stringify(error.message))
               console.log(error)
             })
             accountsSettle().then(response => { // 结账
@@ -166,11 +172,13 @@ export default {
                   console.log(error)
                 })
               }
+              log.scope('accounts').info('用户: ' + this.username + ' 结账成功退出')
               this.logout()
             }).catch(error => {
+              log.scope('accounts').error('用户: ' + this.username + ' 结账成功失败,' + JSON.stringify(error.message))
               this.$message({
                 type: 'error',
-                message: '结账打印失败: ' + error.message
+                message: '结账失败: ' + error.message
               })
             })
           }).catch(() => {
@@ -181,6 +189,7 @@ export default {
           })
           break
         case 'quit':
+          log.scope('quit').info('用户: ' + this.username + ' 退出软件')
           this.logout()
           this.$electron.remote.app.quit()
           break
