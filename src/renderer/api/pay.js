@@ -48,8 +48,18 @@ export function SyncPayOrder() { // 同步所有代付款订单状态
   }).then(response => {
     if (response.count > 0) {
       const rows = response.rows
-      rows.forEach(order => {
-        const pay = order.pay
+      rows.forEach(res => {
+        const pay = {
+          orderNo: res.orderNo,
+          method: res.method,
+          authCode: res.authCode,
+          title: res.title,
+          totalAmount: res.totalAmount,
+          operatorId: res.operatorId,
+          terminalId: this.terminal,
+          storeName: res.storeName,
+          storeId: res.storeId
+        }
         Query({
           orderNo: pay.orderNo,
           storeName: pay.storeName
