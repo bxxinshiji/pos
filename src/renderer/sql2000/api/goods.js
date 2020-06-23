@@ -15,7 +15,7 @@ export async function SyncPlu(enforce = false) {
       attributes: ['editAt'],
       order: [['editAt', 'DESC']]
     }).then(res => {
-      editAt = res || res.editAt
+      editAt = res ? res.editAt : new Date('2004')
     })
     if (enforce) { // 强制执行时更新所有商品信息
       editAt = new Date('2004')
