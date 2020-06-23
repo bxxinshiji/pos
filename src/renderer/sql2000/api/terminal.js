@@ -5,7 +5,6 @@ import { SyncUser } from '@/sql2000/api/user'
 import { SyncPay } from '@/sql2000/api/pay'
 import { Loading } from 'element-ui'
 import log from '@/utils/log'
-log.fileName = 'syncTerminal.log'
 /**
  * SyncTerminal 同步终端数据
  * @ 检测数据状态
@@ -17,7 +16,9 @@ export async function SyncTerminal(enforce = false) {
     Terminal.PosCode = store.state.settings.terminal
     if (Terminal.PosCode) {
       store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
-      await Terminal.Get()
+      await Terminal.Get().catch(error => {
+        log.scope('Terminal.Get').error(JSON.stringify(error.message))
+      })
       log.scope('Terminal').info(JSON.stringify(Terminal) + JSON.stringify(enforce))
       let status = 0 // 等待窗口锁
       // 更新用户信息

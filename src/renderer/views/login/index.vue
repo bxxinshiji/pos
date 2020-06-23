@@ -72,7 +72,6 @@
 import { mapGetters, mapState } from 'vuex'
 const ipcRenderer = require('electron').ipcRenderer
 import log from '@/utils/log'
-log.fileName = 'login.log'
 export default {
   name: 'Login',
   data() {

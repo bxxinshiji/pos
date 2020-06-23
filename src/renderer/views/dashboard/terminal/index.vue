@@ -62,7 +62,6 @@ import { Settle as accountsSettle } from '@/api/accounts'
 import Terminal from '@/sql2000/model/terminal'
 import print from '@/utils/print'
 import log from '@/utils/log'
-log.fileName = 'dashboard.log'
 
 export default {
   name: 'terminal',

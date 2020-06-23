@@ -8,7 +8,6 @@ import { Sleep } from '@/utils'
 import print from '@/utils/print'
 import escpos from '@/utils/escpos'
 import log from '@/utils/log'
-log.fileName = 'pay.log'
 
 import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'

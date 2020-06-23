@@ -10,7 +10,6 @@ const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
 import { SyncPayOrder } from '@/api/pay'
 import log from '@/utils/log'
-log.fileName = 'app.log'
 export default {
   name: 'App',
   mounted() {
