@@ -18,6 +18,7 @@ export async function SyncTerminal(enforce = false) {
     if (Terminal.PosCode) {
       store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
       await Terminal.Get()
+      log.scope('Terminal').info(JSON.stringify(Terminal) + JSON.stringify(enforce))
       let status = 0 // 等待窗口锁
       // 更新用户信息
       if (Terminal.IsChgUser === '1' || enforce) {
