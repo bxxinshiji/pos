@@ -6,13 +6,20 @@ import { EAN13 } from '@/utils/barcode'
 
 const hander = {
   addGoods(value, isPlucode) { // 添加商品  type 代码类型 条形码、自编码
+    if (this.order.pays.length > 0) {
+      this.MessageBox({
+        title: '添加商品失败',
+        message: '付款流程中禁止添加商品。'
+      })
+      return
+    }
     this.getGoods(value, isPlucode).then(goods => {
       if (goods) {
         const status = goods.snapshot.status
         if (status === '2' || status === '3' || status === '4' || status === 'A' || status === 'B') {
           this.MessageBox({
             title: '商品禁止销售',
-            message: '此商品已被管理员禁止销售,请联系管理员。'
+            message: '商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'
           })
           return
         }

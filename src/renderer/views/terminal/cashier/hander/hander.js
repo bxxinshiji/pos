@@ -50,6 +50,13 @@ const hander = {
   },
   // 设置商品数量
   goodsNumber(self) {
+    if (self.order.pays.length > 0) {
+      self.$message({
+        type: 'warning',
+        message: '付款流程中禁止修改商品数量'
+      })
+      return
+    }
     const number = self.$refs.foots.input
     if (number) {
       if (self.order.goods.length > 0) {
@@ -74,18 +81,18 @@ const hander = {
   },
   // 删除指定商品
   deleteGoods(self) {
-    if (self.order.pays.length === 0) {
-      self.$refs.goods.deleteGoods()
-      self.$message({
-        type: 'success',
-        message: '删除指定商品成功'
-      })
-    } else {
+    if (self.order.pays.length > 0) {
       self.$message({
         type: 'warning',
-        message: '付款中禁止删除商品'
+        message: '付款流程中禁止删除商品'
       })
+      return
     }
+    self.$refs.goods.deleteGoods()
+    self.$message({
+      type: 'success',
+      message: '删除指定商品成功'
+    })
   },
   // 清空订单
   emptyOrder(self) {
@@ -109,6 +116,13 @@ const hander = {
   },
   // 销售状态 销货|退货
   salesStatus(self) {
+    if (self.order.pays.length > 0) {
+      self.$message({
+        type: 'warning',
+        message: '付款流程中禁止退货'
+      })
+      return
+    }
     const type = !self.order.type ? '销货' : '退货'
     self.$confirm('进入【' + type + '】状态, 是否继续?', '提示', {
       confirmButtonText: '确定',

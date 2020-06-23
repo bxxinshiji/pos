@@ -78,7 +78,6 @@ export async function SyncPlu(enforce = false) {
     }).catch(error => {
       reject(new Error('查询商品条码失败:' + error.message))
     })
-
     resolve()
   })
 }
