@@ -47,14 +47,12 @@ export async function SyncPlu(enforce = false) {
               type: 'success'
             })
           }).catch(error => {
-            console.error(error)
-            reject(new Error('插入商品PLU失败'))
+            reject(new Error('插入商品PLU失败:' + error.message))
           })
           goods = []
         }
       }).catch(error => {
-        console.error(error)
-        reject(new Error('查询商品PLU失败'))
+        reject(new Error('查询商品PLU失败:' + error.message))
       })
     }
 
@@ -73,14 +71,12 @@ export async function SyncPlu(enforce = false) {
           { updateOnDuplicate: ['pluCode', 'name', 'spec'] }
         ).then(() => {
         }).catch(error => {
-          console.error(error)
-          reject(new Error('插入商品条码失败'))
+          reject(new Error('插入商品条码失败:' + error.message))
         })
         barCodes = []
       }
     }).catch(error => {
-      console.error(error)
-      reject(new Error('查询商品条码失败'))
+      reject(new Error('查询商品条码失败:' + error.message))
     })
 
     resolve()

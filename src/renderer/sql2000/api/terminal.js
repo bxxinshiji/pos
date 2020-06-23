@@ -4,6 +4,8 @@ import { SyncPlu } from '@/sql2000/api/goods'
 import { SyncUser } from '@/sql2000/api/user'
 import { SyncPay } from '@/sql2000/api/pay'
 import { Loading } from 'element-ui'
+import log from '@/utils/log'
+log.fileName = 'syncTerminal.log'
 /**
  * SyncTerminal 同步终端数据
  * @ 检测数据状态
@@ -35,7 +37,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          console.log(error)
+          log.scope('ChgUser').error(JSON.stringify(error.message))
         })
       }
       // 更新商品信息
@@ -56,7 +58,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          console.log(error)
+          log.scope('ChgPlu').error(JSON.stringify(error.message))
         })
       }
       // 更新支付信息
@@ -77,7 +79,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          console.log(error)
+          log.scope('ZfKind').error(JSON.stringify(error.message))
         })
       }
       store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
@@ -87,8 +89,8 @@ export async function SyncTerminal(enforce = false) {
       Terminal.PosState = '10'
       Terminal.Save()
     }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    log.scope('try').error(JSON.stringify(error.message))
     store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
   }
 }
