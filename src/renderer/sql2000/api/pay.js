@@ -37,14 +37,12 @@ export function SyncPay() {
           pay.bulkCreate(pays).then(() => {
             resolve()
           }).catch(error => {
-            console.log(error)
-            reject(new Error('插入支付方式失败'))
+            reject(new Error('插入支付方式失败:' + error.message))
           })
         }
       }
     }).catch(error => {
-      console.log(error)
-      reject(new Error('查询支付方式失败'))
+      reject(new Error('查询支付方式失败:' + error.message))
     })
   })
 }

@@ -24,14 +24,12 @@ export function SyncUser() {
           TerminalUser.bulkCreate(users).then(() => {
             resolve()
           }).catch(error => {
-            console.log(error)
-            reject(new Error('插入用户数据失败'))
+            reject(new Error('插入用户数据失败:' + error.message))
           })
         }
       }
     }).catch(error => {
-      console.log(error)
-      reject(new Error('查询用户失败'))
+      reject(new Error('查询用户失败:' + error.message))
     })
   })
 }
