@@ -3,6 +3,7 @@ import store from '@/store'
 
 import Goods from '@/model/goods'
 import { EAN13 } from '@/utils/barcode'
+import log from '@/utils/log'
 
 const hander = {
   addGoods(value, isPlucode) { // 添加商品  type 代码类型 条形码、自编码
@@ -32,6 +33,7 @@ const hander = {
           store.dispatch('terminal/changeIsInputPrice', true)
           store.dispatch('terminal/changeCacheGoods', goods)
         } else {
+          log.scope('goods.addGoods').info(JSON.stringify(goods.dataValues))
           this.$refs.goods.addGoods(goods.dataValues)
         }
       } else {

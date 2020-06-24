@@ -1,6 +1,7 @@
 
 import Goods from '@/model/goods'
 import { EAN13 } from '@/utils/barcode'
+import log from '@/utils/log'
 
 const hander = {
   addGoods(value, isPlucode) { // 添加商品  type 代码类型 条形码、自编码
@@ -11,6 +12,7 @@ const hander = {
           goods.dataValues.number = 1
         }
         goods.dataValues.total = goods.dataValues.number * goods.dataValues.price
+        log.scope('inventory.goods.addGoods').info(JSON.stringify(goods.dataValues))
         this.$refs.goods.addGoods(goods.dataValues)
       } else {
         this.MessageBox({
