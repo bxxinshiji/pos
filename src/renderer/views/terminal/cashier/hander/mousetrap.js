@@ -5,6 +5,7 @@ import { Message } from 'element-ui'
 import store from '@/store'
 const Keyboard = store.state.settings.Keyboard
 import hander from './hander'
+import log from '@/utils/log'
 
 const mousetrap = {
   registerMousetrap() {
@@ -20,6 +21,7 @@ const mousetrap = {
             if (this.order.status) { // 根据订单状态初始化订单
               this.initOrder()
             } else {
+              log.scope('Mousetrap.bindGlobal').info(JSON.stringify(key), Keyboard[key])
               hander[key](this)
             }
           }

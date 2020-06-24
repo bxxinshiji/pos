@@ -15,12 +15,12 @@ import orderSequelize from '@/model/order'
 const Order = orderSequelize.models.order
 
 // 完结订单
-const EndOrder = (order, self) => {
-  Order.create(order, {
+const EndOrder = async(order, self) => {
+  await Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
+    log.scope('EndOrder.then').info(JSON.stringify(order))
     const handler = async() => {
-      log.scope('EndOrder.then').info(JSON.stringify(order))
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
           escpos.cashdraw().then(() => {
@@ -55,7 +55,6 @@ const EndOrder = (order, self) => {
     order.status = true // 订单完结
     self.handleClose() // 关闭页面
   }).catch(error => {
-    log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(order))
     // 删除出错关联插入订单数据
     // Order.destroy({ where: { orderNo: order.orderNo }})
     MessageBox.confirm('未知错误请重新下单,或加载订单。' + error.message, '创建订单错误', {
@@ -97,6 +96,7 @@ const hander = {
                 message: '订单金额: ' + (pay.amount / 100).toFixed(2) + ' 元',
                 type: 'success'
               })
+              log.scope('payAopF2F.then').info(JSON.stringify(pay) + '\n' + JSON.stringify(response))
               resolve(pay)
             }).catch(error => {
               reject(error)
@@ -394,10 +394,10 @@ const hander = {
           }
         }
         log.scope('payHander.payInfo').info(JSON.stringify(payInfo))
-        this.payHander(payInfo).then(response => {
+        this.payHander(payInfo).then(async response => {
           this.order.pays.push(response)
           this.$store.dispatch('terminal/handerOrder') // 更新订单信息
-          this.handerOrder() // 处理订单支付
+          await this.handerOrder() // 处理订单支付
           this.lock = false
         }).catch(error => {
           log.scope('payHander.error').warn(JSON.stringify(error.message))
@@ -411,8 +411,10 @@ const hander = {
   },
   async handerOrder() {
     if (this.order.waitPay === 0) {
-      this.handerPays(this.order.pays).then(() => { // 处理订单支付
-        EndOrder(this.order, this)
+      await this.handerPays(this.order.pays).then(async() => { // 处理订单支付
+        await EndOrder(this.order, this).catch(error => {
+          log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(this.order))
+        })
       }).catch(error => {
         log.scope('handerPays.error').error(JSON.stringify(error.message))
         MessageBox.confirm(error.message, '支付处理失败', {

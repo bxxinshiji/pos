@@ -45,6 +45,7 @@ require('@/utils/mousetrap-global-bind')
 import { mapState } from 'vuex'
 import store from '@/store'
 const payKeyboard = store.state.settings.payKeyboard
+import log from '@/utils/log'
 
 import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
@@ -166,6 +167,7 @@ export default {
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
         if (this.lock) { // 付款锁定中关闭
+          log.scope('Pay.keydown').info('esc、waitClose')
           const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
           setTimeout(() => {
             this.status = 'waitClose'
@@ -173,6 +175,7 @@ export default {
           }, down)// 等待 5 秒后第一次同步数据
           this.info = '开始关闭支付请稍等...'
         } else {
+          log.scope('Pay.keydown').info('esc')
           this.handleClose()
         }
       }

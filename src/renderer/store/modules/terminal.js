@@ -5,6 +5,7 @@ const Mousetrap = require('mousetrap')
 require('@/utils/mousetrap-global-bind')
 const OrderModel = import('@/model/api/order')
 const Order = import('@/api/order')
+import log from '@/utils/log'
 
 const state = {
   order: {
@@ -216,6 +217,7 @@ const actions = {
   registerGlobalShortcut() {
     const shutDown = store.state.settings.Keyboard.shutDown
     Mousetrap.bindGlobal(shutDown.toLowerCase(), () => { // 主页 快捷键
+      log.scope('store.modules.terminal').info(shutDown + ' 关机')
       if (store.state.terminal.isPay) { // 支付中禁止操作
         Message({
           type: 'warning',
