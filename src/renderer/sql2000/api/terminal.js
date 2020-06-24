@@ -19,7 +19,6 @@ export async function SyncTerminal(enforce = false) {
       await Terminal.Get().catch(error => {
         log.scope('Terminal.Get').error(JSON.stringify(error.message))
       })
-      log.scope('Terminal').info(JSON.stringify(Terminal) + JSON.stringify(enforce))
       let status = 0 // 等待窗口锁
       // 更新用户信息
       if (Terminal.IsChgUser === '1' || enforce) {
