@@ -111,6 +111,7 @@ import { syncOrder } from '@/api/order'
 import { AddPrint } from '@/model/api/order'
 import print from '@/utils/print'
 const Order = import('@/api/order')
+import log from '@/utils/log'
 export default {
   name: 'Order',
   components: {
@@ -186,6 +187,7 @@ export default {
       }
     },
     handerPrint(currentOrder) {
+      log.scope('order.handerPrint').info(JSON.stringify(currentOrder))
       print.hander(currentOrder, true).then(response => {
         AddPrint(currentOrder).then(response => { // 增加打印次数
           this.getList()
@@ -210,6 +212,7 @@ export default {
       })
     },
     handerSyncOrder(currentOrder) {
+      log.scope('order.handerSyncOrder').info(JSON.stringify(currentOrder))
       syncOrder(currentOrder).then(response => { // 同步订单
         this.$notify({
           title: '订单发布成功',

@@ -103,6 +103,7 @@ import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
+import log from '@/utils/log'
 export default {
   name: 'Order',
   components: {
@@ -194,6 +195,7 @@ export default {
       })
     },
     handerPayQuery(currentOrder) {
+      log.scope('pay.handerPayQuery').info(JSON.stringify(currentOrder))
       Query({
         orderNo: currentOrder.orderNo,
         storeName: currentOrder.storeName
@@ -237,6 +239,7 @@ export default {
       })
     },
     handerLoadOrder(currentOrder) {
+      log.scope('pay.handerLoadOrder').info(JSON.stringify(currentOrder))
       if (Number(currentOrder.stauts) === 1) {
         const order = currentOrder.order
         order.pays.push({
