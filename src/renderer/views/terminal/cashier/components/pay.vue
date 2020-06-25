@@ -239,6 +239,15 @@ export default {
 .alipay{
   color: #409EFF;
 }
+.remoteCardPay{
+  color: #ff6f00;
+}
+.cardPay{
+  color: #ff6f00;
+}
+.cashPay{
+  color: #0fb9b1;
+}
 .wait{
   color: #409EFF;
 }

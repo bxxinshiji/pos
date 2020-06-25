@@ -358,59 +358,76 @@ const hander = {
     this.handerPay(this.scanPayId, code)
   },
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
-    this.initInfo()
-    let payInfo = {}
-    this.pays.forEach(pay => {
-      if (String(pay.id) === String(id)) {
-        if (this.order.type) {
-          if (this.order.waitPay > 0) {
-            const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
-            const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 ? amount : this.payAmount) : amount // 收到的钱[现金可以多少其他不允许]
-            payInfo = {
-              payId: pay.id, // 支付方式
-              name: pay.name, // 支付方式名称
-              type: pay.type, // 支付方式
-              code: code, // 会员卡
-              amount: amount, // 支付金额
-              getAmount: getAmount, // 收到的钱[现金可以多少其他不允许]
-              orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
-              status: false // 现金支付时默认支付状态成功
+    try {
+      this.initInfo()
+      let payInfo = {}
+      this.pays.forEach(pay => {
+        if (String(pay.id) === String(id)) {
+          if (this.order.type) {
+            if (this.order.waitPay > 0) {
+              const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
+              const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 ? amount : this.payAmount) : amount // 收到的钱[现金可以多少其他不允许]
+              payInfo = {
+                payId: pay.id, // 支付方式
+                name: pay.name, // 支付方式名称
+                type: pay.type, // 支付方式
+                code: code, // 会员卡
+                amount: amount, // 支付金额
+                getAmount: getAmount, // 收到的钱[现金可以多少其他不允许]
+                orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
+                status: false // 现金支付时默认支付状态成功
+              }
+            }
+          } else { // 退款形式
+            if (pay.type === 'cashPay') {
+              const amount = this.order.waitPay
+              payInfo = {
+                payId: pay.id, // 支付方式
+                name: pay.name, // 支付方式名称
+                type: pay.type, // 支付方式
+                code: code, // 会员卡
+                amount: amount, // 支付金额
+                getAmount: '', // 收到的钱[现金可以多少其他不允许]
+                orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
+                status: false // 现金支付时默认支付状态成功
+              }
+            } else {
+              this.status = 'error'
+              this.payingInfo = '退货只允许现金形式'
+              return
             }
           }
-        } else { // 退款形式
-          if (pay.type === 'cashPay') {
-            const amount = this.order.waitPay
-            payInfo = {
-              payId: pay.id, // 支付方式
-              name: pay.name, // 支付方式名称
-              type: pay.type, // 支付方式
-              code: code, // 会员卡
-              amount: amount, // 支付金额
-              getAmount: '', // 收到的钱[现金可以多少其他不允许]
-              orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
-              status: false // 现金支付时默认支付状态成功
-            }
-          } else {
+          if (pay.type !== 'scanPay') {
+            this.method = pay.type
+          }
+          log.scope('payHander.payInfo').info(JSON.stringify(payInfo))
+          this.payHander(payInfo).then(async response => {
+            this.order.pays.push(response)
+            this.$store.dispatch('terminal/handerOrder') // 更新订单信息
+            this.payingInfo = '支付成功订单处理中'
+            await this.handerOrder() // 处理订单支付
+            this.lock = false
+          }).catch(error => {
+            log.scope('payHander.error').warn(JSON.stringify(error.message))
             this.status = 'error'
-            this.payingInfo = '退货只允许现金形式'
+            this.payingInfo = error.message
+            this.lock = false
             return
-          }
+          })
         }
-        log.scope('payHander.payInfo').info(JSON.stringify(payInfo))
-        this.payHander(payInfo).then(async response => {
-          this.order.pays.push(response)
-          this.$store.dispatch('terminal/handerOrder') // 更新订单信息
-          await this.handerOrder() // 处理订单支付
-          this.lock = false
-        }).catch(error => {
-          log.scope('payHander.error').warn(JSON.stringify(error.message))
-          this.status = 'error'
-          this.payingInfo = error.message
-          this.lock = false
-          return
-        })
-      }
-    })
+      })
+    } catch (error) {
+      this.lock = false
+      log.scope('handerPay.error').warn(JSON.stringify(error.message))
+      MessageBox.confirm('请安ESC关闭重试' + error.message, '位置错误', {
+        type: 'error',
+        showCancelButton: false,
+        showConfirmButton: false,
+        center: true
+      }).then(() => {
+      }).catch(() => {
+      })
+    }
   },
   async handerOrder() {
     if (this.order.waitPay === 0) {
