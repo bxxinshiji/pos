@@ -33,8 +33,8 @@ const hander = {
     }
     let amount = Math.floor(self.$refs.foots.input * 100)
 
-    // 输入支付金额 (默认应收款金额)
-    amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
+    // 输入支付金额 (默认应收款金额) amount为空时 amount 大于10W时
+    amount = (amount === 0 || isNaN(amount) || amount > 100000 * 100) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
     store.dispatch('terminal/changeIsPay', true) // 开启支付页面
     self.$message({
