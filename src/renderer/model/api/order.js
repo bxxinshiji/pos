@@ -26,6 +26,20 @@ export function List(listQuery) {
     })
   })
 }
+export function Delete(order) {
+  return new Promise((resolve, reject) => {
+    Order.destroy({
+      where: {
+        orderNo: order.orderNo
+      }
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export function All(listQuery) {
   return new Promise((resolve, reject) => {
     Order.findAndCountAll({

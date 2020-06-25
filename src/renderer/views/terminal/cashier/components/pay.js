@@ -55,9 +55,12 @@ const EndOrder = async(order, self) => {
     order.status = true // 订单完结
     self.handleClose() // 关闭页面
   }).catch(error => {
+    log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(order))
     // 删除出错关联插入订单数据
-    // Order.destroy({ where: { orderNo: order.orderNo }})
-    MessageBox.confirm('未知错误请重新下单,或加载订单。' + error.message, '创建订单错误', {
+    Order.destroy({ where: { orderNo: order.orderNo }}).catch(error => {
+      log.scope('EndOrder.error.destroy').error(JSON.stringify(error.message))
+    })
+    MessageBox.confirm('请重新合计。' + error.message, '创建订单错误', {
       type: 'error',
       showCancelButton: false,
       showConfirmButton: false,
@@ -412,9 +415,7 @@ const hander = {
   async handerOrder() {
     if (this.order.waitPay === 0) {
       await this.handerPays(this.order.pays).then(async() => { // 处理订单支付
-        await EndOrder(this.order, this).catch(error => {
-          log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(this.order))
-        })
+        await EndOrder(this.order, this)
       }).catch(error => {
         log.scope('handerPays.error').error(JSON.stringify(error.message))
         MessageBox.confirm(error.message, '支付处理失败', {

@@ -26,11 +26,11 @@ export function syncOrder(order) {
         store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
         resolve(response)
       }).catch(error => {
-        log.scope('syncOrder.Create').info(JSON.stringify(error.message))
+        log.scope('syncOrder.Create').info(JSON.stringify(error.message) + JSON.stringify(order))
         reject(error)
       })
     }).catch(error => {
-      log.scope('syncOrder.SQL2000OrderSQL').info(JSON.stringify(error.message))
+      log.scope('syncOrder.SQL2000OrderSQL').info(JSON.stringify(error.message) + JSON.stringify(order))
       reject(error)
     })
   })

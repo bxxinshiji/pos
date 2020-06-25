@@ -127,6 +127,7 @@ export default {
       Object.keys(payKeyboard).map(key => {
         if (payKeyboard[key]) {
           Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
+            log.scope('Pay.Mousetrap').info(payKeyboard[key] + '' + key)
             this.handerPay(key)
           })
         }

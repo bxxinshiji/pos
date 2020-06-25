@@ -92,9 +92,12 @@
                   <el-button type="warning" @click="handerPrint(currentOrder)">
                     3 打印订单
                   </el-button>
+                  <el-button v-if="username === '0000'" type="danger" @click="handerDelete(currentOrder)">
+                    4 删除订单
+                  </el-button>
             </div>
           </el-col>
-          <el-col :span="15.5">
+          <el-col :span="15.5"  v-if="username !== '0000'">
             <div class="black-info ">
                   快捷键: 2 发布、3 打印、 PgUp 首页、 PgDn 最后一页、← 上页、→ 下页、↑ 向上、↓ 向下
             </div>
@@ -106,7 +109,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List, UpdateOrderNo } from '@/model/api/order'
+import { List, Delete, UpdateOrderNo } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
 import { AddPrint } from '@/model/api/order'
 import print from '@/utils/print'
@@ -237,6 +240,19 @@ export default {
         })
       })
     },
+    handerDelete(currentOrder) {
+      log.scope('order.handerDelete').info(JSON.stringify(currentOrder))
+      Delete(currentOrder).then(response => {
+        this.$notify({
+          title: '删除发布成功',
+          message: '订单:' + currentOrder.orderNo,
+          type: 'success'
+        })
+        this.getList()
+      }).catch(error => {
+        log.scope('order.handerDelete').error(JSON.stringify(error.message))
+      })
+    },
     keydown(e) {
       if (e.key === 'ArrowUp') { // 向上
         this.handerCurrentRow(-1)
@@ -252,6 +268,27 @@ export default {
       }
       if (e.key === '3' && this.currentOrder) { // 打印订单
         this.handerPrint(this.currentOrder)
+      }
+      if (e.key === '4' && this.currentOrder) { // 删除订单
+        if (this.username !== '0000') {
+          this.$message({
+            type: 'warning',
+            message: '没有删除订单权限'
+          })
+          return
+        }
+        this.$confirm('是否删除订单, 是否继续?【高危】', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handerDelete(this.currentOrder)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       }
     },
     destroyed() {

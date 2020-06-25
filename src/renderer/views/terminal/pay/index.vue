@@ -82,13 +82,13 @@
                   <el-button type="primary" @click="handerPayQuery(currentOrder)">
                     1 支付查询
                   </el-button>
-                  <el-button type="warning" @click="handerLoadOrder(currentOrder)">
+                  <el-button v-if="username==='0000'" type="warning" @click="handerLoadOrder(currentOrder)">
                     2 载入订单
                   </el-button>
             </div>
           </el-col>
           <el-col :span="15.5">
-            <div class="black-info ">
+            <div class="black-info " v-if="username!=='0000'">
                   快捷键: 1、支付查询  2、载入订单、 PgUp 首页、 PgDn 最后一页、← 上页、→ 下页、↑ 向上、↓ 向下
             </div>
           </el-col>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Query } from '@/api/pay'
 import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -132,6 +132,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'username'
+    ]),
     ...mapState({
       scanPayId: state => state.settings.scanPayId
     })
@@ -272,6 +275,13 @@ export default {
         this.handerPayQuery(this.currentOrder)
       }
       if (e.key === '2' && this.currentOrder) { // 载入订单
+        if (this.username !== '0000') {
+          this.$message({
+            type: 'warning',
+            message: '没有载入订单权限'
+          })
+          return
+        }
         this.$confirm('是否载入订单, 是否继续?【请勿重复载入一个订单】', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
