@@ -22,6 +22,7 @@ const hander = {
             title: '商品禁止销售',
             message: '商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'
           })
+          log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'))
           return
         }
         // 默认没有商品数量没有总价时 商品数量为1
@@ -33,7 +34,6 @@ const hander = {
           store.dispatch('terminal/changeIsInputPrice', true)
           store.dispatch('terminal/changeCacheGoods', goods)
         } else {
-          log.scope('goods.addGoods').info(JSON.stringify(goods.dataValues))
           this.$refs.goods.addGoods(goods.dataValues)
         }
       } else {
@@ -41,12 +41,14 @@ const hander = {
           title: '未找到商品',
           message: '商品: ' + value + ' 信息不存在, 请重试。'
         })
+        log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 信息不存在, 请重试。'))
       }
     }).catch(error => {
       this.MessageBox({
         title: '条码错误',
         message: error
       })
+      log.scope('cashier.item.addGoods').error(JSON.stringify(error.message))
     })
   },
   getBarcodeGoods(value) { // 通过条形码获取商品

@@ -62,6 +62,7 @@ import { md5Sign } from '@/utils/crypto'
 
 import sequelize from '@/model/order'
 const Snapshots = sequelize.models.snapshot
+import log from '@/utils/log'
 
 export default {
   name: 'goods',
@@ -138,6 +139,7 @@ export default {
     // 增加商品
     addGoods(goods) {
       this.handler(goods)
+      log.scope('cashier.item.addGoods').info(JSON.stringify(goods))
       this.goods.unshift(goods)
       this.resetCurrentRow()
     },

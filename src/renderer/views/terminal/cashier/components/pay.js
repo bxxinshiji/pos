@@ -316,7 +316,7 @@ const hander = {
       switch (data.order.stauts) {
         case 'CLOSED':
           StautsUpdatePayOrder(pay.orderNo, -1)
-          reject('订单已关闭')
+          reject(new Error('订单已关闭'))
           break
         case 'USERPAYING':
           if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
@@ -402,7 +402,7 @@ const hander = {
         }).catch(error => {
           log.scope('payHander.error').warn(JSON.stringify(error.message))
           this.status = 'error'
-          this.payingInfo = error
+          this.payingInfo = error.message
           this.lock = false
           return
         })

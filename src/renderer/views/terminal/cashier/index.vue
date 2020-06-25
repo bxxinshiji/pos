@@ -164,6 +164,13 @@ export default {
     },
     async handerInput(value) {
       log.scope('cashier.handerInput').info(JSON.stringify(value))
+      if (this.isPay) {
+        this.$message({
+          type: 'warning',
+          message: '支付锁定中禁止输入'
+        })
+        return
+      }
       // 完成订单状态清空订单
       if (this.order.status) {
         await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
@@ -176,7 +183,7 @@ export default {
       } else if (value) { // 添加商品
         var number = /^[0-9]*$/ // 正则匹配正整数
         if (number.test(value)) {
-          this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
+          // this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
           this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
         } else {
           this.$message({
@@ -200,7 +207,6 @@ export default {
       })
     },
     handerCacheGoods(cacheGoods) { // 缓存商品价格处理
-      log.scope('cashier.addGoods.handerCacheGoods').info(JSON.stringify(cacheGoods))
       this.$refs.goods.addGoods(cacheGoods)
     },
     keydown(e) {
