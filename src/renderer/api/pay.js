@@ -42,7 +42,7 @@ export function Refund(data) {
   })
 }
 
-export function SyncPayOrder() { // 同步所有代付款订单状态
+export function SyncPayOrder() { // 同步所有待付款订单状态
   List({
     where: { stauts: 0 }
   }).then(response => {

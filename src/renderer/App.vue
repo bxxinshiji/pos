@@ -41,7 +41,7 @@ export default {
       }, 30 * 1000)
       setInterval(() => {
         SyncPayOrder()
-      }, 60 * 1000) // 1 分钟同步一次代付款订单状态
+      }, 60 * 1000) // 1 分钟同步一次待付款订单状态
     },
     async logout() {
       await this.$store.dispatch('user/logout')

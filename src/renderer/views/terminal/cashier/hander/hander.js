@@ -32,7 +32,12 @@ const hander = {
       return
     }
     let amount = Math.floor(self.$refs.foots.input * 100)
-
+    if (amount > 100000 * 100) {
+      self.$message({
+        type: 'warning',
+        message: '手动输入付款金额大于 10W 自动转为待付款金额。'
+      })
+    }
     // 输入支付金额 (默认应收款金额) amount为空时 amount 大于10W时
     amount = (amount === 0 || isNaN(amount) || amount > 100000 * 100) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额

@@ -56,7 +56,7 @@
               v-if="Number(scope.row.stauts)===0"
               size="medium"
               type="warning"
-            >代付款</el-tag>
+            >待付款</el-tag>
             <el-tag 
               v-if="Number(scope.row.stauts)===1"
               size="medium"
