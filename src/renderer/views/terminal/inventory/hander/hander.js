@@ -61,7 +61,7 @@ const hander = {
             }).catch(error => {
               Notification({
                 title: '上传盘点订单数据错误',
-                message: error,
+                message: error.message,
                 type: 'error',
                 duration: 15000
               })

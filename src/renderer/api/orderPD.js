@@ -9,7 +9,7 @@ export function syncOrder(orders) {
       await sql.default.Create(orders).then(async response => {
         resolve(response)
       }).catch(error => {
-        reject(error.message)
+        reject(error)
       })
     }).catch(error => {
       reject(error)

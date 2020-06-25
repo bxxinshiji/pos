@@ -220,8 +220,8 @@ export default {
           type: 'success'
         })
         this.getList()
-      }).catch(err => {
-        this.$confirm(err, '订单发布失败,是否确认使用新订单编号？', {
+      }).catch(error => {
+        this.$confirm(error.message, '订单发布失败,是否确认使用新订单编号？', {
           type: 'error',
           dangerouslyUseHTMLString: true,
           center: true

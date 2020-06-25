@@ -3,6 +3,7 @@ import { OrderNo as SQL2000OrderNo } from '@/sql2000/utils/order'
 const SQL2000OrderSQL = import('@/sql2000/model/order')
 import sequelize from '@/model/order'
 const Order = sequelize.models.order
+import log from '@/utils/log'
 /**
  * OrderNo 订单编号定义
  * @returns {Promise}
@@ -25,9 +26,11 @@ export function syncOrder(order) {
         store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
         resolve(response)
       }).catch(error => {
-        reject(error.message)
+        log.scope('syncOrder.Create').info(JSON.stringify(error.message))
+        reject(error)
       })
     }).catch(error => {
+      log.scope('syncOrder.SQL2000OrderSQL').info(JSON.stringify(error.message))
       reject(error)
     })
   })
