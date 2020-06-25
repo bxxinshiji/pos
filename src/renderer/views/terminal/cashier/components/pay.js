@@ -408,7 +408,7 @@ const hander = {
             await this.handerOrder() // 处理订单支付
             this.lock = false
           }).catch(error => {
-            log.scope('payHander.error').warn(JSON.stringify(error.message))
+            log.scope('payHander.error').error(JSON.stringify(error.message))
             this.status = 'error'
             this.payingInfo = error.message
             this.lock = false
@@ -418,7 +418,7 @@ const hander = {
       })
     } catch (error) {
       this.lock = false
-      log.scope('handerPay.error').warn(JSON.stringify(error.message))
+      log.scope('handerPay.error').error(JSON.stringify(error.message))
       MessageBox.confirm('请安ESC关闭重试' + error.message, '位置错误', {
         type: 'error',
         showCancelButton: false,
