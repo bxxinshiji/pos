@@ -30,14 +30,7 @@ export default {
   watch: {
     pays: {
       handler: function(val, oldVal) {
-        let getAmount = 0
-        let amount = 0
-        this.pays.forEach(pay => {
-          getAmount = getAmount + (pay.getAmount ? pay.getAmount : pay.amount)
-          amount = amount + pay.amount
-        })
-        this.getAmount = getAmount
-        this.amount = amount
+        this.handlerPays()
       },
       deep: true
     }
@@ -45,8 +38,19 @@ export default {
   created() {
   },
   mounted() {
+    this.handlerPays()
   },
   methods: {
+    handlerPays() {
+      let getAmount = 0
+      let amount = 0
+      this.pays.forEach(pay => {
+        getAmount = getAmount + (pay.getAmount ? pay.getAmount : pay.amount)
+        amount = amount + pay.amount
+      })
+      this.getAmount = getAmount
+      this.amount = amount
+    }
   }
 }
 </script>

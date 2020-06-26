@@ -28,7 +28,7 @@
         <el-col :span="10">
           <div v-if="order.pays.length>0">
             <div v-for="(pay,index) in order.pays" :key="index" class="pay-list">
-              <div class="name"><span class="warning">{{pay.name}} </span></div>
+              <div class="name"><svg-icon :icon-class="pay.type" :class="pay.type"/> <span class="warning">{{pay.name}} </span></div>
               <div class="pay">付款: <span class="success">{{(pay.amount / 100).toFixed(2) }} </span></div>
               <div class="change">实收: <span class="brand"> {{((pay.getAmount?pay.getAmount:pay.amount) / 100).toFixed(2) }} </span></div>
               <!-- <div>找零: <span>{{((pay.getAmount - pay.amount) / 100).toFixed(2) }} </span></div> -->
@@ -146,7 +146,6 @@ export default {
 .floor{
   width: 100%;
   margin-top: 2vh;
-  color: #ffffff;
 }
 
 //*****//
@@ -205,16 +204,16 @@ export default {
   justify-content: space-between;
   font-size: (100vh/100vw)*2vw;
   .name{
-    width: 17%;
+    width: 22%;
   }
   .pay{
-    width: 35%;
+    width: 33%;
   }
   .change{
-    width: 35%;
+    width: 33%;
   }
   .status{
-    width: 13%;
+    width: 12%;
     text-align:right;
   }
 }
@@ -237,5 +236,18 @@ export default {
   .totals {
     font-size: (100vh/100vw)*7vw;
   }
+}
+// 支付方式图标颜色
+.scanPay{
+  color: #67C23A;
+}
+.remoteCardPay{
+  color: #ff6f00;
+}
+.cardPay{
+  color: #ff6f00;
+}
+.cashPay{
+  color: #0fb9b1;
 }
 </style>
