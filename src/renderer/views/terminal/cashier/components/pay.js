@@ -360,6 +360,7 @@ const hander = {
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
     try {
       this.initInfo()
+      log.scope('handerPay.initInfo').info(id + ' ' + code, JSON.stringify(this.pays)) // debug 可注释
       let payInfo = {}
       this.pays.forEach(pay => {
         if (String(pay.id) === String(id)) {

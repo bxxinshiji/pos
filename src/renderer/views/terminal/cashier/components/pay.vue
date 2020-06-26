@@ -49,7 +49,6 @@ import log from '@/utils/log'
 
 import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
-import Pay from '@/model/pay'
 import { useTime } from '@/utils'
 
 export default {
@@ -58,7 +57,6 @@ export default {
   },
   data() {
     return {
-      pays: [],
       lock: false, // 支付锁[扫码、会员卡会锁定]
       info: '等待付款操作',
       payingInfo: '',
@@ -71,6 +69,7 @@ export default {
   computed: {
     ...mapState({
       isPay: state => state.terminal.isPay,
+      pays: state => state.terminal.pays,
       order: state => state.terminal.order,
       payAmount: state => state.terminal.payAmount,
       scanStoreName: state => state.settings.scanStoreName,
@@ -91,7 +90,6 @@ export default {
     }
   },
   created() {
-    this.initPay()
     this.registerMemory()
     this.registerMousetrap()
   },
@@ -106,18 +104,6 @@ export default {
   },
   methods: {
     ...pay,
-    initPay() {
-      Pay.models.pay.findAll().then(pays => { // 初始化支付
-        pays.forEach(item => {
-          this.pays.push({
-            id: String(item.id ? item.id : '0'),
-            name: item.name ? item.name : '',
-            key: payKeyboard[item.id],
-            type: item.type ? item.type : ''
-          })
-        })
-      })
-    },
     initInfo() {
       this.status = 'paying'
       this.info = '付款中'
@@ -127,7 +113,7 @@ export default {
       Object.keys(payKeyboard).map(key => {
         if (payKeyboard[key]) {
           Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
-            log.scope('Pay.Mousetrap').info(payKeyboard[key] + '' + key)
+            log.scope('Pay.Mousetrap').info('【' + payKeyboard[key] + '】' + key)
             this.handerPay(key)
           })
         }

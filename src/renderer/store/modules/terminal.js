@@ -5,6 +5,7 @@ const Mousetrap = require('mousetrap')
 require('@/utils/mousetrap-global-bind')
 const OrderModel = import('@/model/api/order')
 const Order = import('@/api/order')
+import Pay from '@/model/pay'
 
 const state = {
   order: {
@@ -27,6 +28,7 @@ const state = {
   currentGoods: {}, // 商品列表页面选中的商品
   isInputPrice: false, // 自定义输入商品价格页面控制
   isPay: false, // 支付页面悬浮
+  pays: [], // 支付类型 【现金、银行卡、扫码支付等】
   payAmount: 0,
   orderInfo: { // 订单汇总信息
     count: 0, // 总数
@@ -42,6 +44,9 @@ const state = {
 const mutations = {
   SET_ORDER: (state, order) => {
     state.order = order
+  },
+  SET_PAYS: (state, pays) => {
+    state.pays = pays
   },
   SET_ORDER_KEY: (state, { key, value }) => { // 根据 key 设置订单参数
     if (state.order.hasOwnProperty(key)) {
@@ -111,6 +116,20 @@ const actions = {
           reject(error)
         })
       })
+    })
+  },
+  changeInitPays({ state, commit }) {
+    Pay.models.pay.findAll().then(res => { // 初始化支付
+      const pays = []
+      res.forEach(item => {
+        pays.push({
+          id: String(item.id ? item.id : '0'),
+          name: item.name ? item.name : '',
+          key: store.state.settings.payKeyboard[item.id],
+          type: item.type ? item.type : ''
+        })
+      })
+      commit('SET_PAYS', pays)
     })
   },
   handerOrder({ state, commit }) { // 处理更新订单相关

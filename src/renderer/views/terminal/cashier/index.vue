@@ -56,7 +56,6 @@ import InputPrice from './components/inputPrice.vue'
 
 // import { Pay, Refund } from '@/api/pay'
 import { Get as VipCardGet } from '@/api/vip_card'
-import { queueSyncOrder } from '@/api/order'
 import log from '@/utils/log'
 export default {
   components: { Heads, Item, Foots, Fixed, Pay, InputPrice },
@@ -90,9 +89,7 @@ export default {
     } else {
       this.initOrder()
     }
-    setInterval(() => { // 自动同步订单
-      queueSyncOrder()
-    }, 5000)
+    this.$store.dispatch('terminal/changeInitPays') // 初始化付款信息
   },
   watch: {
     order: {
