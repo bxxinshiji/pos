@@ -61,6 +61,7 @@ export default {
 @import "~@/assets/less/atom/syntax-variables.less";
 .heads{
   height: 8vh;
+  color: #ffffff;
 }
 .user{
   height: 8vh;

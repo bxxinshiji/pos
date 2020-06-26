@@ -7,6 +7,7 @@
         <el-col class="logo" :span="10">
           <svg-icon icon-class="xinshiji" />  
           <span>新世纪超市</span>
+          <span>盘点</span>
         </el-col>
         <el-col class="stauts" :span="7">
             <el-row> 
@@ -64,6 +65,7 @@ export default {
   display: flex;
   flex-direction:column;
   justify-content: flex-end;
+  color: #ffffff;
 }
 .logo{
   display: -webkit-flex; /* Safari */
@@ -75,6 +77,7 @@ export default {
     margin-left: 2vh;
     font-size: 5vh;
   }
+  color: #ffffff;
 }
 .stauts{
   height: 8vh;
@@ -82,6 +85,7 @@ export default {
   display: flex;
   flex-direction:column;
   justify-content: flex-end;
+  color: #ffffff;
   .el-row{
     display: -webkit-flex; /* Safari */
     display: flex;

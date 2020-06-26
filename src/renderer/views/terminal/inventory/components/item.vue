@@ -162,7 +162,7 @@ export default {
     line-height:3vh;
 }
 .el-table /deep/ th{
-    color: @el-warning;
+    color: #ffffff;
     font-size:2.5vh;
     background-color: #000;
 }
@@ -171,7 +171,7 @@ export default {
 }
 .el-table /deep/ tr{
     font-size:2.5vh;
-    color: @el-success;
+    color: #ffffff;
     background-color: #000;
 }
 .el-table {

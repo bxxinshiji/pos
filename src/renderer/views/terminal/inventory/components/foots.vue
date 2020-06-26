@@ -189,6 +189,7 @@ export default {
 .floor{
   width: 100%;
   margin-top: 2vh;
+  color: #ffffff;
 }
 
 //*****//
