@@ -15,8 +15,8 @@ import orderSequelize from '@/model/order'
 const Order = orderSequelize.models.order
 
 // 完结订单
-const EndOrder = async(order, self) => {
-  await Order.create(order, {
+const EndOrder = (order, self) => {
+  Order.create(order, {
     include: [Order.Goods, Order.Pays]
   }).then(orderRes => {
     log.scope('EndOrder.then').info(JSON.stringify(order))
@@ -406,7 +406,7 @@ const hander = {
             this.order.pays.push(response)
             this.$store.dispatch('terminal/handerOrder') // 更新订单信息
             this.payingInfo = '支付成功订单处理中'
-            await this.handerOrder() // 处理订单支付
+            this.handerOrder() // 处理订单支付
             this.lock = false
           }).catch(error => {
             log.scope('payHander.error').error(JSON.stringify(error.message))
@@ -430,10 +430,10 @@ const hander = {
       })
     }
   },
-  async handerOrder() {
+  handerOrder() {
     if (this.order.waitPay === 0) {
-      await this.handerPays(this.order.pays).then(async() => { // 处理订单支付
-        await EndOrder(this.order, this)
+      this.handerPays(this.order.pays).then(() => { // 处理订单支付
+        EndOrder(this.order, this)
       }).catch(error => {
         log.scope('handerPays.error').error(JSON.stringify(error.message))
         MessageBox.confirm(error.message, '支付处理失败', {
