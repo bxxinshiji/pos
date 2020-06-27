@@ -19,21 +19,9 @@ export function List(listQuery) {
 }
 
 // 查找创建订单
-export function findCreate(order, pay) {
+export function Create(pay) {
   return new Promise((resolve, reject) => {
-    PayOrder.create({ // 不存在创建订单
-      orderNo: pay.orderNo,
-      method: pay.method,
-      authCode: pay.authCode,
-      totalAmount: pay.totalAmount,
-      operatorId: pay.operatorId,
-      terminalId: pay.terminalId,
-      storeName: pay.storeName,
-      storeId: pay.storeId,
-      title: pay.title,
-      stauts: false,
-      order: order
-    }).then(response => {
+    PayOrder.create(pay).then(response => {
       resolve(response)
     }).catch(error => {
       reject(error)

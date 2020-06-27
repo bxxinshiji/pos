@@ -9,10 +9,14 @@ import print from '@/utils/print'
 import escpos from '@/utils/escpos'
 import log from '@/utils/log'
 
-import { findCreate as findCreatePayOrder, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
+import { Create as CreatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
 import orderSequelize from '@/model/order'
 const Order = orderSequelize.models.order
+
+const CLOSED = -1
+const USERPAYING = 0
+const SUCCESS = 1
 
 // 完结订单
 const EndOrder = (order, self) => {
@@ -189,7 +193,7 @@ const hander = {
     })
   },
   payAopF2F(pay) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const code = pay.code
       // pay.orderNo = uuidv4().replace(/\-/g, '') // 支付宝、微信等支付指定订单单号[UUID生成]
       pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
@@ -204,7 +208,7 @@ const hander = {
       }
       if (this.method) {
         // 查找创建 PayOrder
-        await findCreatePayOrder(this.order, {
+        CreatePayOrder({
           orderNo: pay.orderNo,
           method: this.method,
           authCode: pay.code,
@@ -212,30 +216,43 @@ const hander = {
           totalAmount: pay.amount,
           operatorId: this.username,
           terminalId: this.terminal,
-          storeName: this.scanStoreName
-        }).then(async res => {
+          storeName: this.scanStoreName,
+          stauts: USERPAYING,
+          order: this.order
+        }).then(payModel => {
+          log.scope('CreatePayOrder.then').info(JSON.stringify(payModel))
           const pay = {
-            orderNo: res.orderNo,
-            method: res.method,
-            authCode: res.authCode,
-            title: res.title,
-            totalAmount: res.totalAmount,
-            operatorId: res.operatorId,
-            terminalId: res.operatorId,
-            storeName: res.storeName,
-            storeId: res.storeId
+            orderNo: payModel.orderNo,
+            method: payModel.method,
+            authCode: payModel.authCode,
+            title: payModel.title,
+            totalAmount: payModel.totalAmount,
+            operatorId: payModel.operatorId,
+            terminalId: payModel.terminalId,
+            storeName: payModel.storeName,
+            storeId: payModel.storeId
           }
-          await this.handerAopF2F(pay).then(response => {
-            if (response) {
-              StautsUpdatePayOrder(pay.orderNo, response).catch(error => {
-                log.scope('handerAopF2F.StautsUpdatePayOrder').error(JSON.stringify(error.message))
-              })
+          this.handerAopF2F(pay).then(response => {
+            payModel.stauts = response
+            payModel.save().then(res => {
+              log.scope('payModel.save').info(JSON.stringify(res))
+            }).catch(error => {
+              log.scope('payModel.save').error(JSON.stringify(error.message))
+            })
+            switch (response) {
+              case CLOSED:
+                reject(new Error('订单已关闭!'))
+                break
+              case SUCCESS:
+                resolve(true)
+                break
             }
-            resolve(response)
           }).catch(error => {
+            log.scope('handerAopF2F.catch').error(JSON.stringify(error.message))
             reject(error)
           })
         }).catch(error => {
+          log.scope('findCreatePayOrder.catch').error(JSON.stringify(error.message))
           reject(error)
         })
       } else {
@@ -244,12 +261,12 @@ const hander = {
     })
   },
   handerAopF2F(pay) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.payingInfo = '扫码支付下单中'
-      await AopF2F(pay).then(async response => { // 远程支付开始
+      AopF2F(pay).then(response => { // 远程支付开始
         log.scope('handerAopF2FQuery.AopF2F').info(JSON.stringify(pay) + '\n' + JSON.stringify(response))
         this.payingInfo = '下单成功查询中'
-        await this.handerAopF2FQuery(pay).then(response => {
+        this.handerAopF2FQuery(pay).then(response => {
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -262,7 +279,7 @@ const hander = {
           await Sleep((sleep - 1) * 1000)// 等待
           this.payingInfo = '重新下单中'
           if (this.isPay) { // 支付页面关闭后不再下单
-            await this.handerAopF2F(pay).then(response => {
+            this.handerAopF2F(pay).then(response => {
               resolve(response)
             }).catch(error => {
               reject(error)
@@ -270,7 +287,7 @@ const hander = {
           }
         } else {
           this.payingInfo = '下单错误支付查询中'
-          await this.handerAopF2FQuery(pay).then(response => {
+          this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
@@ -280,10 +297,10 @@ const hander = {
     })
   },
   handerAopF2FQuery(pay) {
-    return new Promise(async(resolve, reject) => {
-      await Query(pay).then(async response => {
+    return new Promise((resolve, reject) => {
+      Query(pay).then(response => {
         log.scope('handerAopF2FQuery.Query').info(JSON.stringify(pay) + '\n' + JSON.stringify(response))
-        await this.handerAopF2FResponse(response, pay).then(res => {
+        this.handerAopF2FResponse(response, pay).then(res => {
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -301,7 +318,7 @@ const hander = {
         await Sleep((sleep - 1) * 1000)// 等待
         this.payingInfo = '查询错误再次支付查询中'
         if (this.isPay) { // 支付页面关闭后不再查询
-          await this.handerAopF2FQuery(pay).then(response => {
+          this.handerAopF2FQuery(pay).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
@@ -318,8 +335,7 @@ const hander = {
       const data = response.data
       switch (data.order.stauts) {
         case 'CLOSED':
-          StautsUpdatePayOrder(pay.orderNo, -1)
-          reject(new Error('订单已关闭'))
+          resolve(CLOSED)
           break
         case 'USERPAYING':
           if (this.status === 'waitClose') { // 从关闭等待状态进入关闭状态
@@ -329,7 +345,7 @@ const hander = {
           await Sleep((sleep - 1) * 1000)// 等待
           this.payingInfo = '扫码支付查询中'
           if (this.isPay) { // 支付页面关闭后不再查询
-            await this.handerAopF2FQuery(pay).then(response => {
+            this.handerAopF2FQuery(pay).then(response => {
               resolve(response)
             }).catch(error => {
               reject(error)
@@ -337,7 +353,7 @@ const hander = {
           }
           break
         case 'SUCCESS':
-          resolve(true)
+          resolve(SUCCESS)
           break
       }
     })
@@ -360,7 +376,7 @@ const hander = {
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
     try {
       this.initInfo()
-      log.scope('handerPay.initInfo').info(id + ' ' + code, JSON.stringify(this.pays)) // debug 可注释
+      log.scope('handerPay.initInfo').info(id) // debug 可注释
       let payInfo = {}
       this.pays.forEach(pay => {
         if (String(pay.id) === String(id)) {
