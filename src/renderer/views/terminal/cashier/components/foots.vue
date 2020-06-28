@@ -44,7 +44,7 @@
             <el-row>
               <el-col :span="12" class="good">
                 <span>单价: {{ goods.price?(goods.price / 100).toFixed(2):'' }}</span>
-                <span>小计: {{ goods.price?(goods.total / 100).toFixed(2):'' }}</span>
+                <span>小计: {{ goods.total?(goods.total / 100).toFixed(2):'' }}</span>
                 <span>部门: {{ goods.snapshot.depCode }}</span>
               </el-col>
               <el-col :span="12" class="good">
@@ -169,7 +169,6 @@ export default {
   font-size: 2.1vh;
 }
 .good{
-  
   display: flex;
   flex-direction: column;
   span{
@@ -213,7 +212,7 @@ export default {
     width: 33%;
   }
   .status{
-    width: 12%;
+    width: 13%;
     text-align:right;
   }
 }
