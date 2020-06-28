@@ -127,7 +127,7 @@
           </el-col>
           <el-col :span="8" class="orderInfo">
             <span>终端编号: {{ currentOrder.terminal }}</span>
-            <span>打印次数: {{ currentOrder.print }}</span>
+            <span>创建时间: {{ currentOrder.createdAt | parseTime }}</span>
             <span>发布状况: 
               <el-tag 
                 size="mini"
@@ -162,7 +162,7 @@
             <el-table-column property="name" label="付款方式" width="80"></el-table-column>
             <el-table-column property="amount" label="金额" width="100">
               <template slot-scope="scope">
-              {{ (scope.row.amount / 100).toFixed(2) }}1 元
+              {{ (scope.row.amount / 100).toFixed(2) }} 元
             </template>
             </el-table-column>
             <el-table-column property="getAmount" label="实收" width="100">
@@ -265,10 +265,12 @@ export default {
       this.setCurrentRow(this.currentRow)
     },
     // 设置选择航
-    setCurrentRow(value) {
+    async setCurrentRow(value) {
       this.$refs.table.setCurrentRow(this.rows[value])
       if (this.rows[value]) {
         this.currentOrder = this.rows[value]
+        await GoodsSnapshot(this.currentOrder.goods) // 合并商品快照
+        this.currentOrder = this.currentOrder
       }
     },
     handerPrint(currentOrder) {
@@ -337,7 +339,6 @@ export default {
       })
     },
     async handerOrderInfo() { // 显示订单详情
-      console.log(this.currentOrder)
       await GoodsSnapshot(this.currentOrder.goods) // 合并商品快照
       this.dialogOrderInfoVisible = true
       this.currentOrder = this.currentOrder
