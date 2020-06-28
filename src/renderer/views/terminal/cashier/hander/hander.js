@@ -1,6 +1,7 @@
 import store from '@/store'
 import escpos from '@/utils/escpos'
 import { Message } from 'element-ui'
+import log from '@/utils/log'
 
 const hander = {
   // 输入框聚焦
@@ -16,6 +17,7 @@ const hander = {
     self.$refs.goods.handerCurrentRow(+1)
   },
   pay(self) {
+    log.scope('handerPay.initInfo').info(JSON.stringify(self.order)) // debug 可注释
     if (!self.order.goods.length) {
       self.$message({
         type: 'warning',

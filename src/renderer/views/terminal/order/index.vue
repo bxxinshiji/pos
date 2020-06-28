@@ -217,6 +217,7 @@ export default {
     handerSyncOrder(currentOrder) {
       log.scope('order.handerSyncOrder').info(JSON.stringify(currentOrder))
       syncOrder(currentOrder).then(response => { // 同步订单
+        currentOrder.publish = true
         this.$notify({
           title: '订单发布成功',
           message: '订单:' + this.currentOrder.orderNo,

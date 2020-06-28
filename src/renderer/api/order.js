@@ -16,14 +16,8 @@ export async function OrderNo(terminal, type) {
  */
 export function syncOrder(order) {
   return new Promise(async(resolve, reject) => {
-    await SQL2000OrderSQL.then(async sql => {
-      await sql.default.Create(order).then(async response => {
-        await Order.update({ // 本地订单状态改为报送服务器
-          publish: true
-        }, {
-          where: { orderNo: order.orderNo }
-        })
-        store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+    SQL2000OrderSQL.then(sql => {
+      sql.default.Create(order).then(async response => {
         resolve(response)
       }).catch(error => {
         log.scope('syncOrder.Create').info(JSON.stringify(error.message) + JSON.stringify(order))
@@ -44,10 +38,16 @@ export function queueSyncOrder() {
     Order.findAll({
       where: { publish: false },
       include: [Order.Goods, Order.Pays]
-    }).then(async response => {
+    }).then(response => {
       for (let index = 0; index < response.length; index++) {
         const element = response[index]
-        await syncOrder(element).then(res => {
+        syncOrder(element).then(res => {
+          Order.update({ // 本地订单状态改为报送服务器
+            publish: true
+          }, {
+            where: { orderNo: element.orderNo }
+          })
+          store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
           resolve(res)
         }).catch(error => {
           reject(error)

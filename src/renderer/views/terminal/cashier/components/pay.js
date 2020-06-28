@@ -53,7 +53,14 @@ const EndOrder = (order, self) => {
         })
       }
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-      syncOrder(orderRes) // 异步同步服务器订单
+      syncOrder(orderRes).then(res => { // 同步订单信息
+        orderRes.publish = true
+        orderRes.save().catch(error => { // 进行二次保存防止第一次创建没有保存
+          log.scope('syncOrder.orderRes.save').error(JSON.stringify(error.message) + '\n' + JSON.stringify(orderRes))
+        }) // 异步同步服务器订单
+        store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+        log.scope('syncOrder.then').info(JSON.stringify(res))
+      }) // 异步同步服务器订单
     }
     handler()
     order.status = true // 订单完结
@@ -234,7 +241,7 @@ const hander = {
           }
           this.handerAopF2F(pay).then(response => {
             payModel.stauts = response
-            payModel.save().then(res => {
+            payModel.save().then(res => { // 二次保存防止一次保存没有成功
               log.scope('payModel.save').info(JSON.stringify(res))
             }).catch(error => {
               log.scope('payModel.save').error(JSON.stringify(error.message))
@@ -379,7 +386,7 @@ const hander = {
       log.scope('handerPay.initInfo').info(id) // debug 可注释
       let payInfo = {}
       this.pays.forEach(pay => {
-        if (String(pay.id) === String(id)) {
+        if (String(pay.id) === String(id)) { // 获取使用的支付方式信息
           if (this.order.type) {
             if (this.order.waitPay > 0) {
               const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
@@ -419,7 +426,7 @@ const hander = {
           }
           log.scope('payHander.payInfo').info(JSON.stringify(payInfo))
           this.payHander(payInfo).then(async response => {
-            this.order.pays.push(response)
+            this.order.pays.push(response) // 增加支付方式
             this.$store.dispatch('terminal/handerOrder') // 更新订单信息
             this.payingInfo = '支付成功订单处理中'
             this.handerOrder() // 处理订单支付
@@ -436,7 +443,7 @@ const hander = {
     } catch (error) {
       this.lock = false
       log.scope('handerPay.error').error(JSON.stringify(error.message))
-      MessageBox.confirm('请安ESC关闭重试' + error.message, '位置错误', {
+      MessageBox.confirm('请安ESC关闭重试' + error.message, '未知错误', {
         type: 'error',
         showCancelButton: false,
         showConfirmButton: false,
