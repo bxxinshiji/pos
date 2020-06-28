@@ -90,8 +90,6 @@ export default {
     }
   },
   created() {
-    this.registerMemory()
-    this.registerMousetrap()
   },
   mounted() {
     if (this.order.waitPay === 0) {
@@ -101,6 +99,8 @@ export default {
     setInterval(() => {
       this.useTime = useTime(this.startTime)
     }, 1000)
+    this.registerMemory()
+    this.registerMousetrap()
   },
   methods: {
     ...pay,
