@@ -32,7 +32,10 @@ sequelize.define('payOrder', {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   },
-  buildOrderNo: Sequelize.STRING, // 绑定的订单编号
+  orderID: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  }, // 绑定的订单id
   order: Sequelize.JSON // 订单数据
 }, {})
 
