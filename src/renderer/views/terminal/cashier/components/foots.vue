@@ -212,7 +212,7 @@ export default {
     width: 33%;
   }
   .status{
-    width: 13%;
+    width: 12%;
     text-align:right;
   }
 }
