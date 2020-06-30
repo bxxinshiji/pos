@@ -57,7 +57,7 @@ const EndOrder = (order, self) => {
         if (pay.type === 'scanPay') {
           UpdateBuildOrderNo(pay.orderNo, orderRes.orderNo).catch(error => {
             log.scope('UpdateBuildOrderNo').error(JSON.stringify(error.message))
-          }) // 异步同步服务器订单
+          }) // 支付订单绑定订单ID
         }
       })
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
