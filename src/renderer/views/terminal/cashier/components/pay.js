@@ -2,6 +2,7 @@ import store from '@/store'
 import { Notification, MessageBox, Message } from 'element-ui'
 import { AopF2F, Query } from '@/api/pay'
 import { syncOrder } from '@/api/order'
+import { UpdateBuildOrderNo } from '@/model/api/payOrder'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
 import { Sleep } from '@/utils'
@@ -52,6 +53,13 @@ const EndOrder = (order, self) => {
           })
         })
       }
+      orderRes.pays.forEach(pay => {
+        if (pay.type === 'scanPay') {
+          UpdateBuildOrderNo(pay.orderNo, orderRes.orderNo).catch(error => {
+            log.scope('UpdateBuildOrderNo').error(JSON.stringify(error.message))
+          }) // 异步同步服务器订单
+        }
+      })
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
       syncOrder(orderRes).then(res => { // 同步订单信息
         orderRes.publish = true

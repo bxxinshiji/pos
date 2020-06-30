@@ -32,12 +32,12 @@
         <el-table-column
           prop="stauts"
           label="支付方式"
-          min-width="70"
+          min-width="75"
         >
           <template slot-scope="scope">
             <span slot="label">
-              <span v-if="scope.row.method=='wechat'"><el-tag :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 微信</el-tag></span>
-              <span v-if="scope.row.method=='alipay'"><el-tag :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 支付宝</el-tag></span>
+              <span v-if="scope.row.method=='wechat'"><el-tag size="small" :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 微信</el-tag></span>
+              <span v-if="scope.row.method=='alipay'"><el-tag size="small" :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 支付宝</el-tag></span>
             </span>
           </template>
         </el-table-column>
@@ -49,21 +49,27 @@
           <template slot-scope="scope">
             <el-tag 
               v-if="Number(scope.row.stauts)===-1"
-              size="medium"
+              size="small"
               type="danger"
             >订单关闭</el-tag>
             <el-tag 
               v-if="Number(scope.row.stauts)===0"
-              size="medium"
+              size="small"
               type="warning"
             >待付款</el-tag>
             <el-tag 
               v-if="Number(scope.row.stauts)===1"
-              size="medium"
+              size="small"
               type="success"
             >支付成功</el-tag>
             
           </template>
+        </el-table-column>
+        <el-table-column
+          label="绑定订单"
+          prop="buildOrderNo"
+          width="115"
+        >
         </el-table-column>
         <el-table-column
           prop="createdAt"
@@ -87,11 +93,11 @@
                   </el-button>
             </div>
           </el-col>
-          <el-col :span="15.5">
+          <!-- <el-col :span="15.5">
             <div class="black-info ">
                   快捷键: 1、支付查询  2、载入订单、 PgUp 首页、 PgDn 最后一页、← 上页、→ 下页、↑ 向上、↓ 向下
             </div>
-          </el-col>
+          </el-col> -->
       </el-row>
     </div>
 </template>
@@ -242,8 +248,15 @@ export default {
       })
     },
     handerLoadOrder(currentOrder) {
-      log.scope('pay.handerLoadOrder').info(JSON.stringify(currentOrder))
+      if (currentOrder.buildOrderNo !== '') {
+        this.$message({
+          type: 'error',
+          message: '已绑定订单不允许载入'
+        })
+        return
+      }
       if (Number(currentOrder.stauts) === 1) {
+        log.scope('pay.handerLoadOrder').info(JSON.stringify(currentOrder))
         const order = currentOrder.order
         order.pays.push({
           payId: this.scanPayInfo.id, // 支付方式
@@ -251,8 +264,8 @@ export default {
           type: this.scanPayInfo.type, // 支付方式
           code: currentOrder.authCode, // 会员卡
           amount: currentOrder.totalAmount, // 支付金额
-          getAmount: '', // 收到的钱[现金可以多少其他不允许]
-          orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
+          getAmount: currentOrder.totalAmount, // 收到的钱[现金可以多少其他不允许]
+          orderNo: currentOrder.orderNo, // 支付宝、微信等支付指定订单单号[UUID生成]
           status: currentOrder.stauts // 现金支付时默认支付状态成功
         })
         this.$store.dispatch('terminal/changeLoadOrder', order)

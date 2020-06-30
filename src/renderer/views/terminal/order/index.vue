@@ -45,7 +45,7 @@
         >
           <template slot-scope="scope">
             <el-tag 
-              size="medium"
+              size="small"
               :type="scope.row.type?'success':'warning'"
             >
              {{ scope.row.type?'销货':'退货' }}
@@ -59,7 +59,7 @@
         >
           <template slot-scope="scope">
             <el-tag 
-              size="medium"
+              size="small"
               :type="scope.row.publish?'success':'danger'"
             >
              {{ scope.row.publish?'发布':'未发布' }}
@@ -174,7 +174,7 @@
             <el-table-column property="status" label="状态">
               <template slot-scope="scope">
                 <el-tag 
-                    size="medium"
+                    size="mini"
                     :type="scope.row.status?'success':'warning'"
                   >
                   {{ scope.row.status?'已支付':'未支付' }}

@@ -32,15 +32,15 @@ sequelize.define('payOrder', {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   },
-  orderID: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0
-  }, // 绑定的订单id
+  buildOrderNo: {
+    type: Sequelize.STRING,
+    defaultValue: ''
+  }, // 绑定的订单编号
   order: Sequelize.JSON // 订单数据
 }, {})
 
 // 初始化数据模型
 sequelize.sync({
-  alter: true
+  // force: true
 })
 export default sequelize

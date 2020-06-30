@@ -45,3 +45,19 @@ export function StautsUpdate(orderNo, stauts) {
     })
   })
 }
+// 更新订单绑定订单编号
+export function UpdateBuildOrderNo(orderNo, buildOrderNo) {
+  return new Promise((resolve, reject) => {
+    PayOrder.update({
+      buildOrderNo: buildOrderNo
+    }, {
+      where: {
+        orderNo: orderNo
+      }
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
