@@ -76,9 +76,9 @@ const EndOrder = (order, self) => {
   }).catch(error => {
     log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(order))
     // 删除出错关联插入订单数据
-    Order.destroy({ where: { orderNo: order.orderNo }}).catch(error => {
-      log.scope('EndOrder.error.destroy').error(JSON.stringify(error.message))
-    })
+    // Order.destroy({ where: { orderNo: order.orderNo }}).catch(error => {
+    //   log.scope('EndOrder.error.destroy').error(JSON.stringify(error.message))
+    // })
     MessageBox.confirm('请重新合计。' + error.message, '创建订单错误', {
       type: 'error',
       showCancelButton: false,
