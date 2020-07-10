@@ -63,12 +63,13 @@ const EndOrder = (order, self) => {
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
       syncOrder(orderRes).then(res => { // 同步订单信息
         orderRes.publish = true
-        orderRes.save().catch(error => { // 进行二次保存防止第一次创建没有保存
+        orderRes.save().then(() => {
+          store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+        }).catch(error => { // 进行二次保存防止第一次创建没有保存
           log.scope('syncOrder.orderRes.save').error(JSON.stringify(error.message) + '\n' + JSON.stringify(orderRes))
         }) // 异步同步服务器订单
-        store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
         log.scope('syncOrder.then').info(JSON.stringify(res))
-      }) // 异步同步服务器订单
+      })// 异步同步服务器订单
     }
     handler()
     order.status = true // 订单完结

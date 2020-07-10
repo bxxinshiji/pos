@@ -149,15 +149,6 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            print.accounts(true).then(response => { // 打印结账数据
-              this.$message({
-                type: 'success',
-                message: '结账打印成功'
-              })
-            }).catch((error) => {
-              log.scope('accounts').error('用户: ' + this.username + ' 结账打印失败失败,' + JSON.stringify(error.message))
-              console.log(error)
-            })
             accountsSettle().then(response => { // 结账
               Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
               if (Terminal.PosCode) {
@@ -166,13 +157,33 @@ export default {
                   Terminal.UserName = ''
                   Terminal.UserCode = ''
                   Terminal.PreJzDate = new Date()
-                  Terminal.Save()
+                  Terminal.Save().then(() => {
+                    log.scope('accounts').info('用户: ' + this.username + ' 结账成功退出')
+                    print.accounts(true).then(response => { // 打印结账数据
+                      this.$message({
+                        type: 'success',
+                        message: '结账打印成功'
+                      })
+                    }).catch((error) => {
+                      log.scope('accounts').error('用户: ' + this.username + ' 结账打印失败失败,' + JSON.stringify(error.message))
+                      console.log(error)
+                    })
+                    this.logout()
+                  }).catch(error => {
+                    this.$message({
+                      type: 'error',
+                      message: '结账成功保存终端失败: ' + error.message
+                    })
+                    log.scope('Terminal').error('用户: ' + this.username + ' 结账成功保存终端失败,' + JSON.stringify(error.message))
+                  })
                 }).catch(error => {
-                  console.log(error)
+                  this.$message({
+                    type: 'error',
+                    message: '结账成功获取终端失败: ' + error.message
+                  })
+                  log.scope('Terminal').error('用户: ' + this.username + ' 结账成功获取终端失败,' + JSON.stringify(error.message))
                 })
               }
-              log.scope('accounts').info('用户: ' + this.username + ' 结账成功退出')
-              this.logout()
             }).catch(error => {
               log.scope('accounts').error('用户: ' + this.username + ' 结账成功失败,' + JSON.stringify(error.message))
               this.$message({
