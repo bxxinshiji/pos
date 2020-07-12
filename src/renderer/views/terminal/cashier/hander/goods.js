@@ -14,6 +14,7 @@ const hander = {
       })
       return
     }
+    this.lockGoods = true
     this.getGoods(value, isPlucode).then(goods => {
       if (goods) {
         const status = goods.snapshot.status
@@ -23,6 +24,7 @@ const hander = {
             message: '商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'
           })
           log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'))
+          this.lockGoods = false // 添加商品解锁
           return
         }
         // 默认没有商品数量没有总价时 商品数量为1
@@ -35,6 +37,7 @@ const hander = {
           store.dispatch('terminal/changeCacheGoods', goods)
         } else {
           this.$refs.goods.addGoods(goods.dataValues)
+          this.lockGoods = false // 添加商品解锁
         }
       } else {
         this.MessageBox({
@@ -42,6 +45,8 @@ const hander = {
           message: '商品: ' + value + ' 信息不存在, 请重试。'
         })
         log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 信息不存在, 请重试。'))
+        this.lockGoods = false // 添加商品解锁
+        return
       }
     }).catch(error => {
       this.MessageBox({
@@ -49,6 +54,8 @@ const hander = {
         message: error
       })
       log.scope('cashier.item.addGoods').error(JSON.stringify(error.message))
+      this.lockGoods = false // 添加商品解锁
+      return
     })
   },
   getBarcodeGoods(value) { // 通过条形码获取商品

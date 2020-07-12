@@ -5,6 +5,7 @@ import sequelizePay from '@/model/pay'
 import connection from '@/sql2000/model/connection'
 const pool = connection.Pool()
 import store from '@/store'
+import log from '@/utils/log'
 
 const order = {
   sql: '',
@@ -18,7 +19,7 @@ const order = {
     const TranType = item.dataValues.type ? 1 : 3 // 交易类型 [1、销货 2、作废销货 3、退货] 4、作废退货
     const XfType = 0 // 消费类型 [0、普通消费 1、会员消费]
     const YsAmt = (item.dataValues.total / 100).toFixed(2)// 应收金额
-    const YhAmt = (0 / 100).toFixed(2)// 优惠金额
+    const YhAmt = 0 // 优惠金额
     const SsAmt = YsAmt - YhAmt // 实收金额
     const SfAmt = (item.dataValues.getAmount / 100).toFixed(2) // 实付金额
     const CardCode = '' // 会员卡号
@@ -186,6 +187,7 @@ const order = {
       pool.DB.query(sql,
         { type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
+        log.scope('sql2000.order.OrderCheck').info(JSON.stringify(response))
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
         // console.log(response, order)
@@ -200,6 +202,7 @@ const order = {
         }
         resolve(response)
       }).catch(error => {
+        log.scope('sql2000.order.OrderCheck').error(JSON.stringify(error.message))
         reject(error)
       })
     })

@@ -17,7 +17,14 @@ const hander = {
     self.$refs.goods.handerCurrentRow(+1)
   },
   pay(self) {
-    log.scope('handerPay.initInfo').info(JSON.stringify(self.order)) // debug 可注释
+    if (this.lockGoods) { // 商品添加锁
+      self.$message({
+        type: 'warning',
+        message: '请等待商品添加完成,在尝试支付。'
+      })
+      return
+    }
+    log.scope('pay').info(JSON.stringify(self.order)) // debug 可注释
     if (!self.order.goods.length) {
       self.$message({
         type: 'warning',

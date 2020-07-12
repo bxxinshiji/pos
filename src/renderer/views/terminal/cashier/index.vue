@@ -62,6 +62,7 @@ export default {
   name: 'cashier',
   data() {
     return {
+      lockGoods: false // 商品输入锁
     }
   },
   computed: {
@@ -182,6 +183,7 @@ export default {
         if (number.test(value)) {
           // this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
           this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
+          this.lockGoods = false
         } else {
           this.$message({
             type: 'warning',
