@@ -26,6 +26,19 @@ export function List(listQuery) {
     })
   })
 }
+
+export function Create(order) {
+  return new Promise((resolve, reject) => {
+    Order.create(order, {
+      include: [Order.Goods, Order.Pays]
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export function Delete(order) {
   return new Promise((resolve, reject) => {
     Order.destroy({

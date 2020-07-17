@@ -12,70 +12,71 @@ import log from '@/utils/log'
 
 import { Create as CreatePayOrder } from '@/model/api/payOrder'
 import { AddPrint } from '@/model/api/order'
-import orderSequelize from '@/model/order'
-const Order = orderSequelize.models.order
+import { Create as OrderCreate } from '@/model/api/order'
+// import orderSequelize from '@/model/order'
+// const Order = orderSequelize.models.order
 
 const CLOSED = -1
 const USERPAYING = 0
 const SUCCESS = 1
 
-// 完结订单
-const EndOrder = (order, self) => {
-  Order.create(order, {
-    include: [Order.Goods, Order.Pays]
-  }).then(orderRes => {
-    log.scope('EndOrder.then').info(JSON.stringify(order))
-    const handler = async() => {
-      order.pays.forEach(pay => { // 钱箱控制
-        if (pay.name === '现金') {
-          escpos.cashdraw().then(() => {
-            Message({
-              type: 'success',
-              message: '打开钱箱成功'
-            })
-          })
-        }
-      })
-      if (print.switch()) {
-        print.hander(orderRes).then(response => {
-          AddPrint(orderRes) // 增加打印次数
-          Notification({
-            title: '打印成功',
-            message: '订单:' + order.orderNo,
-            type: 'success'
-          })
-        }).catch(err => {
-          Notification({
-            title: '打印失败',
-            message: err.message,
-            type: 'error',
-            duration: 15000
+// OrderSuccess 订单成功后的处理
+const OrderSuccess = (orderRes) => {
+  return new Promise((resolve, reject) => {
+    orderRes.pays.forEach(pay => { // 钱箱控制
+      if (pay.name === '现金') {
+        escpos.cashdraw().then(() => {
+          Message({
+            type: 'success',
+            message: '打开钱箱成功'
           })
         })
       }
-      orderRes.pays.forEach(pay => {
-        if (pay.type === 'scanPay') {
-          UpdateBuildOrderNo(pay.orderNo, orderRes.orderNo).catch(error => {
-            log.scope('UpdateBuildOrderNo').error(JSON.stringify(error.message))
-          }) // 支付订单绑定订单ID
-        }
+    })
+    if (print.switch()) {
+      print.hander(orderRes).then(response => {
+        AddPrint(orderRes) // 增加打印次数
+        Notification({
+          title: '打印成功',
+          message: '订单:' + orderRes.orderNo,
+          type: 'success'
+        })
+      }).catch(err => {
+        Notification({
+          title: '打印失败',
+          message: err.message,
+          type: 'error',
+          duration: 15000
+        })
       })
-      store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-      syncOrder(orderRes).then(res => { // 同步订单信息
-        orderRes.publish = true
-        orderRes.save().then(() => {
-          store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-        }).catch(error => { // 进行二次保存防止第一次创建没有保存
-          log.scope('syncOrder.orderRes.save').error(JSON.stringify(error.message) + '\n' + JSON.stringify(orderRes))
-        }) // 异步同步服务器订单
-        log.scope('syncOrder.then').info(JSON.stringify(res))
-      })// 异步同步服务器订单
     }
-    handler()
+    orderRes.pays.forEach(pay => {
+      if (pay.type === 'scanPay') {
+        UpdateBuildOrderNo(pay.orderNo, orderRes.orderNo).catch(error => {
+          log.scope('UpdateBuildOrderNo').error(JSON.stringify(error.message))
+        }) // 支付订单绑定订单ID
+      }
+    })
+    store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+    syncOrder(orderRes).then(res => { // 同步订单信息
+      orderRes.publish = true
+      orderRes.save().then(() => {
+        store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+      }).catch(error => { // 进行二次保存防止第一次创建没有保存
+        log.scope('syncOrder.orderRes.save').error(JSON.stringify(error.message) + '\n' + JSON.stringify(orderRes))
+      }) // 异步同步服务器订单
+      log.scope('syncOrder.then').info(JSON.stringify(res))
+    })// 异步同步服务器订单
+  })
+}
+// 完结订单
+const EndOrder = (order, self) => {
+  OrderCreate(order).then(orderRes => {
     order.status = true // 订单完结
+    OrderSuccess(orderRes)
     self.handleClose() // 关闭页面
+    log.scope('EndOrder.then').info(JSON.stringify(order))
   }).catch(error => {
-    log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(order))
     // 删除出错关联插入订单数据
     // Order.destroy({ where: { orderNo: order.orderNo }}).catch(error => {
     //   log.scope('EndOrder.error.destroy').error(JSON.stringify(error.message))
@@ -88,6 +89,7 @@ const EndOrder = (order, self) => {
     }).then(() => {
     }).catch(() => {
     })
+    log.scope('EndOrder.error').error(JSON.stringify(error.message) + '\n' + JSON.stringify(order))
   })
 }
 const hander = {
@@ -96,16 +98,6 @@ const hander = {
       if (!pay.status) {
         switch (pay.type) {
           case 'cardPay':
-            // if (pay.code) {
-            //   await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
-            //     pay.status = true
-            //     resolve(pay)
-            //   }).catch(error => {
-            //     reject(error)
-            //   })
-            // } else {
-            //   reject(new Error('请刷卡!会员卡号不允许为空'))
-            // }
             resolve(pay)
             break
           case 'remoteCardPay':
