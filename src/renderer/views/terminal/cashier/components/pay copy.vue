@@ -42,7 +42,6 @@
 const Mousetrap = require('mousetrap')
 require('@/utils/mousetrap-global-bind')
 
-const events = require('events')
 import { mapState } from 'vuex'
 import store from '@/store'
 const payKeyboard = store.state.settings.payKeyboard
@@ -52,23 +51,19 @@ import pay from './pay'
 import onkeydown from '@/utils/onkeydown'
 import { useTime } from '@/utils'
 
-import Pay from '@/utils/pay/index'
-
 export default {
   name: 'pay',
   props: {
   },
   data() {
     return {
-      EventEmitter: new events.EventEmitter(),
       lock: false, // 支付锁[扫码、会员卡会锁定]
       info: '等待付款操作',
       payingInfo: '',
       status: 'wait', // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
       startTime: new Date(), // 支付开始时间
       useTime: 0,
-      method: '', // 支付方式显示
-      model: new Pay()
+      method: '' // 支付方式显示
     }
   },
   computed: {
@@ -84,6 +79,16 @@ export default {
       username: state => state.user.username
     })
   },
+  watch: {
+    status: {
+      handler: function(val, oldVal) {
+        if (this.status === 'off') {
+          this.handleClose()
+        }
+      },
+      deep: true
+    }
+  },
   created() {
   },
   mounted() {
@@ -96,7 +101,6 @@ export default {
     }, 1000)
     this.registerMemory()
     this.registerMousetrap()
-    this.EventOn() // 监听事件开启
   },
   methods: {
     ...pay,
@@ -109,7 +113,7 @@ export default {
       Object.keys(payKeyboard).map(key => {
         if (payKeyboard[key]) {
           Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
-            log.h('info', 'Pay.Mousetrap', '【' + payKeyboard[key] + '】' + key)
+            log.scope('Pay.Mousetrap').info('【' + payKeyboard[key] + '】' + key)
             this.handerPay(key)
           })
         }
@@ -149,13 +153,20 @@ export default {
     },
     keydown(e) {
       if (e.keyCode === 27) { // esc关闭消息
-        this.model.On('cancel', cancel => { // 支付页面关闭监听
-          if (cancel) {
+        setTimeout(() => {
+          if (this.lock) { // 付款锁定中关闭
+            const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
+            setTimeout(() => {
+              this.status = 'waitClose'
+              this.info = '关闭支付中...'
+            }, down)// 等待 5 秒后第一次同步数据
+            this.info = '开始关闭支付请稍等...'
+            log.scope('Pay.keydown').info('esc、waitClose')
+          } else {
             this.handleClose()
+            log.scope('Pay.keydown').info('esc')
           }
-        })
-        this.model.Cancel()
-        log.h('info', 'Pay.keydown', 'esc')
+        }, 1000) // 一秒后执行关闭
       }
     }
   },

@@ -14,5 +14,29 @@ log.fileName = 'main.log'
 log.transports.file.resolvePath = () => {
   return path.join(exePath('log'), log.fileName)
 }
-
+log.h = async(type, scope, message) => {
+  switch (type) {
+    case 'error':
+      log.scope(scope).error(message)
+      break
+    case 'warn':
+      log.scope(scope).warn(message)
+      break
+    case 'info':
+      log.scope(scope).info(message)
+      break
+    case 'verbose':
+      log.scope(scope).verbose(message)
+      break
+    case 'debug':
+      log.scope(scope).debug(message)
+      break
+    case 'silly':
+      log.scope(scope).silly(message)
+      break
+    default:
+      log.scope(scope).info(message)
+      break
+  }
+}
 export default log
