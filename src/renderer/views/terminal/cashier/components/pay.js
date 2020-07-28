@@ -1,19 +1,15 @@
 import store from '@/store'
 import { Notification, MessageBox, Message } from 'element-ui'
-// import { AopF2F, Query } from '@/api/pay'
 import { syncOrder } from '@/api/order'
 import { UpdateBuildOrderNo } from '@/model/api/payOrder'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
-// import { Sleep } from '@/utils'
 import print from '@/utils/print'
 import escpos from '@/utils/escpos'
 import log from '@/utils/log'
 
 import { AddPrint } from '@/model/api/order'
 import { Create as OrderCreate } from '@/model/api/order'
-// import orderSequelize from '@/model/order'
-// const Order = orderSequelize.models.order
 
 // 支付模块
 import config from '@/utils/pay/config' // 现金支付模块
@@ -23,6 +19,7 @@ import Card from '@/utils/pay/card' // 扫码支付模块
 
 const hander = {
   payModelHander(pay) {
+    this.model.InitEventEmitter() // 初始化事件监听防止重复监听
     this.model.On('response', async res => { // 支付状态返回信息
       if (res === config.SUCCESS) { // 支付成功
         pay.status = true

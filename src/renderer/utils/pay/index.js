@@ -21,6 +21,9 @@ class Pay {
       message: '等待付款操作'
     }
   }
+  InitEventEmitter() {
+    this.EventEmitter = new events.EventEmitter()
+  }
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
       this.Pool.Create(order).then(response => {
