@@ -21,7 +21,7 @@
           </span>
           <br>
           <span :class="status">
-            <i v-if="status==='paying'" class="fa fa-spinner fa-pulse"></i> 
+            <i v-if="status==='warning'" class="fa fa-spinner fa-pulse"></i> 
             <i v-if="status==='error'" class="fa fa-times-circle"></i> 
             {{payingInfo}}
           </span>
@@ -64,7 +64,7 @@ export default {
       lock: false, // 支付锁[扫码、会员卡会锁定]
       info: '等待付款操作',
       payingInfo: '',
-      status: 'wait', // 支付状态[wait 等待付款中(蓝色) 、paying 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
+      status: 'wait', // 支付状态[wait 等待付款中(蓝色) warning 付款中(黄色)、error 错误状态[红色]、waitClose 等待关闭[灰色]、off 关闭[黑色]]
       startTime: new Date(), // 支付开始时间
       useTime: 0,
       method: '', // 支付方式显示
@@ -101,7 +101,7 @@ export default {
   methods: {
     ...pay,
     initInfo() {
-      this.status = 'paying'
+      this.status = 'warning'
       this.info = '付款中'
       this.startTime = new Date()
     },
@@ -228,7 +228,7 @@ export default {
 .wait{
   color: #409EFF;
 }
-.paying{
+.warning{
   color: #E6A23C;
 }
 .error{

@@ -118,6 +118,11 @@ class Scan {
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Create.AopF2F.catch', JSON.stringify(error.message))
           if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1)) { // 下单超时并且在付款状态中、非付款状态自动进入查询
+            if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+              this.cancel = true
+              this.parents.CancelEvent(true)
+              reject(error)
+            }
             this.parents.InfoEvent('warning', '服务器超时, 等待重试。')
             await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '重新下单中')
@@ -155,7 +160,7 @@ class Scan {
           }
           this.parents.InfoEvent('warning', '等待用户付款中')
           await this.Sleep()// 等待
-          this.parents.InfoEvent('warning', '扫码支付查询中')
+          this.parents.InfoEvent('warning', '支付查询中')
           this.Query(order).then(response => {
             resolve(response)
           }).catch(error => {
