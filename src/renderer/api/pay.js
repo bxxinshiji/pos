@@ -44,8 +44,6 @@ export function Refund(data) {
 }
 
 export function SyncPayOrder() { // 同步所有待付款订单状态
-  console.log(1)
-
   List({
     where: {
       [Op.or]: [
@@ -58,7 +56,6 @@ export function SyncPayOrder() { // 同步所有待付款订单状态
         }]
     }
   }).then(response => {
-    console.log(response)
     if (response.count > 0) {
       const rows = response.rows
       rows.forEach(res => {
