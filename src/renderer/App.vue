@@ -40,7 +40,7 @@ export default {
       setInterval(() => {
         SyncTerminal()
       }, 30 * 1000)
-      setInterval(() => {
+      setInterval(() => { // 同步扫码支付订单状态
         SyncPayOrder()
       }, 60 * 1000) // 1 分钟同步一次待付款订单状态
       setInterval(() => { // 自动同步订单

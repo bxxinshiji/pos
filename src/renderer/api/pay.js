@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+const { Op } = require('sequelize')
 import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
 
 export function AopF2F(data) {
@@ -43,9 +44,21 @@ export function Refund(data) {
 }
 
 export function SyncPayOrder() { // 同步所有待付款订单状态
+  console.log(1)
+
   List({
-    where: { stauts: 0 }
+    where: {
+      [Op.or]: [
+        {
+          stauts: 0
+        }, { // 自动同步最近5分钟内未成功的订单
+          stauts: { [Op.ne]: 1 },
+          createdAt: { [Op.gt]: new Date(new Date() - 5 * 60 * 1000)
+          }
+        }]
+    }
   }).then(response => {
+    console.log(response)
     if (response.count > 0) {
       const rows = response.rows
       rows.forEach(res => {
