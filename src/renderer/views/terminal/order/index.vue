@@ -275,30 +275,36 @@ export default {
     },
     handerPrint(currentOrder) {
       log.h('info', 'order.handerPrint', JSON.stringify(currentOrder))
-      if (currentOrder.print === 0 || this.username === '0000') { // 只能打印一次  0000管理员可以打印多次
-        print.hander(currentOrder, true).then(response => {
-          AddPrint(currentOrder).then(response => { // 增加打印次数
-            this.getList()
-          })
-          this.$notify({
-            title: '打印成功',
-            message: '订单:' + this.currentOrder.orderNo,
-            type: 'success'
-          })
-        }).catch(err => {
-          switch (err.message) {
-            case 'Can not find printer':
-              err.message = '没有找到打印机设备'
-              break
-          }
-          this.$notify({
-            title: '打印失败',
-            message: err.message,
-            type: 'error',
-            duration: 15000
-          })
+      if (currentOrder.print > 0 && this.username !== '0000') { // 只能打印一次  0000管理员可以打印多次
+        this.$notify({
+          title: '无法重复打印,请联系管理员。',
+          message: '订单已打印过,无法重复打印。',
+          type: 'warning'
         })
+        return
       }
+      print.hander(currentOrder, true).then(response => {
+        AddPrint(currentOrder).then(response => { // 增加打印次数
+          this.getList()
+        })
+        this.$notify({
+          title: '打印成功',
+          message: '订单:' + this.currentOrder.orderNo,
+          type: 'success'
+        })
+      }).catch(err => {
+        switch (err.message) {
+          case 'Can not find printer':
+            err.message = '没有找到打印机设备'
+            break
+        }
+        this.$notify({
+          title: '打印失败',
+          message: err.message,
+          type: 'error',
+          duration: 15000
+        })
+      })
     },
     handerSyncOrder(currentOrder) {
       log.h('info', 'order.handerSyncOrder', JSON.stringify(currentOrder))
