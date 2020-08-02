@@ -187,7 +187,7 @@ const order = {
       pool.DB.query(sql,
         { type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
-        log.scope('sql2000.order.OrderCheck').info(JSON.stringify(response))
+        log.h('info', 'sql2000.order.OrderCheck', JSON.stringify(response))
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
         // console.log(response, order)
@@ -202,7 +202,7 @@ const order = {
         }
         resolve(response)
       }).catch(error => {
-        log.scope('sql2000.order.OrderCheck').error(JSON.stringify(error.message))
+        log.h('error', 'sql2000.order.OrderCheck', JSON.stringify(error.message))
         reject(error)
       })
     })

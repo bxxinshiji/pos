@@ -274,32 +274,34 @@ export default {
       }
     },
     handerPrint(currentOrder) {
-      log.scope('order.handerPrint').info(JSON.stringify(currentOrder))
-      print.hander(currentOrder, true).then(response => {
-        AddPrint(currentOrder).then(response => { // 增加打印次数
-          this.getList()
+      log.h('info', 'order.handerPrint', JSON.stringify(currentOrder))
+      if (currentOrder.print === 0 || this.username === '0000') { // 只能打印一次  0000管理员可以打印多次
+        print.hander(currentOrder, true).then(response => {
+          AddPrint(currentOrder).then(response => { // 增加打印次数
+            this.getList()
+          })
+          this.$notify({
+            title: '打印成功',
+            message: '订单:' + this.currentOrder.orderNo,
+            type: 'success'
+          })
+        }).catch(err => {
+          switch (err.message) {
+            case 'Can not find printer':
+              err.message = '没有找到打印机设备'
+              break
+          }
+          this.$notify({
+            title: '打印失败',
+            message: err.message,
+            type: 'error',
+            duration: 15000
+          })
         })
-        this.$notify({
-          title: '打印成功',
-          message: '订单:' + this.currentOrder.orderNo,
-          type: 'success'
-        })
-      }).catch(err => {
-        switch (err.message) {
-          case 'Can not find printer':
-            err.message = '没有找到打印机设备'
-            break
-        }
-        this.$notify({
-          title: '打印失败',
-          message: err.message,
-          type: 'error',
-          duration: 15000
-        })
-      })
+      }
     },
     handerSyncOrder(currentOrder) {
-      log.scope('order.handerSyncOrder').info(JSON.stringify(currentOrder))
+      log.h('info', 'order.handerSyncOrder', JSON.stringify(currentOrder))
       syncOrder(currentOrder).then(response => { // 同步订单
         currentOrder.publish = true
         this.$notify({
@@ -326,7 +328,7 @@ export default {
       })
     },
     handerDelete(currentOrder) {
-      log.scope('order.handerDelete').info(JSON.stringify(currentOrder))
+      log.h('info', 'order.handerDelete', JSON.stringify(currentOrder))
       Delete(currentOrder).then(response => {
         this.$notify({
           title: '删除发布成功',
@@ -335,7 +337,7 @@ export default {
         })
         this.getList()
       }).catch(error => {
-        log.scope('order.handerDelete').error(JSON.stringify(error.message))
+        log.h('error', 'order.handerDelete', JSON.stringify(error.message))
       })
     },
     async handerOrderInfo() { // 显示订单详情

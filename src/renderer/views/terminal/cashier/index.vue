@@ -161,7 +161,7 @@ export default {
       })
     },
     async handerInput(value) {
-      log.scope('cashier.handerInput').info(JSON.stringify(value))
+      log.h('info', 'cashier.handerInput', JSON.stringify(value))
       if (this.isPay) {
         this.$message({
           type: 'warning',

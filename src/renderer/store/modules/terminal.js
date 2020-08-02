@@ -250,7 +250,7 @@ const actions = {
           // 先退出在关机
           await store.dispatch('user/logout')
           router.push(`/login`)
-          log.scope('store.modules.terminal').info(shutDown + ' 关机')
+          log.h('info', 'store.modules.terminal', shutDown + ' 关机')
           switch (process.platform) {
             case 'win32':
               require('child_process').exec('shutdown /s /t 0')

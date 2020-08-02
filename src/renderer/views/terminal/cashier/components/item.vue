@@ -141,7 +141,7 @@ export default {
       this.handler(goods)
       this.goods.unshift(goods)
       this.resetCurrentRow()
-      log.scope('cashier.item.addGoods').info(JSON.stringify(goods))
+      log.h('info', 'cashier.item.addGoods', JSON.stringify(goods))
     },
     // 删除选择商品
     deleteGoods() {

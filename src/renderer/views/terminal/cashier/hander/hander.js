@@ -1,7 +1,6 @@
 import store from '@/store'
 import escpos from '@/utils/escpos'
 import { Message } from 'element-ui'
-import log from '@/utils/log'
 
 const hander = {
   // 输入框聚焦
@@ -24,7 +23,6 @@ const hander = {
       })
       return
     }
-    log.scope('pay').info(JSON.stringify(self.order)) // debug 可注释
     if (!self.order.goods.length) {
       self.$message({
         type: 'warning',
@@ -40,7 +38,7 @@ const hander = {
       })
       return
     }
-    let amount = Math.floor(self.$refs.foots.input * 100)
+    let amount = Math.round(self.$refs.foots.input * 100) // 四舍五入取整
     // 输入支付金额 (默认应收款金额)
     amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额

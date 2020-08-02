@@ -23,7 +23,7 @@ const hander = {
             title: '商品禁止销售',
             message: '商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'
           })
-          log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'))
+          log.h('error', 'cashier.item.addGoods', JSON.stringify('商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'))
           this.lockGoods = false // 添加商品解锁
           return
         }
@@ -44,7 +44,7 @@ const hander = {
           title: '未找到商品',
           message: '商品: ' + value + ' 信息不存在, 请重试。'
         })
-        log.scope('cashier.item.addGoods').error(JSON.stringify('商品: ' + value + ' 信息不存在, 请重试。'))
+        log.h('error', 'cashier.item.addGoods', JSON.stringify('商品: ' + value + ' 信息不存在, 请重试。'))
         this.lockGoods = false // 添加商品解锁
         return
       }
@@ -53,7 +53,7 @@ const hander = {
         title: '条码错误',
         message: error
       })
-      log.scope('cashier.item.addGoods').error(JSON.stringify(error.message))
+      log.h('error', 'cashier.item.addGoods', JSON.stringify(error.message))
       this.lockGoods = false // 添加商品解锁
       return
     })

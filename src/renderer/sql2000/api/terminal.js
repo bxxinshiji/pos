@@ -17,7 +17,7 @@ export async function SyncTerminal(enforce = false) {
     if (Terminal.PosCode) {
       store.dispatch('terminal/handerSyncTerminal', false) // 关闭自动同步
       await Terminal.Get().catch(error => {
-        log.scope('Terminal.Get').error(JSON.stringify(error.message))
+        log.h('error', 'Terminal.Get', JSON.stringify(error.message))
       })
       let status = 0 // 等待窗口锁
       // 更新用户信息
@@ -38,7 +38,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          log.scope('ChgUser').error(JSON.stringify(error.message))
+          log.h('error', 'ChgUser', JSON.stringify(error.message))
         })
       }
       // 更新商品信息
@@ -59,7 +59,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          log.scope('ChgPlu').error(JSON.stringify(error.message))
+          log.h('error', 'ChgPlu', JSON.stringify(error.message))
         })
       }
       // 更新支付信息
@@ -80,7 +80,7 @@ export async function SyncTerminal(enforce = false) {
             }
           }, 1000)
         }).catch(error => {
-          log.scope('ZfKind').error(JSON.stringify(error.message))
+          log.h('error', 'ZfKind', JSON.stringify(error.message))
         })
       }
       store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
@@ -91,7 +91,7 @@ export async function SyncTerminal(enforce = false) {
       Terminal.Save()
     }
   } catch (error) {
-    log.scope('try').error(JSON.stringify(error.message))
+    log.h('error', 'try', JSON.stringify(error.message))
     store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步
   }
 }

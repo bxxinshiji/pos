@@ -204,7 +204,7 @@ export default {
       })
     },
     handerPayQuery(currentOrder) {
-      log.scope('pay.handerPayQuery').info(JSON.stringify(currentOrder))
+      log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
       Query({
         orderNo: currentOrder.orderNo,
         storeName: currentOrder.storeName
@@ -256,7 +256,7 @@ export default {
         return
       }
       if (Number(currentOrder.stauts) === 1) {
-        log.scope('pay.handerLoadOrder').info(JSON.stringify(currentOrder))
+        log.h('info', 'pay.handerLoadOrder', JSON.stringify(currentOrder))
         const order = currentOrder.order
         order.pays.push({
           payId: this.scanPayInfo.id, // 支付方式

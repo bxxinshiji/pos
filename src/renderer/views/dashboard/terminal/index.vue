@@ -139,11 +139,11 @@ export default {
           this.$router.push({ path: '/terminal/password' })
           break
         case 'out':
-          log.scope('quit').info('用户: ' + this.username + ' 暂离退出')
+          log.h('info', 'quit', '用户: ' + this.username + ' 暂离退出')
           this.logout()
           break
         case 'accounts':
-          log.scope('accounts').info('用户: ' + this.username + ' 结账')
+          log.h('info', 'accounts', '用户: ' + this.username + ' 结账')
           this.$confirm('结账退出 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -158,14 +158,14 @@ export default {
                   Terminal.UserCode = ''
                   Terminal.PreJzDate = new Date()
                   Terminal.Save().then(() => {
-                    log.scope('accounts').info('用户: ' + this.username + ' 结账成功退出')
+                    log.h('info', 'accounts', '用户: ' + this.username + ' 结账成功退出')
                     print.accounts(true).then(response => { // 打印结账数据
                       this.$message({
                         type: 'success',
                         message: '结账打印成功'
                       })
                     }).catch((error) => {
-                      log.scope('accounts').error('用户: ' + this.username + ' 结账打印失败失败,' + JSON.stringify(error.message))
+                      log.h('error', 'accounts', '用户: ' + this.username + ' 结账打印失败失败' + JSON.stringify(error.message))
                       console.log(error)
                     })
                     this.logout()
@@ -174,18 +174,18 @@ export default {
                       type: 'error',
                       message: '结账成功保存终端失败: ' + error.message
                     })
-                    log.scope('Terminal').error('用户: ' + this.username + ' 结账成功保存终端失败,' + JSON.stringify(error.message))
+                    log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功保存终端失败' + JSON.stringify(error.message))
                   })
                 }).catch(error => {
                   this.$message({
                     type: 'error',
                     message: '结账成功获取终端失败: ' + error.message
                   })
-                  log.scope('Terminal').error('用户: ' + this.username + ' 结账成功获取终端失败,' + JSON.stringify(error.message))
+                  log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功获取终端失败' + JSON.stringify(error.message))
                 })
               }
             }).catch(error => {
-              log.scope('accounts').error('用户: ' + this.username + ' 结账成功失败,' + JSON.stringify(error.message))
+              log.h('error', 'accounts', '用户: ' + this.username + ' 结账成功失败' + JSON.stringify(error.message))
               this.$message({
                 type: 'error',
                 message: '结账失败: ' + error.message
@@ -199,7 +199,7 @@ export default {
           })
           break
         case 'quit':
-          log.scope('quit').info('用户: ' + this.username + ' 退出软件')
+          log.h('info', 'quit', '用户: ' + this.username + ' 退出软件')
           this.logout()
           this.$electron.remote.app.quit()
           break

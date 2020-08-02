@@ -20,11 +20,11 @@ export function syncOrder(order) {
       sql.default.Create(order).then(async response => {
         resolve(response)
       }).catch(error => {
-        log.scope('syncOrder.Create').error(JSON.stringify(error.message) + JSON.stringify(order))
+        log.h('error', 'syncOrder.Create', JSON.stringify(error.message) + JSON.stringify(order))
         reject(error)
       })
     }).catch(error => {
-      log.scope('syncOrder.SQL2000OrderSQL').error(JSON.stringify(error.message) + JSON.stringify(order))
+      log.h('error', 'syncOrder.SQL2000OrderSQL', JSON.stringify(error.message) + JSON.stringify(order))
       reject(error)
     })
   })
@@ -41,7 +41,7 @@ export function queueSyncOrder() {
     }).then(response => {
       for (let index = 0; index < response.length; index++) {
         const element = response[index]
-        log.scope('queueSyncOrder.element').info(JSON.stringify(element))
+        log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
         syncOrder(element).then(res => {
           Order.update({ // 本地订单状态改为报送服务器
             publish: true

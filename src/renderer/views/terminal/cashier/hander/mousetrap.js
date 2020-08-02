@@ -21,7 +21,7 @@ const mousetrap = {
             if (this.order.status) { // 根据订单状态初始化订单
               this.initOrder()
             } else {
-              log.scope('Mousetrap.bindGlobal').info(JSON.stringify(key), Keyboard[key])
+              log.h('info', 'Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
               hander[key](this)
             }
           }

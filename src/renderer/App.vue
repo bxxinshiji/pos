@@ -30,7 +30,7 @@ export default {
         this.$router.push({ path: '/' })
       }
     })
-    log.scope('mounted').info('系统启动')
+    log.h('info', 'mounted', JSON.stringify('系统启动'))
   },
   methods: {
     syncTerminal() {

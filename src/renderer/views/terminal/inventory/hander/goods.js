@@ -12,7 +12,7 @@ const hander = {
           goods.dataValues.number = 1
         }
         goods.dataValues.total = goods.dataValues.number * goods.dataValues.price
-        log.scope('inventory.goods.addGoods').info(JSON.stringify(goods.dataValues))
+        log.h('info', 'inventory.goods.addGoods', JSON.stringify(goods.dataValues))
         this.$refs.goods.addGoods(goods.dataValues)
       } else {
         this.MessageBox({
