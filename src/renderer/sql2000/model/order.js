@@ -63,7 +63,7 @@ const order = {
       const PluCode = goods.pluCode // 商品ID
       const BarCode = goods.barCode // 商品条形码
       const PluName = goods.name // 商品名称
-      const PluAbbr = goods.name.substr(0, 12) // 商品别名
+      const PluAbbr = goods.PluAbbrName ? goods.PluAbbrName : goods.name.substr(0, 10) // 商品别名
       const DepCode = goods.depCode // 部门ID
       const ClsCode = goods.ClsCode // 品类ID
       const SupCode = goods.SupCode // 供应商ID
@@ -155,7 +155,6 @@ const order = {
       this.CreateOrderSQL(item)
       await this.CreateOrderGoodsSQL(item) // 因为需要查询商品快照数据库所有异步
       await this.CreateOrderPaySQL(item)
-      console.log(this.sql)
 
       pool.DB.query(this.sql,
         { type: Sequelize.QueryTypes.INSERT }
@@ -191,7 +190,6 @@ const order = {
         log.h('info', 'sql2000.order.OrderCheck', JSON.stringify(response))
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
-        // console.log(response, order)
         if (total.toFixed(2) !== (order.dataValues.total * 2 / 100).toFixed(2)) {
           reject(new Error(`订单总价校验错误。 <br>  
           总价:` + (response[0]['orderTotal']).toFixed(2) + `元<br>
