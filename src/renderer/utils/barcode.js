@@ -1,7 +1,7 @@
 
 import store from '@/store'
 const barcodeReg = store.state.settings.barcodeReg
-const EAN13 = {
+const EAN = {
   reg: barcodeReg, // 条码识别规则
   code: '',
   checksum: '', // 获取校验位
@@ -31,6 +31,9 @@ const EAN13 = {
   },
   // 检测是否合格
   checks(code, c = 12) {
+    if (code.length === 8) { // 八位条形码
+      code = '00000' + code
+    }
     this.check = Number(this.checksums(code).checksum) === Number(code[c])
     return this
   },
@@ -99,4 +102,4 @@ const EAN13 = {
     return this
   }
 }
-export { EAN13 }
+export { EAN }

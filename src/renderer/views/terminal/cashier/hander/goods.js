@@ -2,7 +2,7 @@
 import store from '@/store'
 
 import Goods from '@/model/goods'
-import { EAN13 } from '@/utils/barcode'
+import { EAN } from '@/utils/barcode'
 import log from '@/utils/log'
 
 const hander = {
@@ -60,7 +60,7 @@ const hander = {
   },
   getBarcodeGoods(value) { // 通过条形码获取商品
     return new Promise((resolve, reject) => {
-      const barcode = EAN13.Decode(value)
+      const barcode = EAN.Decode(value)
       if (barcode.check) { // 校验条码
         if (barcode.custom) { // 是否为自定义条码(称重类)
           Goods.plucodeByGoods(barcode.goods.pluCode).then(goods => {
@@ -95,6 +95,8 @@ const hander = {
   getGoods(value, isPlucode) {
     if (isPlucode) { // 允许输入
       if (/^(\d{13})$/.test(value)) {
+        return this.getBarcodeGoods(value)
+      } else if (/^(\d{8})$/.test(value)) {
         return this.getBarcodeGoods(value)
       } else {
         return this.getPlucodeGoods(value)
