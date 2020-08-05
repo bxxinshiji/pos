@@ -7,8 +7,8 @@ const onkeydown = {
     document.onkeydown = (event) => {
       onkeydown.key = event.key
       onkeydown.keyCode = event.keyCode
-      // 记忆字符串
-      if (reg.test(onkeydown.key)) {
+      // 记忆字符串 只能记录长度为1的按键
+      if (onkeydown.key.length === 1 && reg.test(onkeydown.key)) {
         onkeydown.string = onkeydown.string + onkeydown.key
       }
       // 执行并清空记忆
