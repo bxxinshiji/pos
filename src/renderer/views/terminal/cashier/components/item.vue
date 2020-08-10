@@ -95,7 +95,7 @@ export default {
       this.scrollTop(this.currentRow)
     },
     // 重置选择行
-    resetCurrentRow(value = 0) {
+    async resetCurrentRow(value = 0) {
       this.currentRow = value
       this.setCurrentRow(this.currentRow)
       this.scrollTop(this.currentRow)
@@ -122,7 +122,7 @@ export default {
       }
     },
     // 预处理商品
-    handler(goods) {
+    async handler(goods) {
       // 更新快照信息
       goods.snapshot.name = goods.name
       goods.snapshot.spec = goods.spec
@@ -137,7 +137,7 @@ export default {
       })
     },
     // 增加商品
-    addGoods(goods) {
+    async addGoods(goods) {
       this.handler(goods)
       this.goods.unshift(goods)
       this.resetCurrentRow()
