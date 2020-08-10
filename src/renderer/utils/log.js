@@ -1,7 +1,4 @@
-// import log from 'electron-log'
 import store from '@/store'
-// import { exePath } from '@/utils'
-// var path = require('path')
 import module from '@/utils/module'
 const log = module.get('electron-log')
 
