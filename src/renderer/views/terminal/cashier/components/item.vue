@@ -145,6 +145,7 @@ export default {
     async addGoods(goods) {
       this.handler(goods)
       this.goods.unshift(goods)
+      this.$forceUpdate() // 强制更新视图
       this.resetCurrentRow()
       log.h('info', 'cashier.item.addGoods', JSON.stringify(goods))
     },
