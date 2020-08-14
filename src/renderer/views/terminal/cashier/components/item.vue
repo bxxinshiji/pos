@@ -109,7 +109,12 @@ export default {
     },
     // 滚动窗口到指定行
     scrollTop(value) {
-      this.$refs.table.bodyWrapper.scrollTop = value * 36
+      let clientHeight = 0
+      const row = document.getElementsByClassName('current-row') // 获取元素
+      if (row.length > 0) {
+        clientHeight = row[0].clientHeight // 获取其中一个的高度
+      }
+      this.$refs.table.bodyWrapper.scrollTop = value * clientHeight // 行数乘以行高定位滚动条位置
     },
     // 设置选择行数量
     setNumber(number) {

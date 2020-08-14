@@ -24,8 +24,8 @@ const Goods = sequelize.define('good', {
   unit: { type: Sequelize.STRING }, // 单位
   spec: { type: Sequelize.STRING }, // 规格
   type: { type: Sequelize.BIGINT }, // 商品类型(0、普通商品(固定价格)，1、总价可调商品(称重类等、输入总价自动计算数量))
-  snapshot: { type: Sequelize.JSON }, // 单位
-  editAt: Sequelize.DATE // 检查远程更新时间
+  snapshot: { type: Sequelize.JSON } // 单位
+  // editAt: Sequelize.DATE // 检查远程更新时间
 }, {})
 
 // barcode 多条码

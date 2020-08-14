@@ -3,6 +3,8 @@ import connection from '@/sql2000/model/connection'
 import { trim } from '@/utils'
 const pool = connection.Pool()
 import store from '@/store'
+import { parseTime } from '@/utils/index'
+
 // 删除字符串两边空格
 function handerItem(items) {
   Object.keys(items).forEach(key => {
@@ -14,12 +16,40 @@ function handerItem(items) {
 
 const barcodes = {
   // 获取全部条形码商品
+  List: (updatedAt, endAt) => {
+    return new Promise((resolve, reject) => {
+      if (!store.state.healthy.isSql2000) {
+        reject(Error('服务器断开！！(SQL2000服务器断开)'))
+      }
+      pool.DB.query(`
+        select 
+          BarCode as barCode,
+          PluCode as pluCode,
+          PluName as name,
+          Spec as spec,
+          XgDate as updatedAt
+        from tbmMulBar
+        WHERE XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+          ORDER BY XgDate Asc
+      `,
+      { type: Sequelize.QueryTypes.SELECT }
+      ).then(response => {
+        response.forEach(items => {
+          handerItem(items)
+        })
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // 获取全部条形码商品
   All: () => {
     return new Promise((resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
-      pool.DB.query(`select BarCode as barCode,PluCode as pluCode,PluName as name,Spec as spec from tbmMulBar`,
+      pool.DB.query(`select BarCode as barCode,PluCode as pluCode,PluName as name,Spec as spec,XgDate as updatedAt from tbmMulBar`,
         { type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         response.forEach(items => {
@@ -37,7 +67,7 @@ const barcodes = {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
-      await pool.DB.query(`select BarCode as barCode,PluCode as pluCode,PluName as name,Spec as spec from tbmMulBar WHERE PluCode=:PluCode`,
+      await pool.DB.query(`select BarCode as barCode,PluCode as pluCode,PluName as name,Spec as spec,XgDate as updatedAt from tbmMulBar WHERE PluCode=:PluCode`,
         { replacements: replacements, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         response.forEach(items => {

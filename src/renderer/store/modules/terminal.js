@@ -22,6 +22,7 @@ const state = {
     status: false, // 订单状态是否完结订单
     publish: false
   },
+  cacheInputGoods: {}, // 缓存输入商品信息
   cacheOrder: [], //  挂单的缓存订单
   loadOrder: {}, // 加载订单 1、支付成功没有下单成功的订单重新加载 2、离开页面的订单进行缓存
   cacheGoods: {}, // 缓存自定义价格商品信息
@@ -74,6 +75,12 @@ const mutations = {
   },
   CACHE_GOODS: (state, goods) => { // 缓存自定义价格商品信息
     state.cacheGoods = goods
+  },
+  CACHE_INPUT_GOODS: (state, { code, goods }) => { // 缓存输入商品信息
+    state.cacheInputGoods[code] = JSON.parse(JSON.stringify(goods)) // 防止深拷贝
+  },
+  EMPTY_CACHE_INPUT_GOODS: (state) => { // 清空缓存
+    state.cacheInputGoods = {}
   },
   IS_PAY: (state, visible) => { // 支付页面控制
     state.isPay = visible
@@ -167,7 +174,7 @@ const actions = {
     commit('SET_ORDER_KEY', { key: 'getAmount', value: getAmount })
     commit('SET_ORDER_KEY', { key: 'waitPay', value: waitPay })
   },
-  changeSetOrderkey({ commit }, key, value) { // 根据订单 key 修改订单
+  changeSetOrderkey({ commit }, { key, value }) { // 根据订单 key 修改订单
     commit('SET_ORDER_KEY', { key, value })
   },
   changeIsInputPrice({ commit }, visible) { // 自定义输入商品价格页面控制
@@ -175,6 +182,15 @@ const actions = {
   },
   changeCacheGoods({ commit }, goods) { // 缓存自定义价格商品信息
     commit('CACHE_GOODS', goods)
+  },
+  setCacheInputGoods({ commit }, { code, goods }) { // 缓存输入商品信息
+    commit('CACHE_INPUT_GOODS', { code, goods })
+  },
+  emptyCacheInputGoods({ commit }) { // 清空缓存输入商品信息
+    commit('EMPTY_CACHE_INPUT_GOODS')
+  },
+  getCacheInputGoods({ state }, code) { // 获取缓存输入商品信息
+    return state.cacheInputGoods[code]
   },
   changeIsPay({ commit }, visible) { // 支付页面控制
     commit('IS_PAY', visible)

@@ -15,7 +15,7 @@ function handerItem(items) {
 }
 const goods = {
   // 获取商品列表
-  List(editAt) {
+  List(updatedAt, endAt) {
     return new Promise((resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
@@ -25,7 +25,7 @@ const goods = {
           select 
             PluCode as pluCode ,
             BarCode barCode,
-            XgDate as editAt,
+            XgDate as updatedAt,
             PluName as name,
             PluAbbrName,
             Unit as unit,
@@ -47,7 +47,7 @@ const goods = {
             IsDecimal,
             Tag
           from tBmPlu 
-          WHERE XgDate >= '` + parseTime(editAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + String(editAt.getFullYear() + 1) + `'
+          WHERE XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
           ORDER BY XgDate Asc
       `
       pool.DB.query(sql,

@@ -48,6 +48,7 @@ export async function SyncTerminal(enforce = false) {
           text: '更新商品信息中...',
           background: 'rgba(0, 0, 0, 0.7)'
         })
+        store.dispatch('terminal/emptyCacheInputGoods')
         await SyncPlu(enforce).then(() => {
           Terminal.IsChgPlu = '0'
           Terminal.Save()

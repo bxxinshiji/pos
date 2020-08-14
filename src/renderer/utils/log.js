@@ -16,29 +16,31 @@ log.transports.file.resolvePath = () => {
   return resolvePath
 }
 log.h = async(type, scope, message) => {
-  switch (type) {
-    case 'error':
-      log.scope(scope).error(message)
-      break
-    case 'warn':
-      log.scope(scope).warn(message)
-      break
-    case 'info':
-      log.scope(scope).info(message)
-      break
-    case 'verbose':
-      log.scope(scope).verbose(message)
-      break
-    case 'debug':
-      log.scope(scope).debug(message)
-      break
-    case 'silly':
-      log.scope(scope).silly(message)
-      break
-    default:
-      log.scope(scope).info(message)
-      break
-  }
+  setTimeout(() => {
+    switch (type) {
+      case 'error':
+        log.scope(scope).error(message)
+        break
+      case 'warn':
+        log.scope(scope).warn(message)
+        break
+      case 'info':
+        log.scope(scope).info(message)
+        break
+      case 'verbose':
+        log.scope(scope).verbose(message)
+        break
+      case 'debug':
+        log.scope(scope).debug(message)
+        break
+      case 'silly':
+        log.scope(scope).silly(message)
+        break
+      default:
+        log.scope(scope).info(message)
+        break
+    }
+  }, 5 * 1000)// 等待 5 秒后第一次同步数据
 }
 
 export default log

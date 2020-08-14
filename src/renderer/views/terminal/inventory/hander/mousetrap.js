@@ -1,6 +1,6 @@
 
 const Mousetrap = require('mousetrap')
-// require('@/utils/mousetrap-global-bind')
+require('@/utils/mousetrap-global-bind')
 import store from '@/store'
 const Keyboard = store.state.settings.Keyboard
 import hander from './hander'
