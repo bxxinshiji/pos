@@ -27,6 +27,7 @@ const goods = {
             BarCode barCode,
             XgDate as updatedAt,
             PluName as name,
+            PluAbbrName,
             Unit as unit,
             Spec as spec,
             DepCode as depCode,
