@@ -70,7 +70,7 @@ class Scan {
           }
           await this.Sleep()// 等待
           this.parents.InfoEvent('warning', '查询错误再次支付查询中')
-          this.handerAopF2FQuery(order).then(response => {
+          this.Query(order).then(response => {
             resolve(response)
           }).catch(error => {
             reject(error)
