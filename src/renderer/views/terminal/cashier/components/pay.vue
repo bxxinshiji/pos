@@ -110,7 +110,14 @@ export default {
         if (payKeyboard[key]) {
           Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
             log.h('info', 'Pay.Mousetrap', '【' + payKeyboard[key] + '】' + key)
-            this.handerPay(key)
+            if (this.lock) {
+              this.$message({
+                type: 'error',
+                message: '已锁定正在支付中请稍等...'
+              })
+            } else {
+              this.handerPay(key)
+            }
           })
         }
       })
