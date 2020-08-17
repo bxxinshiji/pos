@@ -88,16 +88,17 @@ const hander = {
     }
     VipCardGet(code).then(res => {
       log.h('info', 'cardPay.VipCardGet.then', JSON.stringify(res))
+      const amount = Math.round(res.amount * 100) // 会员实际余额
       const payAmount = parseInt(this.payAmount)
       const beforeAmount = getVipAmount(this.order.pays, res.cardNo) // 之前已缓存付款金额
-      const vipAmount = parseInt(res.amount * 100 - beforeAmount)
+      const vipAmount = parseInt(amount - beforeAmount) // 付款后余额
       if (vipAmount < this.payAmount) {
         this.$store.dispatch('terminal/changePayAmount', vipAmount) // 根据会员卡余额自定义输收款金额
       }
       if (this.payAmount) {
-        const afterAmount = parseInt(res.amount * 100 - beforeAmount - this.payAmount) // 付款后余额
+        const afterAmount = parseInt(amount - beforeAmount - this.payAmount) // 付款后余额
         this.$confirm( // 会员卡支付信息确认
-          '<p>会员卡余额: <b style="color:#67C23A">' + res.amount.toFixed(2) + ' 元</b></p>' +
+          '<p>会员卡余额: <b style="color:#67C23A">' + (amount / 100).toFixed(2) + ' 元</b></p>' +
           '<p>会员卡编码: <b>' + res.cardNo + '</b></p>' +
           '<p>会员卡名称: <b>' + res.name + '</b></p>' +
           '<p>支付后余额: <b style="color:#F56C6C">' + (afterAmount / 100).toFixed(2) + ' 元</b></p>' +
