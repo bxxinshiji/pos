@@ -161,6 +161,9 @@ export default {
       })
     },
     setInput(value) {
+      if (value === undefined) {
+        value = ''
+      }
       this.$refs.foots.input = value
       this.$refs.foots.$refs.input.value = value
     },
