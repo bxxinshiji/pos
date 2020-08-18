@@ -51,6 +51,7 @@ const EAN = {
   },
   // 自定义条码解析
   Decode(code) {
+    code = String(code)
     this.init() // 初始化数据
     if (!this.checks(code).check) { // 不合格返回
       return this

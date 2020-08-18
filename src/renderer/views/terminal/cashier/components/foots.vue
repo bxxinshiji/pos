@@ -155,6 +155,12 @@ export default {
   height:6vh;
   line-height:6vh;
   font-size:2.3vh;
+  // 隐藏上下箭头
+  &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  -moz-appearance: textfield;
 }
 .order{
   margin-top: 1vh;
