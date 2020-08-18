@@ -160,6 +160,13 @@ export default {
         })
       })
     },
+    setInput(value) {
+      this.$refs.foots.input = value
+      this.$refs.foots.$refs.input.value = value
+    },
+    getInput() {
+      return this.$refs.foots.$refs.input.value
+    },
     async handerInput(value) {
       log.h('info', 'cashier.handerInput', JSON.stringify(value))
       if (this.isPay) {
@@ -173,7 +180,7 @@ export default {
       if (this.order.status) {
         await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
       }
-      this.$refs.foots.input = ''
+      this.setInput()
       // 储值卡正则
       var regVipCard = /^((;)\d{20})$/
       if (regVipCard.test(value)) { // 储值卡查询

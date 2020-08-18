@@ -38,7 +38,7 @@ const hander = {
       })
       return
     }
-    let amount = Math.round(self.$refs.foots.input * 100) // 四舍五入取整
+    let amount = Math.round(self.getInput() * 100) // 四舍五入取整
     // 输入支付金额 (默认应收款金额)
     amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
@@ -47,11 +47,11 @@ const hander = {
       type: 'success',
       message: '收款金额:' + (amount / 100).toFixed(2) + '元'
     })
-    self.$refs.foots.input = ''
+    self.setInput()
   },
   addGoods(self) { // 添加商品可以条形码可以自编码
-    const plucode = self.$refs.foots.input
-    self.$refs.foots.input = ''
+    const plucode = self.getInput()
+    self.setInput()
     self.addGoods(plucode, true)
   },
   // 设置商品数量
@@ -63,11 +63,11 @@ const hander = {
       })
       return
     }
-    const number = self.$refs.foots.input
+    const number = self.getInput()
     if (number) {
       if (self.order.goods.length > 0) {
         self.$refs.goods.setNumber(number)
-        self.$refs.foots.input = ''
+        self.setInput()
         self.$message({
           type: 'success',
           message: '修改商品数量成功'

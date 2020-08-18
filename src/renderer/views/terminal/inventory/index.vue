@@ -85,13 +85,20 @@ export default {
         })
       })
     },
+    setInput(value) {
+      this.$refs.foots.input = value
+      this.$refs.foots.$refs.input.value = value
+    },
+    getInput() {
+      return this.$refs.foots.$refs.input.value
+    },
     handerInput(value) {
       // 完成订单状态清空订单
       if (this.order.status) {
         this.initOrder()
       }
       if (value) {
-        this.$refs.foots.input = ''
+        this.setInput()
         this.addGoods(value, true) // state.settings.isPlucode 是否允许通过 plucode 查询
       }
     },

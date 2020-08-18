@@ -16,12 +16,13 @@
             <span class="id"> {{ order.orderNo }} </span>
           </el-row> 
           <el-row> 
-            <el-input 
+            <input 
               ref="input"
-              v-model="input" 
-              @keyup.enter.native="handerInput"
-              @input="hanerOnInput"
+              v-model.lazy.number="input"
+              @keyup.enter="handerInput"
               placeholder="条码/编码/数量"
+              type="number"
+              class="el-input__inner"
             />
           </el-row>
         </el-col>
@@ -121,9 +122,6 @@ export default {
     handerInput() {
       this.$emit('input', this.input)
     },
-    hanerOnInput(value) {
-      this.input = value.replace(/[^0-9.;]/g, '')
-    },
     handerPay() {
       this.$emit('handerPay')
     },
@@ -194,13 +192,19 @@ export default {
 
 //*****//
 // 修改输入框样式
-.el-input /deep/ .el-input__inner{
+.el-input__inner{
   margin-top: 1vh;
   background-color: #606266;
   color:#FFF;
   height:6vh;
   line-height:6vh;
   font-size:2.3vh;
+  // 隐藏上下箭头6.3
+  &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  -moz-appearance: textfield;
 }
 .order{
   margin-top: 1vh;

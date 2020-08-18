@@ -87,17 +87,17 @@ const hander = {
     }
   },
   addGoods(self) { // 添加商品可以条形码可以自编码
-    const plucode = self.$refs.foots.input
-    self.$refs.foots.input = ''
+    const plucode = self.getInput()
+    self.setInput()
     self.addGoods(plucode, true)
   },
   // 设置商品数量
   goodsNumber(self) {
-    const number = self.$refs.foots.input
+    const number = self.getInput()
     if (number) {
       if (self.order.goods.length > 0) {
         self.$refs.goods.setNumber(number)
-        self.$refs.foots.input = ''
+        self.setInput()
         self.$message({
           type: 'success',
           message: '修改商品数量成功'

@@ -20,7 +20,7 @@
               ref="input"
               v-model.lazy.number="input"
               @keyup.enter="handerInput"
-              placeholder="条码/编码/付款码/数量"
+              placeholder="条码/编码/数量"
               type="number"
               class="el-input__inner"
             />
@@ -155,7 +155,7 @@ export default {
   height:6vh;
   line-height:6vh;
   font-size:2.3vh;
-  // 隐藏上下箭头
+  // 隐藏上下箭头6.3
   &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
