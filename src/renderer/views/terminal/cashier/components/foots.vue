@@ -21,7 +21,7 @@
               v-model.lazy.number="input"
               @keyup.enter="handerInput"
               placeholder="条码/编码/数量"
-              type="number"
+              οnkeyup="this.value=this.value.replace(/[^0-9.;]/g,'');"
               class="el-input__inner"
             />
           </el-row>
@@ -155,12 +155,6 @@ export default {
   height:6vh;
   line-height:6vh;
   font-size:2.3vh;
-  // 隐藏上下箭头6.3
-  &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-    }
-  -moz-appearance: textfield;
 }
 .order{
   margin-top: 1vh;
