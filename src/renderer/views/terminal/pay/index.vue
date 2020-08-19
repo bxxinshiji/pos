@@ -169,13 +169,15 @@ export default {
       if (this.promise.hasOwnProperty('cancel')) { // 如果可以取消先取消
         this.promise.cancel()
       }
-      this.promise = promise(List(this.listQuery))
+      this.promise = promise(List(this.listQuery), 100)
       this.promise.then(response => {
         this.total = response.count
         this.rows = response.rows
         this.resetCurrentRow(this.currentRow)
       }).catch(error => {
-        console.log('查询已经取消', error)
+        if (error.cancel) {
+          console.log('查询已经跳过')
+        }
       })
     },
     // 1 or -1 上下选择行

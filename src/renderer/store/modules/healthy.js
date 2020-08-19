@@ -38,7 +38,7 @@ const actions = {
 }
 setInterval(() => {
   state.date = new Date() // 修改数据date
-}, 1000)
+}, 500)
 export default {
   namespaced: true,
   state,
