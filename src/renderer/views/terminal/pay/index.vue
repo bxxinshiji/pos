@@ -109,6 +109,7 @@ import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
+import { promise } from '@/utils/promise'
 import log from '@/utils/log'
 export default {
   name: 'Order',
@@ -121,6 +122,7 @@ export default {
       currentRow: 0,
       total: 0,
       rows: null,
+      promise: {},
       listQuery: {
         page: 1,
         limit: 10,
@@ -164,10 +166,16 @@ export default {
       })
     },
     getList() {
-      List(this.listQuery).then(response => {
+      if (this.promise.hasOwnProperty('cancel')) { // 如果可以取消先取消
+        this.promise.cancel()
+      }
+      this.promise = promise(List(this.listQuery))
+      this.promise.then(response => {
         this.total = response.count
         this.rows = response.rows
         this.resetCurrentRow(this.currentRow)
+      }).catch(error => {
+        console.log('查询已经取消', error)
       })
     },
     // 1 or -1 上下选择行

@@ -194,6 +194,7 @@ import { List, Delete, UpdateOrderNo } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
 import { AddPrint, GoodsSnapshot } from '@/model/api/order'
 import print from '@/utils/print'
+import { promise } from '@/utils/promise'
 const Order = import('@/api/order')
 import log from '@/utils/log'
 export default {
@@ -208,6 +209,7 @@ export default {
       currentRow: 0,
       total: 0,
       rows: null,
+      promise: {},
       listQuery: {
         page: 1,
         limit: 10,
@@ -243,10 +245,16 @@ export default {
       if (this.username === '0000') { // 管理员账号不进行用户筛选
         this.listQuery.where = {}
       }
-      List(this.listQuery).then(response => {
+      if (this.promise.hasOwnProperty('cancel')) { // 如果可以取消先取消
+        this.promise.cancel()
+      }
+      this.promise = promise(List(this.listQuery))
+      this.promise.then(response => {
         this.total = response.count
         this.rows = response.rows
         this.resetCurrentRow(this.currentRow)
+      }).catch(error => {
+        console.log('查询已经取消', error)
       })
     },
     // 1 or -1 上下选择行
