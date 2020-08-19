@@ -25,10 +25,6 @@ export async function isInternet() {
   return status
 }
 export async function syncDateTime(dateTime) { // 同步系统时间
-  console.log(dateTime, Math.abs(dateTime - new Date()))
-  console.log(Math.abs(dateTime - new Date()) > 5 * 60 * 1000)
-  console.log(process.platform)
-
   if (Math.abs(dateTime - new Date()) > 5 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
     switch (process.platform) {
       case 'win32':
