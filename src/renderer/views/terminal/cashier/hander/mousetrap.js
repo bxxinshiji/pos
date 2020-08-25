@@ -20,10 +20,9 @@ const mousetrap = {
           } else {
             if (this.order.status) { // 根据订单状态初始化订单
               this.initOrder()
-            } else {
-              log.h('info', 'Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
-              hander[key](this)
             }
+            log.h('info', 'Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
+            hander[key](this)
           }
         })
       }

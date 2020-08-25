@@ -4,6 +4,7 @@ require('@/utils/mousetrap-global-bind')
 import store from '@/store'
 const Keyboard = store.state.settings.Keyboard
 import hander from './hander'
+import log from '@/utils/log'
 
 const mousetrap = {
   registerMousetrap() {
@@ -12,9 +13,9 @@ const mousetrap = {
         Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), () => {
           if (this.order.status) { // 根据订单状态初始化订单
             this.initOrder()
-          } else {
-            hander[key](this)
           }
+          log.h('info', 'inventory.Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
+          hander[key](this)
         })
       }
     })
