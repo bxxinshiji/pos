@@ -1,6 +1,8 @@
 <template>
     <div class="container">
       <el-table
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         ref="table"
         :data="rows"
         height="80vh"
@@ -109,7 +111,6 @@ import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
-import { promise } from '@/utils/promise'
 import log from '@/utils/log'
 export default {
   name: 'Order',
@@ -136,7 +137,8 @@ export default {
         id: '',
         name: '',
         type: ''
-      }
+      },
+      loading: false
     }
   },
   computed: {
@@ -166,19 +168,27 @@ export default {
       })
     },
     getList() {
-      if (this.promise.hasOwnProperty('cancel')) { // 如果可以取消先取消
-        this.promise.cancel()
+      if (!this.loading) {
+        this.loading = true
+        List(this.listQuery).then(response => {
+          const listQuery = JSON.stringify(this.listQuery)
+          this.total = response.count
+          this.rows = response.rows
+          this.$nextTick(() => { // 渲染完成检测在锁定状态中请求参数是否更改
+            setTimeout(() => {
+              if (listQuery === JSON.stringify(this.listQuery)) {
+                this.loading = false
+              } else {
+                this.loading = false
+                this.getList()
+              }
+            }, 0) // 加入js线程最后的队列
+          })
+          this.resetCurrentRow(this.currentRow)
+        }).catch(error => {
+          console.log(error)
+        })
       }
-      this.promise = promise(List(this.listQuery), 100)
-      this.promise.then(response => {
-        this.total = response.count
-        this.rows = response.rows
-        this.resetCurrentRow(this.currentRow)
-      }).catch(error => {
-        if (error.cancel) {
-          console.log('查询已经跳过')
-        }
-      })
     },
     // 1 or -1 上下选择行
     handerCurrentRow(value) {

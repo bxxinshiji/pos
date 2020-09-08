@@ -1,6 +1,8 @@
 <template>
     <div class="container">
       <el-table
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         ref="table"
         :data="rows"
         height="80vh"
@@ -194,7 +196,6 @@ import { List, Delete, UpdateOrderNo } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
 import { AddPrint, GoodsSnapshot } from '@/model/api/order'
 import print from '@/utils/print'
-import { promise } from '@/utils/promise'
 const Order = import('@/api/order')
 import log from '@/utils/log'
 export default {
@@ -220,7 +221,8 @@ export default {
         where: {
           userId: this.$store.state.user.username
         }
-      }
+      },
+      loading: false
     }
   },
   computed: {
@@ -245,19 +247,27 @@ export default {
       if (this.username === '0000') { // 管理员账号不进行用户筛选
         this.listQuery.where = {}
       }
-      if (this.promise.hasOwnProperty('cancel')) { // 如果可以取消先取消
-        this.promise.cancel()
+      if (!this.loading) {
+        this.loading = true
+        List(this.listQuery).then(response => {
+          const listQuery = JSON.stringify(this.listQuery)
+          this.total = response.count
+          this.rows = response.rows
+          this.$nextTick(() => { // 渲染完成检测在锁定状态中请求参数是否更改
+            setTimeout(() => {
+              if (listQuery === JSON.stringify(this.listQuery)) {
+                this.loading = false
+              } else {
+                this.loading = false
+                this.getList()
+              }
+            }, 0) // 加入js线程最后的队列
+          })
+          this.resetCurrentRow(this.currentRow)
+        }).catch(error => {
+          console.log(error)
+        })
       }
-      this.promise = promise(List(this.listQuery), 100)
-      this.promise.then(response => {
-        this.total = response.count
-        this.rows = response.rows
-        this.resetCurrentRow(this.currentRow)
-      }).catch(error => {
-        if (error.cancel) {
-          console.log('查询已经跳过')
-        }
-      })
     },
     // 1 or -1 上下选择行
     handerCurrentRow(value) {
