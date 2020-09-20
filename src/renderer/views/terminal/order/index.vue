@@ -88,7 +88,10 @@
       <el-row>
           <el-col :span="8.5">
             <div class="button">
-                  <el-button type="info" @click="handerSyncOrder(currentOrder)">
+                  <el-button type="danger" @click="handerRefund(currentOrder)">
+                    0 订单退款
+                  </el-button>
+                  <el-button type="info" @click="handerOrderInfo(currentOrder)">
                     1 订单详情
                   </el-button>
                   <el-button type="primary" @click="handerSyncOrder(currentOrder)">
@@ -112,6 +115,7 @@
         <el-row>
           <el-col :span="8" class="orderInfo">
             <span>订单编号: {{ currentOrder.orderNo }}</span>
+            <span>终端编号: {{ currentOrder.terminal }}</span>
             <span>收款用户: {{ currentOrder.userId }}</span>
             <span>订单类型: 
               <el-tag 
@@ -123,12 +127,13 @@
             </span>
           </el-col>
           <el-col :span="8" class="orderInfo">
-            <span>订单金额: {{ currentOrder.total?(currentOrder.total / 100).toFixed(2):'' }} 元</span>
-            <span style="color: #F56C6C">实际收款: {{ currentOrder.getAmount?(currentOrder.getAmount / 100).toFixed(2):'' }} 元</span>
-            <span style="color: #409EFF">商品数量: {{ currentOrder.number }}</span>
+            <span style="color: #67C23A">订单金额: {{ currentOrder.total?(currentOrder.total / 100).toFixed(2):(0).toFixed(2) }} 元</span>
+            <span style="color: #409EFF">实际收款: {{ currentOrder.getAmount?(currentOrder.getAmount / 100).toFixed(2):(0).toFixed(2) }} 元</span>
+            <span style="color: #F56C6C">收款找零: {{ ((currentOrder.getAmount - currentOrder.total) / 100).toFixed(2) }} 元</span>
+            <span>商品数量: {{ currentOrder.number }}</span>
           </el-col>
           <el-col :span="8" class="orderInfo">
-            <span>终端编号: {{ currentOrder.terminal }}</span>
+            <span>打印次数: {{ currentOrder.print }} 次</span>
             <span>创建时间: {{ currentOrder.createdAt | parseTime }}</span>
             <span>发布状况: 
               <el-tag 
@@ -371,12 +376,36 @@ export default {
       this.dialogOrderInfoVisible = true
       this.currentOrder = this.currentOrder
     },
+    async handerRefund() { // 订单退款
+      const order = JSON.parse(JSON.stringify(this.currentOrder)) // 防止深拷贝
+      if (order.type) {
+        delete order.id // 删除ID防止插入数据库错误
+        order.type = false // 进入退货桩体
+        order.pays.forEach(pay => {
+          delete pay.id // 删除ID防止插入数据库错误
+          pay.status = false
+          pay.amount = -pay.amount
+          pay.getAmount = 0
+        })
+        await GoodsSnapshot(order.goods) // 合并商品快照
+        this.$store.dispatch('terminal/changeLoadOrder', order)
+        this.$router.push({ path: '/terminal/cashier' })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '退货订单无法再次退货'
+        })
+      }
+    },
     keydown(e) {
       if (e.key === 'ArrowUp') { // 向上
         this.handerCurrentRow(-1)
       }
       if (e.key === 'ArrowDown') { // 向下
         this.handerCurrentRow(1)
+      }
+      if (e.key === '0') { // 订单详情
+        this.handerRefund()
       }
       if (e.key === '1') { // 订单详情
         this.handerOrderInfo()

@@ -50,9 +50,7 @@ const mutations = {
     state.pays = pays
   },
   SET_ORDER_KEY: (state, { key, value }) => { // 根据 key 设置订单参数
-    if (state.order.hasOwnProperty(key)) {
-      state.order[key] = value
-    }
+    state.order[key] = value
   },
   PUSH_CACHE_ORDER: (state) => { // 挂起订单
     state.cacheOrder.push(state.order)
@@ -196,6 +194,9 @@ const actions = {
     commit('IS_PAY', visible)
   },
   changePayAmount({ commit }, amount) { // 自定义输收款金额
+    if (amount < 0) {
+      amount = 0
+    }
     commit('PAY_AMOUNT', amount)
   },
   pushCacheOrder({ commit, state }) { // 挂起订单

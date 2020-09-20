@@ -45,7 +45,7 @@ export default {
       let getAmount = 0
       let amount = 0
       this.pays.forEach(pay => {
-        getAmount = getAmount + (pay.getAmount ? pay.getAmount : pay.amount)
+        getAmount = getAmount + pay.getAmount
         amount = amount + pay.amount
       })
       this.getAmount = getAmount

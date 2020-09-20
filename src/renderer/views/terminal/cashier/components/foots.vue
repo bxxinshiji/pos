@@ -32,7 +32,7 @@
             <div v-for="(pay,index) in order.pays" :key="index" class="pay-list">
               <div class="name"><svg-icon :icon-class="pay.type" :class="pay.type"/> <span class="warning">{{pay.name}} </span></div>
               <div class="pay">付款: <span class="success">{{(pay.amount / 100).toFixed(2) }} </span></div>
-              <div class="change">实收: <span class="brand"> {{((pay.getAmount?pay.getAmount:pay.amount) / 100).toFixed(2) }} </span></div>
+              <div class="change">实收: <span class="brand"> {{(pay.getAmount / 100).toFixed(2) }} </span></div>
               <!-- <div>找零: <span>{{((pay.getAmount - pay.amount) / 100).toFixed(2) }} </span></div> -->
               <div class="status"><span v-bind:class="[ pay.status ? 'success' : 'danger']">{{pay.status ?'已收款':'待收款' }} </span></div>
             </div>

@@ -5,6 +5,7 @@ git:
 	git push
 tag:
 	git push --tags
-.PHONY: docker
-docker:
-	docker build -f Dockerfile  -t pay
+.PHONY: run
+run:
+	npm run init
+	npm run dev

@@ -33,13 +33,19 @@ export function Query(data) {
   })
 }
 
-export function Refund(data) {
-  return request({
-    url: '/pay-api/pays/refund',
-    method: 'post',
-    data: {
-      pay: data
-    }
+export function OpenRefund(data) {
+  return new Promise((resolve, reject) => {
+    request({
+      url: '/pay-api/pays/openRefund',
+      method: 'post',
+      data: {
+        order: data
+      }
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
   })
 }
 

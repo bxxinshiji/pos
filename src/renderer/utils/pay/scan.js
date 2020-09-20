@@ -2,7 +2,7 @@
 /**
  * scan.js 扫码支付类
  */
-import { AopF2F, Query } from '@/api/pay'
+import { AopF2F, Query, OpenRefund } from '@/api/pay'
 import { Create as CreatePayOrder } from '@/model/api/payOrder'
 import config from './config.js'
 
@@ -38,8 +38,8 @@ class Scan {
           })
         }).catch(error => {
           this.cancel = true
-          this.parents.LogEvent('error', 'findCreatePayOrder.catch', JSON.stringify(error.message))
-          this.parents.InfoEvent('error', '订单缓存失败请重新扫码!')
+          this.parents.LogEvent('error', 'Create.findCreatePayOrder.catch', JSON.stringify(error.message))
+          this.parents.InfoEvent('error', '创建订单缓存失败请重新扫码!')
         })
       } else {
         this.cancel = true
@@ -103,6 +103,79 @@ class Scan {
       this.parents.LogEvent('error', 'payModel.save.error', JSON.stringify(error.message))
     })
   }
+  Refund(order) { // 创建订单
+    return new Promise((resolve, reject) => {
+      const originalOrderNo = order.orderNo
+      order.orderNo = order.orderNo + '_T'
+      order.originalOrderNo = originalOrderNo
+      // 查找创建 PayOrder
+      CreatePayOrder(order).then(payModel => {
+        this.parents.LogEvent('info', 'CreatePayOrder.then', JSON.stringify(payModel))
+        const pay = {
+          orderNo: payModel.orderNo,
+          originalOrderNo: originalOrderNo, // 退款订单新编号
+          totalAmount: Math.abs(payModel.totalAmount),
+          storeName: payModel.storeName,
+          storeId: payModel.storeId
+        }
+
+        order.totalAmount = Math.abs(order.totalAmount)
+        this.AopF2FRefund(pay).then(response => {
+          this.payModelSave(payModel, response)
+          resolve(response)
+        }).catch(err => {
+          this.cancel = true
+          reject(err)
+        })
+      }).catch(error => {
+        this.cancel = true
+        this.parents.LogEvent('error', 'Refund.findCreatePayOrder.catch', JSON.stringify(error.message))
+        this.parents.InfoEvent('error', '创建退款订单缓存失败请重新扫码!')
+      })
+    })
+  }
+  AopF2FRefund(order) { // 订单退款
+    return new Promise((resolve, reject) => {
+      if (!this.cancel) {
+        this.parents.InfoEvent('warning', '扫码支付退款中')
+        OpenRefund(order).then(response => { // 远程支付开始
+          this.parents.LogEvent('info', 'Scan.Refund.OpenRefund.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
+          this.parents.InfoEvent('warning', '退款申请成功等待确认中')
+          this.Query(order).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+        }).catch(async error => {
+          this.parents.LogEvent('error', 'Scan.Refund.OpenRefund.catch', JSON.stringify(error.message))
+          if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1)) { // 下单超时并且在付款状态中、非付款状态自动进入查询
+            if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+              this.cancel = true
+              this.parents.CancelEvent(true)
+              reject(error)
+            }
+            this.parents.InfoEvent('warning', '退款申请服务器超时, 等待重试。')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '重新申请退款中')
+            this.AopF2FRefund(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          } else {
+            this.parents.InfoEvent('warning', '申请退款错误退款查询中')
+            this.Query(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }
+        })
+      } else {
+        reject(new Error('退款操作已取消'))
+      }
+    })
+  }
   AopF2F(order) { // 创建订单
     return new Promise((resolve, reject) => {
       if (!this.cancel) {
@@ -158,9 +231,15 @@ class Scan {
             this.cancel = true
             this.parents.CancelEvent(true)
           }
-          this.parents.InfoEvent('warning', '等待用户付款中')
-          await this.Sleep()// 等待
-          this.parents.InfoEvent('warning', '支付查询中')
+          if (order.originalOrderNo) {
+            this.parents.InfoEvent('warning', '等待管理员确认退款')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '退款查询中')
+          } else {
+            this.parents.InfoEvent('warning', '等待用户付款中')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '支付查询中')
+          }
           this.Query(order).then(response => {
             resolve(response)
           }).catch(error => {

@@ -20,6 +20,9 @@ class Card {
       this.parents.CancelEvent(true)
     })
   }
+  Refund(order) { // 订单退款
+    console.log(order)
+  }
 }
 
 export default Card

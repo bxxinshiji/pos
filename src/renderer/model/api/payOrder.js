@@ -18,10 +18,20 @@ export function List(listQuery) {
   })
 }
 
-// 查找创建订单
+// 创建订单
 export function Create(pay) {
   return new Promise((resolve, reject) => {
     PayOrder.create(pay).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+// 查找创建订单
+export function upsert(pay) {
+  return new Promise((resolve, reject) => {
+    PayOrder.upsert(pay).then(response => {
       resolve(response)
     }).catch(error => {
       reject(error)

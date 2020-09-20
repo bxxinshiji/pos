@@ -40,7 +40,7 @@ log.h = async(type, scope, message) => {
         log.scope(scope).info(message)
         break
     }
-  }, 5 * 1000)// 等待 5 秒后第一次同步数据
+  }, 0)// 加入js计划队列
 }
 
 export default log

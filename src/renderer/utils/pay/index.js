@@ -59,13 +59,27 @@ class Pay {
       return this.CancelEvent(true)
     }
   }
-  On(event, fun) {
+  Refund(order) { // 订单退款
+    return new Promise((resolve, reject) => {
+      this.Pool.Refund(order).then(response => {
+        if (config.CLOSED === response) {
+          this.InfoEvent('error', '订单已关闭')
+        }
+        this.ResponseEvent(response)
+        resolve(response)
+      }).catch(error => {
+        this.InfoEvent('error', error.message)
+        reject(error)
+      })
+    })
+  }
+  On(event, fun) { // 事件监听
     this.EventEmitter.on(event, fun)
   }
-  ResponseEvent(response) {
+  ResponseEvent(response) { // 成功实践返回数据
     this.EventEmitter.emit('response', response)
   }
-  CancelEvent(cancel) {
+  CancelEvent(cancel) { // 取消实践
     this.EventEmitter.emit('cancel', cancel)
   }
   // InfoEvent 信息事件

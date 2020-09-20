@@ -20,6 +20,11 @@ class Cash {
       this.parents.CancelEvent(true)
     })
   }
+  Refund(order) { // 订单退款
+    return new Promise((resolve, reject) => {
+      resolve(config.SUCCESS)
+    })
+  }
 }
 
 export default Cash

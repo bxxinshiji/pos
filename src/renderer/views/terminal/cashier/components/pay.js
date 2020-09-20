@@ -76,6 +76,74 @@ const hander = {
         break
     }
   },
+  payModelRefundHander(pay) {
+    return new Promise((resolve, reject) => {
+      this.model.InitEventEmitter() // 初始化事件监听防止重复监听
+      this.model.On('response', res => { // 支付状态返回信息
+        if (res === config.SUCCESS) { // 支付成功
+          pay.getAmount = this.payAmount // 默认收到的钱
+          store.dispatch('terminal/changePayAmount', 0) // 防止多笔现金重复
+          pay.status = true
+          resolve(true)
+        } else {
+          reject(res)
+        }
+        log.h('info', 'payModelRefundHander', JSON.stringify(res))
+      })
+      this.model.On('info', (type, message) => { // 支付信息
+        switch (type) {
+          case 'waitClose':
+            this.status = type
+            this.info = message
+            break
+          case 'off':
+            this.status = type
+            this.info = message
+            break
+          case 'error':
+            this.lock = false
+            this.status = type
+            this.payingInfo = message
+            break
+          default:
+            this.status = type
+            this.payingInfo = message
+            break
+        }
+      })
+      this.model.On('log', (type, scope, message) => { // 日志信息
+        log.h(type, scope, message)
+      })
+      switch (pay.type) {
+        case 'cardPay':
+          this.model.SetPool(new Card()) // 设置现金对象池
+          this.model.Refund(pay)
+          break
+        case 'remoteCardPay':
+          console.log('remoteCardPay')
+          break
+        case 'scanPay':
+          this.model.SetPool(new Scan()) // 设置扫码对象池
+          this.model.Refund({ // 创建扫码支付订单
+            orderNo: pay.orderNo,
+            method: '',
+            authCode: pay.code,
+            title: '[退款]' + this.orderTitle,
+            totalAmount: pay.amount,
+            operatorId: this.username,
+            terminalId: this.terminal,
+            storeName: this.scanStoreName,
+            stauts: config.USERPAYING,
+            order: this.order
+          })
+          break
+        case 'cashPay':
+          this.model.SetPool(new Cash()) // 设置现金对象池
+          this.model.Refund(pay)
+          break
+      }
+    })
+  },
   cardPay(code) {
     const getVipAmount = (pays, cardNo) => { // 查询次会员卡已付款多少钱
       let amount = 0
@@ -129,23 +197,31 @@ const hander = {
       this.payingInfo = error
     })
   },
-  handerPays(pays) { // 处理会员卡未支付订单
+  handerPays(pays) { // 处理未支付订单
     return new Promise(async(resolve, reject) => {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]
-        if (pay.type === 'cardPay' && !pay.status) {
-          if (pay.code) {
-            await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
-              pay.status = true
-            }).catch(error => {
-              reject(error)
-            })
-          } else {
-            reject(new Error('订单结算失败,会员卡号为空!'))
+        if (pay.status) {
+          // 销货状态
+          if ((pay.type === 'cardPay' && !pay.status) || pay.type === 'remoteCardPay' && !pay.status) { // 处理会员卡未支付订单
+            if (pay.code) {
+              await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
+                pay.status = true
+              }).catch(error => {
+                reject(error)
+              })
+            } else {
+              reject(new Error('订单结算失败,会员卡号为空!'))
+            }
           }
-        }
-        if (!pay.status) {
-          reject(new Error('支付方式: ' + pay.name + ' 未支付'))
+          if (!pay.status) {
+            reject(new Error('支付方式: ' + pay.name + ' 未支付'))
+          }
+        } else {
+          await this.payModelRefundHander(pay).then(response => {
+          }).catch(error => {
+            reject(error)
+          })
         }
       }
       resolve(pays)
@@ -201,10 +277,10 @@ const hander = {
       let payInfo = {}
       this.pays.forEach(pay => {
         if (String(pay.id) === String(id)) { // 获取使用的支付方式信息
+          const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
+          const getAmount = this.payAmount // 默认收到的钱
           if (this.order.type) {
             if (this.order.waitPay > 0) {
-              const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
-              const getAmount = pay.type === 'cashPay' ? (this.payAmount === 0 ? amount : this.payAmount) : amount // 收到的钱[现金可以多少其他不允许]
               payInfo = {
                 payId: pay.id, // 支付方式
                 name: pay.name, // 支付方式名称
@@ -218,20 +294,19 @@ const hander = {
             }
           } else { // 退款形式
             if (pay.type === 'cashPay') {
-              const amount = this.order.waitPay
               payInfo = {
                 payId: pay.id, // 支付方式
                 name: pay.name, // 支付方式名称
                 type: pay.type, // 支付方式
                 code: code, // 会员卡
                 amount: amount, // 支付金额
-                getAmount: '', // 收到的钱[现金可以多少其他不允许]
+                getAmount: getAmount, // 收到的钱[现金可以多少其他不允许]
                 orderNo: '', // 支付宝、微信等支付指定订单单号[UUID生成]
                 status: false // 现金支付时默认支付状态成功
               }
             } else {
               this.status = 'error'
-              this.payingInfo = '退货只允许现金形式'
+              this.payingInfo = '手动退货只允许现金形式'
               return
             }
           }
@@ -333,7 +408,7 @@ const hander = {
   },
   handerOrder() {
     if (this.order.waitPay === 0) {
-      this.handerPays(this.order.pays).then(() => { // 处理订单支付
+      this.handerPays(this.order.pays).then(() => { // 处理订单未支付
         this.OrderSave()
       }).catch(error => {
         log.h('error', 'handerPays.error', JSON.stringify(error.message))
