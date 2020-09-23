@@ -21,7 +21,9 @@ class Card {
     })
   }
   Refund(order) { // 订单退款
-    console.log(order)
+    return new Promise((resolve, reject) => {
+      resolve(config.SUCCESS)
+    })
   }
 }
 

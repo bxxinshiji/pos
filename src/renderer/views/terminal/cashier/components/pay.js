@@ -76,12 +76,16 @@ const hander = {
         break
     }
   },
-  payModelRefundHander(pay) {
+  payModelRefundHander(pay, index) {
     return new Promise((resolve, reject) => {
       this.model.InitEventEmitter() // 初始化事件监听防止重复监听
       this.model.On('response', res => { // 支付状态返回信息
         if (res === config.SUCCESS) { // 支付成功
-          pay.getAmount = this.payAmount // 默认收到的钱
+          if (pay.type === 'scanPay') {
+            pay.getAmount = pay.amount
+          } else {
+            pay.getAmount = this.payAmount // 默认收到的钱
+          }
           store.dispatch('terminal/changePayAmount', 0) // 防止多笔现金重复
           pay.status = true
           resolve(true)
@@ -125,7 +129,8 @@ const hander = {
         case 'scanPay':
           this.model.SetPool(new Scan()) // 设置扫码对象池
           this.model.Refund({ // 创建扫码支付订单
-            orderNo: pay.orderNo,
+            orderNo: this.order.orderNo + '_' + index,
+            originalOrderNo: pay.orderNo,
             method: '',
             authCode: pay.code,
             title: '[退款]' + this.orderTitle,
@@ -218,7 +223,7 @@ const hander = {
             reject(new Error('支付方式: ' + pay.name + ' 未支付'))
           }
         } else {
-          await this.payModelRefundHander(pay).then(response => {
+          await this.payModelRefundHander(pay, index).then(response => {
           }).catch(error => {
             reject(error)
           })

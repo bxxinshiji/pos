@@ -29,10 +29,14 @@ export function Create(pay) {
   })
 }
 // 查找创建订单
-export function upsert(pay) {
+export function UpdateOrCreate(pay) {
   return new Promise((resolve, reject) => {
     PayOrder.upsert(pay).then(response => {
-      resolve(response)
+      PayOrder.findOne({
+        where: { orderNo: pay.orderNo }
+      }).then(project => {
+        resolve(project)
+      })
     }).catch(error => {
       reject(error)
     })

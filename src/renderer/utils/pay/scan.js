@@ -3,7 +3,7 @@
  * scan.js 扫码支付类
  */
 import { AopF2F, Query, OpenRefund } from '@/api/pay'
-import { Create as CreatePayOrder } from '@/model/api/payOrder'
+import { Create as CreatePayOrder, UpdateOrCreate } from '@/model/api/payOrder'
 import config from './config.js'
 
 class Scan {
@@ -11,6 +11,7 @@ class Scan {
     this.cancel = false
     this.waitCancel = false
     this.startTime = new Date()
+    this.payModel = ''
   }
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
@@ -105,21 +106,18 @@ class Scan {
   }
   Refund(order) { // 创建订单
     return new Promise((resolve, reject) => {
-      const originalOrderNo = order.orderNo
-      order.orderNo = order.orderNo + '_T'
-      order.originalOrderNo = originalOrderNo
       // 查找创建 PayOrder
-      CreatePayOrder(order).then(payModel => {
+      UpdateOrCreate(order).then(payModel => {
         this.parents.LogEvent('info', 'CreatePayOrder.then', JSON.stringify(payModel))
+        this.payModel = payModel
         const pay = {
           orderNo: payModel.orderNo,
-          originalOrderNo: originalOrderNo, // 退款订单新编号
+          originalOrderNo: order.originalOrderNo, // 退款订单新编号
           totalAmount: Math.abs(payModel.totalAmount),
           storeName: payModel.storeName,
           storeId: payModel.storeId
         }
 
-        order.totalAmount = Math.abs(order.totalAmount)
         this.AopF2FRefund(pay).then(response => {
           this.payModelSave(payModel, response)
           resolve(response)
@@ -129,7 +127,7 @@ class Scan {
         })
       }).catch(error => {
         this.cancel = true
-        this.parents.LogEvent('error', 'Refund.findCreatePayOrder.catch', JSON.stringify(error.message))
+        this.parents.LogEvent('error', 'Refund.Upsert.catch', JSON.stringify(error.message))
         this.parents.InfoEvent('error', '创建退款订单缓存失败请重新扫码!')
       })
     })
@@ -139,6 +137,8 @@ class Scan {
       if (!this.cancel) {
         this.parents.InfoEvent('warning', '扫码支付退款中')
         OpenRefund(order).then(response => { // 远程支付开始
+          this.payModel.method = response.data.order.method // 保存返回订单支付方式
+          this.payModel.save()
           this.parents.LogEvent('info', 'Scan.Refund.OpenRefund.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.parents.InfoEvent('warning', '退款申请成功等待确认中')
           this.Query(order).then(response => {
