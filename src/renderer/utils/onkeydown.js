@@ -28,7 +28,7 @@ const onkeydown = {
     }
     document.onkeyup = (event) => {
       if (event.key === onkey) {
-        hander(event.timeStamp - timeStamp < 30)
+        hander(event.timeStamp - timeStamp < 20)
       }
     }
   }

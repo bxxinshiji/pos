@@ -16,7 +16,6 @@
       />
       <foots
         ref="foots"
-        @input="handerInput"
         @handerPay="handerPay"
       />
     </span>
@@ -63,8 +62,7 @@ export default {
   name: 'cashier',
   data() {
     return {
-      lockGoods: false, // 商品输入锁
-      isPlucode: false
+      lockGoods: false // 商品输入锁
     }
   },
   computed: {
@@ -93,7 +91,7 @@ export default {
     }
     this.$store.dispatch('terminal/changeInitPays') // 初始化付款信息
     onkeydown.isScanner('Enter', (res) => {
-      this.isPlucode = !res
+      this.handerInput(this.$refs.foots.input, !res)
     })
   },
   watch: {
@@ -174,38 +172,35 @@ export default {
     getInput() {
       return this.$refs.foots.$refs.input.value
     },
-    handerInput(value) {
-      setTimeout(async() => { // 等待键盘监听事件完成后在执行
-        log.h('info', 'cashier.handerInput', JSON.stringify(value))
-        if (this.isPay) {
+    async handerInput(value, isPlucode) {
+      log.h('info', 'cashier.handerInput', JSON.stringify(value))
+      if (this.isPay) {
+        this.$message({
+          type: 'warning',
+          message: '支付锁定中禁止输入'
+        })
+        return
+      }
+      // 完成订单状态清空订单
+      if (this.order.status) {
+        await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
+      }
+      this.setInput()
+      // 储值卡正则
+      var regVipCard = /^((;)\d{20})$/
+      if (regVipCard.test(value)) { // 储值卡查询
+        this.handerVipCardGet(value)
+      } else if (value) { // 添加商品
+        var number = /^[0-9]*$/ // 正则匹配正整数
+        if (number.test(value)) {
+          this.addGoods(value, isPlucode) // isPlucode 是否允许通过 plucode 查询
+        } else {
           this.$message({
             type: 'warning',
-            message: '支付锁定中禁止输入'
+            message: '输入错误请重试,输入内容:' + value
           })
-          return
         }
-        // 完成订单状态清空订单
-        if (this.order.status) {
-          await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
-        }
-        this.setInput()
-        // 储值卡正则
-        var regVipCard = /^((;)\d{20})$/
-        if (regVipCard.test(value)) { // 储值卡查询
-          this.handerVipCardGet(value)
-        } else if (value) { // 添加商品
-          var number = /^[0-9]*$/ // 正则匹配正整数
-          if (number.test(value)) {
-            // this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
-            this.addGoods(value, this.isPlucode) // state.settings.isPlucode 是否允许通过 plucode 查询
-          } else {
-            this.$message({
-              type: 'warning',
-              message: '输入错误请重试,输入内容:' + value
-            })
-          }
-        }
-      }, 0)
+      }
     },
     handerPay() {
       hander['pay'](this)
