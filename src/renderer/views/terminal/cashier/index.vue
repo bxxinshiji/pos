@@ -91,7 +91,7 @@ export default {
     }
     this.$store.dispatch('terminal/changeInitPays') // 初始化付款信息
     onkeydown.isScanner('Enter', (res) => {
-      if (this.$refs.foots.input) {
+      if (this.$refs.foots) {
         this.handerInput(this.$refs.foots.input, !res)
       }
     })
