@@ -1,4 +1,4 @@
-import log from '@/utils/log'
+
 const onkeydown = {
   key: '',
   keyCode: 0,
@@ -23,14 +23,11 @@ const onkeydown = {
   },
   isScanner(onkey, hander) { // 判断指定按键是否是扫码输入
     let timeStamp = 0
-    document.onkeydown = (event) => {
-      timeStamp = event.timeStamp
-    }
-    document.onkeyup = (event) => {
+    document.onkeypress = (event) => {
       if (event.key === onkey) {
-        log.h('info', 'isScanner', event.timeStamp - timeStamp)
         hander(event.timeStamp - timeStamp < 10)
       }
+      timeStamp = event.timeStamp // 记录最后一次按键时间
     }
   }
 }
