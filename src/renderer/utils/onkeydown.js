@@ -28,7 +28,7 @@ const onkeydown = {
     }
     document.onkeyup = (event) => {
       if (event.key === onkey) {
-        log.h('info', 'cashier.handerInput', event.timeStamp - timeStamp)
+        log.h('info', 'isScanner', event.timeStamp - timeStamp)
         hander(event.timeStamp - timeStamp < 20)
       }
     }
