@@ -1,4 +1,4 @@
-
+import log from '@/utils/log'
 const onkeydown = {
   key: '',
   keyCode: 0,
@@ -28,6 +28,7 @@ const onkeydown = {
     }
     document.onkeyup = (event) => {
       if (event.key === onkey) {
+        log.h('info', 'cashier.handerInput', event.timeStamp - timeStamp)
         hander(event.timeStamp - timeStamp < 20)
       }
     }
