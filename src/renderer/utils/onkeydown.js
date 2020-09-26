@@ -20,7 +20,6 @@ const onkeydown = {
   },
   unregister() {
     document.onkeydown = undefined
-    document.onkeyup = undefined
   },
   isScanner(onkey, hander) { // 判断指定按键是否是扫码输入
     let timeStamp = 0

@@ -228,7 +228,6 @@ export default {
   },
   destroyed() {
     document.removeEventListener('keydown', this.keydown)
-    onkeydown.unregister() // 注销键盘监听
     this.unregisterMousetrap()// 注销按键监听
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
     this.$store.dispatch('terminal/changeLoadOrder', this.order) // 离开页面载入未付款订单
