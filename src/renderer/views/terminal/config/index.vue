@@ -25,9 +25,6 @@
                     <el-form-item label="日志大小" prop="log">
                       <el-input v-model="sysForm.log" placeholder="系统报错日志大小" @input="handerOnInput"><template slot="append">MB</template></el-input> 
                     </el-form-item>
-                    <el-form-item label="PLU商品输入" prop="isPlucode">
-                      <el-switch v-model="sysForm.isPlucode"></el-switch>
-                    </el-form-item>
                     <el-form-item label="总金额汇总" prop="isTotal">
                       <el-switch v-model="sysForm.isTotal"></el-switch>
                     </el-form-item>
@@ -141,7 +138,6 @@ export default {
         terminal: settings.terminal,
         barcodeReg: settings.barcodeReg,
         log: settings.log,
-        isPlucode: settings.isPlucode,
         isTotal: settings.isTotal
       },
       sysRules: {

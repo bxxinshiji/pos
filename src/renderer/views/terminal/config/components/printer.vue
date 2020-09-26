@@ -47,6 +47,7 @@
             <div>订单编号 {<span>{</span>orderNo}} </div>
             <div>订单时间 {<span>{</span>createdAt}} </div>
             <div>打印次数 {<span>{</span>print}} </div>
+            <div>找零 {<span>{</span>change}} </div>
           </el-collapse-item>
           <el-collapse-item title="居中大号文本 centerText" name="2">
             <div>例:{<span>{</span>centerText(XXX)}}</div>
