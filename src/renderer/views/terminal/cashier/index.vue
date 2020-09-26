@@ -91,7 +91,9 @@ export default {
     }
     this.$store.dispatch('terminal/changeInitPays') // 初始化付款信息
     onkeydown.isScanner('Enter', (res) => {
-      this.handerInput(this.$refs.foots.input, !res)
+      if (this.$refs.foots.input) {
+        this.handerInput(this.$refs.foots.input, !res)
+      }
     })
   },
   watch: {
@@ -226,6 +228,7 @@ export default {
   },
   destroyed() {
     document.removeEventListener('keydown', this.keydown)
+    onkeydown.unregister() // 注销键盘监听
     this.unregisterMousetrap()// 注销按键监听
     this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
     this.$store.dispatch('terminal/changeLoadOrder', this.order) // 离开页面载入未付款订单
