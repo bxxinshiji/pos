@@ -29,7 +29,7 @@ const onkeydown = {
     document.onkeyup = (event) => {
       if (event.key === onkey) {
         log.h('info', 'isScanner', event.timeStamp - timeStamp)
-        hander(event.timeStamp - timeStamp < 20)
+        hander(event.timeStamp - timeStamp < 10)
       }
     }
   }
