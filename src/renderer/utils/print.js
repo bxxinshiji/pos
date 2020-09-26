@@ -118,12 +118,11 @@ const print = {
       element = element.replace(/{{\s*orderNo\s*}}/g, order.orderNo)
       element = element.replace(/{{\s*createdAt\s*}}/g, parseTime(order.createdAt, '{y}-{m}-{d} {h}:{i}:{s}'))
       element = element.replace(/{{\s*print\s*}}/g, order.print + 1)
-      if ((order.getAmount - order.amount) > 0) {
-        element = element.replace(/{{\s*change\s*}}/g, ' 找零: ' + ((order.getAmount - order.amount) / 100).toFixed(2) + '元')
+      if ((order.getAmount - order.total) > 0) {
+        element = element.replace(/{{\s*change\s*}}/g, ' 找零: ' + ((order.getAmount - order.total) / 100).toFixed(2) + '元')
       } else {
         element = element.replace(/{{\s*change\s*}}/g, '')
       }
-
       return {
         type,
         contents: element
