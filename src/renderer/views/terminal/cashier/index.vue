@@ -173,7 +173,7 @@ export default {
       return this.$refs.foots.$refs.input.value
     },
     async handerInput(value, isPlucode) {
-      log.h('info', 'cashier.handerInput', JSON.stringify(value))
+      log.h('info', 'cashier.handerInput', JSON.stringify(value) + ' ' + isPlucode)
       if (this.isPay) {
         this.$message({
           type: 'warning',
