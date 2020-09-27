@@ -206,7 +206,7 @@ const hander = {
     return new Promise(async(resolve, reject) => {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]
-        if (pay.status) {
+        if (this.order.type) { // 销货
           // 销货状态
           if ((pay.type === 'cardPay' && !pay.status) || pay.type === 'remoteCardPay' && !pay.status) { // 处理会员卡未支付订单
             if (pay.code) {
@@ -222,7 +222,7 @@ const hander = {
           if (!pay.status) {
             reject(new Error('支付方式: ' + pay.name + ' 未支付'))
           }
-        } else {
+        } else { // 退货
           await this.payModelRefundHander(pay, index).then(response => {
           }).catch(error => {
             reject(error)
