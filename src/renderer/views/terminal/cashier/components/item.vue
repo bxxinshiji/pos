@@ -102,6 +102,7 @@ export default {
   created() {
   },
   mounted() {
+    this.resetCurrentRow()
   },
   methods: {
     // 1 or -1 上下选择行
@@ -113,13 +114,14 @@ export default {
         this.currentRow = this.currentRow + value
       }
       this.setCurrentRow(this.currentRow)
-      this.scrollTop(this.currentRow)
     },
     // 重置选择行
     async resetCurrentRow(value = 0) {
       this.currentRow = value
       this.setCurrentRow(this.currentRow)
-      this.scrollTop(this.currentRow)
+      this.$nextTick(() => { // 计算显示数量
+        this.setShowNumber()
+      })
     },
     // 设置选择行
     setCurrentRow(value) {
@@ -129,7 +131,7 @@ export default {
       }
     },
     // 滚动窗口到指定行
-    scrollTop(value) {
+    setShowNumber(value) {
       if (this.showNumber === 10) {
         let clientHeight = 0
         const row = document.getElementsByClassName('el-table__row') // 获取元素
