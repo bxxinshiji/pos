@@ -31,9 +31,13 @@ const EAN = {
   },
   // 检测是否合格
   checks(code, c = 12) {
-    if (code.length === 8) { // 八位条形码
+    if (code.length === 8) { // EAN-8
       code = '00000' + code
     }
+    if (code.length === 12) { // UPC-A
+      code = '06' + code
+    }
+    // EAN-13
     this.check = Number(this.checksums(code).checksum) === Number(code[c])
     return this
   },
