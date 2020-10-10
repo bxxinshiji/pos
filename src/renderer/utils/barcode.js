@@ -34,7 +34,7 @@ const EAN = {
     if (code.length === 8) { // EAN-8
       code = '00000' + code
     }
-    if (code.length === 12) { // UPC-A
+    if (code.length === 11) { // UPC-A
       code = '06' + code
     }
     // EAN-13
