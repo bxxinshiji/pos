@@ -1,15 +1,16 @@
 <template>
       <el-table
         ref="table"
-        :data="goods"
+        :data="showGoods"
         height="72vh"
         size="mini"
         highlight-current-row
         class="goods"
+        :row-class-name="tableRowClassName"
       >
         <template slot="empty">暂无商品录入</template>
         <el-table-column
-          label="#"
+          :label="'# '+String(goods.length)"
           prop="no"
           min-width="55"
         >
@@ -59,9 +60,9 @@
 <script>
 import { mapState } from 'vuex'
 import { md5Sign } from '@/utils/crypto'
-
 import sequelize from '@/model/orderPD'
 const Snapshots = sequelize.models.snapshot
+import log from '@/utils/log'
 
 export default {
   name: 'goods',
@@ -69,17 +70,38 @@ export default {
   },
   data() {
     return {
-      currentRow: 0
+      currentRow: 0,
+      showNumber: 10
     }
   },
   computed: {
     ...mapState({
-      goods: state => state.terminal.order.goods
+      goods: state => state.terminal.order.goods,
+      showGoods(state) { // 优化渲染性能
+        const showGoods = []
+        const goods = state.terminal.order.goods
+        const showNumber = goods.length < this.showNumber ? goods.length : this.showNumber
+        for (let index = this.currentRow; index < (showNumber + this.currentRow); index++) {
+          if (goods.length > index) {
+            const item = goods[index]
+            showGoods.push({
+              no: item.no,
+              pluCode: item.pluCode,
+              name: item.name,
+              number: item.number,
+              price: item.price,
+              total: item.total
+            })
+          }
+        }
+        return showGoods
+      }
     })
   },
   created() {
   },
   mounted() {
+    this.resetCurrentRow()
   },
   methods: {
     // 1 or -1 上下选择行
@@ -91,24 +113,41 @@ export default {
         this.currentRow = this.currentRow + value
       }
       this.setCurrentRow(this.currentRow)
-      this.scrollTop(this.currentRow)
     },
     // 重置选择行
-    resetCurrentRow(value = 0) {
+    async resetCurrentRow(value = 0) {
       this.currentRow = value
       this.setCurrentRow(this.currentRow)
-      this.scrollTop(this.currentRow)
+      this.$nextTick(() => { // 计算显示数量
+        this.setShowNumber()
+      })
     },
     // 设置选择航
     setCurrentRow(value) {
-      this.$refs.table.setCurrentRow(this.goods[value])
+      // this.$refs.table.setCurrentRow(this.goods[value])
       if (this.goods[value]) {
         this.$store.dispatch('terminal/changeCurrentGoods', this.goods[value])
       }
     },
     // 滚动窗口到指定行
-    scrollTop(value) {
-      this.$refs.table.bodyWrapper.scrollTop = value * 36
+    setShowNumber(value) {
+      if (this.showNumber === 10) {
+        let clientHeight = 0
+        const row = document.getElementsByClassName('el-table__row') // 获取元素
+        if (row.length > 0) {
+          clientHeight = row[0].clientHeight // 获取其中一个的高度
+        }
+        const table = document.getElementsByClassName('el-table')
+        const showNumber = parseInt(table[0].clientHeight / clientHeight)
+        if (showNumber > 0) {
+          this.showNumber = showNumber - 1
+        }
+      }
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (rowIndex === 0) {
+        return 'current-row'
+      }
     },
     // 设置选择行数量
     setNumber(number) {
@@ -140,6 +179,7 @@ export default {
       this.handler(goods)
       this.goods.unshift(goods)
       this.resetCurrentRow()
+      log.h('info', 'cashier.item.addGoods', JSON.stringify(goods))
     },
     // 删除选择商品
     deleteGoods() {
