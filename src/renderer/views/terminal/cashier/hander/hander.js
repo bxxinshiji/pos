@@ -16,41 +16,39 @@ const hander = {
     self.$refs.goods.handerCurrentRow(+1)
   },
   pay(self) {
-    setTimeout(() => {
-      store.dispatch('terminal/handerOrder')
-      if (this.lockGoods) { // 商品添加锁
-        self.$message({
-          type: 'warning',
-          message: '请等待商品添加完成,在尝试支付。'
-        })
-        return
-      }
-      if (!self.order.goods.length) {
-        self.$message({
-          type: 'warning',
-          message: '未找到结账商品,请输入结账商品。'
-        })
-        return
-      }
-      const waitPay = self.order.waitPay
-      if (waitPay === 0 && self.order.status) {
-        self.$message({
-          type: 'warning',
-          message: '订单已完结,请勿重复付款。'
-        })
-        return
-      }
-      let amount = Math.round(self.getInput() * 100) // 四舍五入取整
-      // 输入支付金额 (默认应收款金额)
-      amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
-      store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
-      store.dispatch('terminal/changeIsPay', true) // 开启支付页面
+    store.dispatch('terminal/handerOrder')
+    if (this.lockGoods) { // 商品添加锁
       self.$message({
-        type: 'success',
-        message: '收款金额:' + (amount / 100).toFixed(2) + '元'
+        type: 'warning',
+        message: '请等待商品添加完成,在尝试支付。'
       })
-      self.setInput()
-    }, 100)// 加入js队列[等待其他异步操作完成后在执行]
+      return
+    }
+    if (!self.order.goods.length) {
+      self.$message({
+        type: 'warning',
+        message: '未找到结账商品,请输入结账商品。'
+      })
+      return
+    }
+    const waitPay = self.order.waitPay
+    if (waitPay === 0 && self.order.status) {
+      self.$message({
+        type: 'warning',
+        message: '订单已完结,请勿重复付款。'
+      })
+      return
+    }
+    let amount = Math.round(self.getInput() * 100) // 四舍五入取整
+    // 输入支付金额 (默认应收款金额)
+    amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
+    store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
+    store.dispatch('terminal/changeIsPay', true) // 开启支付页面
+    self.$message({
+      type: 'success',
+      message: '收款金额:' + (amount / 100).toFixed(2) + '元'
+    })
+    self.setInput()
   },
   addGoods(self) { // 添加商品可以条形码可以自编码
     const plucode = self.getInput()

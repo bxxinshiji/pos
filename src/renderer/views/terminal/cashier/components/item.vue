@@ -72,28 +72,34 @@ export default {
   data() {
     return {
       currentRow: 0,
-      showNumber: 10
+      showNumber: 10,
+      differ: 0
     }
   },
   computed: {
     ...mapState({
-      goods: state => state.terminal.order.goods,
+      goods(state) {
+        return state.terminal.order.goods
+      },
       showGoods(state) { // 优化渲染性能
         const showGoods = []
         const goods = state.terminal.order.goods
         const showNumber = goods.length < this.showNumber ? goods.length : this.showNumber
-        for (let index = this.currentRow; index < (showNumber + this.currentRow); index++) {
-          if (goods.length > index) {
-            const item = goods[index]
-            showGoods.push({
-              no: item.no,
-              pluCode: item.pluCode,
-              name: item.name,
-              number: item.number,
-              price: item.price,
-              total: item.total
-            })
-          }
+        if (this.currentRow >= showNumber && showNumber > 0) {
+          this.differ = this.currentRow - (showNumber - 1)
+        } else {
+          this.differ = 0
+        }
+        for (let index = 0; index < showNumber; index++) {
+          const item = goods[index + this.differ]
+          showGoods.push({
+            no: item.no,
+            pluCode: item.pluCode,
+            name: item.name,
+            number: item.number,
+            price: item.price,
+            total: item.total
+          })
         }
         return showGoods
       }
@@ -146,7 +152,7 @@ export default {
       }
     },
     tableRowClassName({ row, rowIndex }) {
-      if (rowIndex === 0) {
+      if (rowIndex === this.currentRow - this.differ) {
         return 'current-row'
       }
     },

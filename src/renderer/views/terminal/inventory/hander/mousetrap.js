@@ -15,7 +15,9 @@ const mousetrap = {
             this.initOrder()
           }
           log.h('info', 'inventory.Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
-          hander[key](this)
+          setTimeout(() => {
+            hander[key](this)
+          }, 0)// 加入js队列[等待其他异步操作完成后在执行]
         })
       }
     })

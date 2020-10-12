@@ -21,7 +21,8 @@
               v-model.lazy.number="input"
               @keyup.enter="handerInput"
               placeholder="条码/编码/数量"
-              type="number"
+              type="text"
+              oninput="value=value.replace(/[^0-9.;]/g,'')"
               class="el-input__inner"
             />
           </el-row>

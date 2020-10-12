@@ -17,76 +17,74 @@ const hander = {
     self.$refs.goods.handerCurrentRow(+1)
   },
   pay(self) {
-    setTimeout(() => {
-      if (self.order.goods.length) {
-        Create(self.order).then(orderRes => {
-          self.order.status = true // 订单完结
-          self.$refs.foots.information() // 更新info
-        }).catch(error => {
-          Notification({
-            title: '创建订单错误',
-            message: error.message,
-            type: 'error',
-            duration: 15000
-          })
+    if (self.order.goods.length) {
+      Create(self.order).then(orderRes => {
+        self.order.status = true // 订单完结
+        self.$refs.foots.information() // 更新info
+      }).catch(error => {
+        Notification({
+          title: '创建订单错误',
+          message: error.message,
+          type: 'error',
+          duration: 15000
         })
-      } else {
-        self.$confirm('上传未上报盘点数据', '上传盘点数据', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const createdAt = { // 获取当天订单
-            [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
-            [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
-          }
-          All({
-            createdAt: createdAt,
-            publish: false
-          }).then(orders => {
-            if (orders.length > 0) {
-              syncOrder(orders).then(() => {
-                Publish({
-                  createdAt: createdAt,
-                  publish: false
-                }).then(() => {
-                  self.$refs.foots.information() // 更新info
-                })
-                // Empty().then(() => {
-                //   self.$refs.foots.information() // 更新info
-                // })
-                self.$message({
-                  type: 'success',
-                  message: '上传盘点订单数据成功'
-                })
-              }).catch(error => {
-                Notification({
-                  title: '上传盘点订单数据错误',
-                  message: error.message,
-                  type: 'error',
-                  duration: 15000
-                })
+      })
+    } else {
+      self.$confirm('上传未上报盘点数据', '上传盘点数据', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const createdAt = { // 获取当天订单
+          [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1),
+          [Op.gt]: new Date(new Date(new Date().toLocaleDateString()).getTime())
+        }
+        All({
+          createdAt: createdAt,
+          publish: false
+        }).then(orders => {
+          if (orders.length > 0) {
+            syncOrder(orders).then(() => {
+              Publish({
+                createdAt: createdAt,
+                publish: false
+              }).then(() => {
+                self.$refs.foots.information() // 更新info
               })
-            } else {
+              // Empty().then(() => {
+              //   self.$refs.foots.information() // 更新info
+              // })
               self.$message({
-                type: 'error',
-                message: '盘点未上报订单数据为空'
+                type: 'success',
+                message: '上传盘点订单数据成功'
               })
-            }
-          }).catch(error => {
+            }).catch(error => {
+              Notification({
+                title: '上传盘点订单数据错误',
+                message: error.message,
+                type: 'error',
+                duration: 15000
+              })
+            })
+          } else {
             self.$message({
               type: 'error',
-              message: '未找到盘点订单数据' + error
+              message: '盘点未上报订单数据为空'
             })
-          })
-        }).catch(() => {
+          }
+        }).catch(error => {
           self.$message({
-            type: 'info',
-            message: '已取消上传盘点数据'
+            type: 'error',
+            message: '未找到盘点订单数据' + error
           })
         })
-      }
-    }, 100)// 加入js队列[等待其他异步操作完成后在执行]
+      }).catch(() => {
+        self.$message({
+          type: 'info',
+          message: '已取消上传盘点数据'
+        })
+      })
+    }
   },
   addGoods(self) { // 添加商品可以条形码可以自编码
     const plucode = self.getInput()
