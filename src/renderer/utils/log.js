@@ -16,31 +16,35 @@ log.transports.file.resolvePath = () => {
   return resolvePath
 }
 log.h = async(type, scope, message) => {
-  setTimeout(() => {
-    switch (type) {
-      case 'error':
-        log.scope(scope).error(message)
-        break
-      case 'warn':
-        log.scope(scope).warn(message)
-        break
-      case 'info':
-        log.scope(scope).info(message)
-        break
-      case 'verbose':
-        log.scope(scope).verbose(message)
-        break
-      case 'debug':
-        log.scope(scope).debug(message)
-        break
-      case 'silly':
-        log.scope(scope).silly(message)
-        break
-      default:
-        log.scope(scope).info(message)
-        break
-    }
-  }, 0)// 加入js计划队列
+  if (store.state.settings.switch) {
+    setTimeout(() => {
+      switch (type) {
+        case 'error':
+          log.scope(scope).error(message)
+          break
+        case 'warn':
+          log.scope(scope).warn(message)
+          break
+        case 'info':
+          log.scope(scope).info(message)
+          break
+        case 'verbose':
+          log.scope(scope).verbose(message)
+          break
+        case 'debug':
+          log.scope(scope).debug(message)
+          break
+        case 'silly':
+          log.scope(scope).silly(message)
+          break
+        default:
+          log.scope(scope).info(message)
+          break
+      }
+    }, 0)// 加入js计划队列
+  } else {
+    console.log(type, scope, message)
+  }
 }
 
 export default log

@@ -9,6 +9,7 @@ npm config set metrics-registry https://registry.npm.taobao.org
 #npm config set metrics-registry https://registry.npmjs.org
 # 检查是否安装成功 
 npm config list
+npm config set ELECTRON_MIRROR https://npm.taobao.org/mirrors/electron/
 ```
 ### win构建重要  注意使用 vs2015
 ```

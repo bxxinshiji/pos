@@ -23,6 +23,7 @@ const state = {
   barcodeReg: '27PPPPPBBBBBC', // 条形码识别规则
   log: 100, // 日志大小默认10MB
   isTotal: false, // 总金额汇总显示【默认关闭】
+  switch: false, // 日志开关
   scanStoreName: '', // 支付商户用户名
   scanPayId: 0, //  扫码支付ID
   orderTitle: '扫码支付商品',
