@@ -46,29 +46,27 @@ sequelize.sync({
 // 通过条形码获取商品
 sequelize.barcodeByGoods = (barcode) => {
   return new Promise((resolve, reject) => {
-    Goods.findOne({ where: { barCode: barcode }}).then(goods => {
-      if (goods) {
-        resolve(goods)
-      } else {
-        BarCodes.findOne({ where: { barCode: barcode }}).then(barcode => {
-          if (barcode) {
-            Goods.findOne({ where: { pluCode: barcode.pluCode }}).then(goods => {
-              if (goods) {
-                goods.name = barcode.name
-                goods.spec = barcode.spec
-                goods.barCode = barcode.barCode
-              }
-              resolve(goods)
-            }).catch(error => {
-              reject(error)
-            })
-          } else {
-            resolve(goods)
-          }
-        }).catch(error => {
-          reject(error)
-        })
+    sequelize.query(
+      'SELECT a.*,b.barCode as b_barCode,b.name as b_name,b.spec as b_spec FROM goods a LEFT JOIN barCodes b ON a.pluCode=b.pluCode WHERE a.barCode=:barCode or b.barCode=:barCode ',
+      {
+        replacements: { barCode: barcode },
+        plain: true,
+        type: Sequelize.QueryTypes.SELECT
       }
+    ).then(goods => {
+      if (goods.b_barCode) {
+        goods.barCode = goods.b_barCode
+      }
+      if (goods.b_name) {
+        goods.name = goods.b_name
+      }
+      if (goods.b_spec) {
+        goods.spec = goods.b_spec
+      }
+      if (goods.snapshot) {
+        goods.snapshot = JSON.parse(goods.snapshot)
+      }
+      resolve(goods)
     }).catch(error => {
       reject(error)
     })
