@@ -10,8 +10,6 @@ const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
 import { SyncPayOrder } from '@/api/pay'
 import { queueSyncOrder } from '@/api/order'
-import Goods from '@/model/goods'
-import { Loading } from 'element-ui'
 import log from '@/utils/log'
 export default {
   name: 'App',
