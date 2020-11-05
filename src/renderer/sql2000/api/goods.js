@@ -76,45 +76,56 @@ export async function SyncPlu(enforce = false) {
     }).then(res => {
       updatedAt = res ? res.updatedAt : new Date('2004')
     })
+    const syncBarcode = async(updatedAt, endAt) => {
+      await SQLBarcode.List(updatedAt, endAt).then(async response => {
+        const barCodes = []
+        if (response) {
+          response.forEach(item => {
+            item.price = Math.round(item.price * 100)
+            barCodes.push({
+              indexes: item.barCode,
+              isPack: true,
+              pluCode: item.pluCode,
+              barCode: item.barCode,
+              depCode: item.depCode,
+              price: item.price,
+              name: item.name,
+              unit: item.unit,
+              spec: item.spec,
+              type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
+              snapshot: item,
+              updatedAt: item.updatedAt
+            })
+          })
+          await Goods.bulkCreate(barCodes,
+            { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }
+          ).then(() => {
+            Message({
+              showClose: true,
+              message: parseTime(updatedAt) + ' - ' + parseTime(endAt) + ' 商品条码信息同步成功',
+              type: 'success'
+            })
+          }).catch(error => {
+            reject(new Error('插入商品条码失败:' + error.message))
+          })
+        }
+      }).catch(error => {
+        reject(new Error('查询商品条码失败:' + error.message))
+      })
+    }
     if (enforce) { // 强制执行时更新所有商品信息
       updatedAt = new Date('2004')
     }
-    const endAt = new Date(String(new Date().getFullYear() + 1) + '-01-01 00:00:00')// 结束明年1月1日
-    await SQLBarcode.List(updatedAt, endAt).then(async response => {
-      const barCodes = []
-      if (response) {
-        response.forEach(item => {
-          item.price = Math.round(item.price * 100)
-          barCodes.push({
-            indexes: item.barCode,
-            isPack: true,
-            pluCode: item.pluCode,
-            barCode: item.barCode,
-            depCode: item.depCode,
-            price: item.price,
-            name: item.name,
-            unit: item.unit,
-            spec: item.spec,
-            type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
-            snapshot: item,
-            updatedAt: item.updatedAt
-          })
-        })
-        await Goods.bulkCreate(barCodes,
-          { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }
-        ).then(() => {
-          Message({
-            showClose: true,
-            message: parseTime(updatedAt) + ' - ' + parseTime(endAt) + ' 商品条码信息同步成功',
-            type: 'success'
-          })
-        }).catch(error => {
-          reject(new Error('插入商品条码失败:' + error.message))
-        })
+    if (updatedAt.getFullYear() < CurrentDate) {
+      for (let index = updatedAt.getFullYear(); index <= CurrentDate; index++) {
+        updatedAt = new Date(index + '-01-01 00:00:00')
+        const endAt = new Date(String(updatedAt.getFullYear() + 1) + '-01-01 00:00:00')
+        await syncBarcode(updatedAt, endAt)
       }
-    }).catch(error => {
-      reject(new Error('查询商品条码失败:' + error.message))
-    })
+    } else {
+      const endAt = new Date(String(new Date().getFullYear() + 1) + '-01-01 00:00:00') // 结束明年1月1日
+      await syncBarcode(updatedAt, endAt)
+    }
     resolve()
   })
 }
