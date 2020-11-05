@@ -32,20 +32,6 @@ export default {
         this.$router.push({ path: '/' })
       }
     })
-    console.log(this.$store.state.settings.goodsCache)
-
-    if (this.$store.state.settings.goodsCache) {
-      const loadingInstance = Loading.service({
-        text: '加载商品信息缓存...',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      Goods.barcodeAll().then(goods => {
-        goods.forEach(g => {
-          this.$store.dispatch('terminal/setCacheInputGoods', { code: g.barCode, goods: g })
-        })
-        loadingInstance.close()
-      })
-    }
     log.h('info', 'mounted', JSON.stringify('系统启动'))
   },
   methods: {
