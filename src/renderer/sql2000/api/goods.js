@@ -6,7 +6,6 @@ import { Message } from 'element-ui'
 import { parseTime } from '@/utils/index'
 
 const Goods = sequelize.models.good
-const BarCodes = sequelize.models.barCode
 
 export async function SyncPlu(enforce = false) {
   return new Promise(async(resolve, reject) => {
@@ -14,7 +13,8 @@ export async function SyncPlu(enforce = false) {
     let updatedAt = new Date('2004')
     await Goods.findOne({
       attributes: ['updatedAt'],
-      order: [['updatedAt', 'DESC']]
+      order: [['updatedAt', 'DESC']],
+      where: { isPack: false }
     }).then(res => {
       updatedAt = res ? res.updatedAt : new Date('2004')
     })
@@ -25,6 +25,8 @@ export async function SyncPlu(enforce = false) {
           response.forEach(item => {
             item.price = Math.round(item.price * 100)
             goods.push({
+              indexes: item.pluCode,
+              isPack: false,
               pluCode: item.pluCode,
               barCode: item.barCode,
               depCode: item.depCode,
@@ -67,9 +69,10 @@ export async function SyncPlu(enforce = false) {
       await sync(updatedAt, endAt)
     }
     // 更新商品条码信息
-    await BarCodes.findOne({
+    await Goods.findOne({
       attributes: ['updatedAt'],
-      order: [['updatedAt', 'DESC']]
+      order: [['updatedAt', 'DESC']],
+      where: { isPack: true }
     }).then(res => {
       updatedAt = res ? res.updatedAt : new Date('2004')
     })
@@ -81,16 +84,24 @@ export async function SyncPlu(enforce = false) {
       const barCodes = []
       if (response) {
         response.forEach(item => {
+          item.price = Math.round(item.price * 100)
           barCodes.push({
+            indexes: item.barCode,
+            isPack: true,
             pluCode: item.pluCode,
             barCode: item.barCode,
+            depCode: item.depCode,
+            price: item.price,
             name: item.name,
+            unit: item.unit,
             spec: item.spec,
+            type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
+            snapshot: item,
             updatedAt: item.updatedAt
           })
         })
-        await BarCodes.bulkCreate(barCodes,
-          { updateOnDuplicate: ['pluCode', 'name', 'spec', 'updatedAt'] }
+        await Goods.bulkCreate(barCodes,
+          { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }
         ).then(() => {
           Message({
             showClose: true,
