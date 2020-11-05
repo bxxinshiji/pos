@@ -16,7 +16,7 @@ log.transports.file.resolvePath = () => {
   return resolvePath
 }
 log.h = async(type, scope, message) => {
-  if (store.state.settings.switch) {
+  if (store.state.settings.logSwitch) {
     setTimeout(() => {
       switch (type) {
         case 'error':

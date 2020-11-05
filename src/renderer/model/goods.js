@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+const { Op } = require('sequelize')
 import path from 'path'
 import { exePath } from '@/utils'
 
@@ -64,6 +65,16 @@ sequelize.barcodeByGoods = (barcode) => {
 sequelize.plucodeByGoods = (pluCode) => {
   return new Promise((resolve, reject) => {
     Goods.findOne({ where: { pluCode: pluCode }}).then(goods => {
+      resolve(goods)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+// 通过条形码获取全部商品
+sequelize.barcodeAll = () => {
+  return new Promise((resolve, reject) => {
+    Goods.findAll({ where: { barCode: { [Op.ne]: '' }}}).then(goods => {
       resolve(goods)
     }).catch(error => {
       reject(error)
