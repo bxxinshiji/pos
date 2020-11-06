@@ -32,7 +32,10 @@ const Goods = sequelize.define('good', {
 }, {
   indexes: [
     {
-      fields: ['pluCode', 'barCode']
+      fields: ['pluCode']
+    },
+    {
+      fields: ['barCode']
     }
   ]
 })

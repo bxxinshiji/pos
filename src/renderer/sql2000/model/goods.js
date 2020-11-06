@@ -20,6 +20,10 @@ const goods = {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
+      let depRange = `DepCode != ''`
+      if (store.state.settings.depRange) {
+        depRange = 'DepCode between ' + store.state.settings.depRange.replace('-', ' AND ') + ' '
+      }
       // sql  列表查询语句(状态启用商品)
       const sql = `
           select 
@@ -47,9 +51,10 @@ const goods = {
             IsDecimal,
             Tag
           from tBmPlu 
-          WHERE XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+          WHERE ` + depRange + ` AND XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
           ORDER BY XgDate Asc
       `
+
       pool.DB.query(sql,
         {
           type: Sequelize.QueryTypes.SELECT

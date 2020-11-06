@@ -19,20 +19,20 @@
                     <el-form-item label="终端编号" prop="terminal">
                         <el-input v-model="sysForm.terminal"></el-input>
                     </el-form-item>
+                    <el-form-item label="总金额汇总" prop="isTotal">
+                      <el-switch v-model="sysForm.isTotal"></el-switch>
+                    </el-form-item>
                     <el-form-item label="条码规则" prop="barcodeReg">
                       <el-input v-model="sysForm.barcodeReg" placeholder="自定义条形码识别规则"></el-input> 
+                    </el-form-item>
+                    <el-form-item label="部门范围" prop="depRange">
+                      <el-input v-model="sysForm.depRange" placeholder="例:100-299"></el-input>
                     </el-form-item>
                     <el-form-item label="日志开关" prop="logSwitch">
                       <el-switch v-model="sysForm.logSwitch"></el-switch>
                     </el-form-item>
                     <el-form-item label="日志大小" prop="log">
                       <el-input v-model="sysForm.log" placeholder="系统报错日志大小" @input="handerOnInput"><template slot="append">MB</template></el-input> 
-                    </el-form-item>
-                    <el-form-item label="总金额汇总" prop="isTotal">
-                      <el-switch v-model="sysForm.isTotal"></el-switch>
-                    </el-form-item>
-                     <el-form-item label="商品缓存" prop="goodsCache">
-                      <el-switch v-model="sysForm.goodsCache"></el-switch>
                     </el-form-item>
 
                 </span>
@@ -146,7 +146,7 @@ export default {
         log: settings.log,
         isTotal: settings.isTotal,
         logSwitch: settings.logSwitch,
-        goodsCache: settings.goodsCache
+        depRange: settings.depRange
       },
       sysRules: {
         api: [
