@@ -1,30 +1,71 @@
 <template>
-  <div class="item">
-      <table class="table" border="0" cellpadding="0" cellspacing="0">
-        <tr class="head">
-          <th style="min-width:55px"># {{String(goods.length)}}</th>
-          <th style="min-width:110px">编码</th>
-          <th style="min-width:180px">商品名称</th>
-          <th style="min-width:100px">数量</th>
-          <th style="min-width:100px">单价</th>
-          <th style="min-width:100px">小计</th>
-        </tr>       
-        <goods-item v-for="(goods,index) in showGoods" :key="index" :active="index===(currentRow-differ)" :goods="goods"></goods-item>
-     </table>
-  </div>
+      <el-table
+        ref="table"
+        :data="showGoods"
+        height="72vh"
+        size="mini"
+        highlight-current-row
+        class="goods"
+        :row-class-name="tableRowClassName"
+      >
+        <template slot="empty">暂无商品录入</template>
+        <el-table-column
+          :label="'# '+String(goods.length)"
+          prop="no"
+          min-width="55"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="pluCode"
+          label="编码"
+          min-width="110"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="商品名称"
+          min-width="180"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="number"
+          label="数量"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.number.toFixed(2) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="price"
+          label="单价"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            {{ (scope.row.price / 100).toFixed(2) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="total"
+          label="小计"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            {{ (scope.row.total / 100).toFixed(2) }}
+          </template>
+        </el-table-column>
+      </el-table>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { md5Sign } from '@/utils/crypto'
-import sequelize from '@/model/order'
-import GoodsItem from './goods.vue'
+import sequelize from '@/model/orderPD'
 const Snapshots = sequelize.models.snapshot
 import log from '@/utils/log'
 
 export default {
   name: 'goods',
-  components: { GoodsItem },
   props: {
   },
   data() {
@@ -87,7 +128,7 @@ export default {
         this.setShowNumber()
       })
     },
-    // 设置选择行
+    // 设置选择航
     setCurrentRow(value) {
       // this.$refs.table.setCurrentRow(this.goods[value])
       if (this.goods[value]) {
@@ -98,15 +139,20 @@ export default {
     setShowNumber(value) {
       if (this.showNumber === 10) {
         let clientHeight = 0
-        const row = document.getElementsByClassName('head') // 获取元素
+        const row = document.getElementsByClassName('el-table__row') // 获取元素
         if (row.length > 0) {
           clientHeight = row[0].clientHeight // 获取其中一个的高度
         }
-        const table = document.getElementsByClassName('item')
+        const table = document.getElementsByClassName('el-table')
         const showNumber = parseInt(table[0].clientHeight / clientHeight)
         if (showNumber > 0) {
           this.showNumber = showNumber - 1
         }
+      }
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (rowIndex === this.currentRow - this.differ) {
+        return 'current-row'
       }
     },
     // 设置选择行数量
@@ -120,7 +166,7 @@ export default {
       }
     },
     // 预处理商品
-    async handler(goods) {
+    handler(goods) {
       // 更新快照信息
       goods.snapshot.name = goods.name
       goods.snapshot.spec = goods.spec
@@ -135,7 +181,7 @@ export default {
       })
     },
     // 增加商品
-    async addGoods(goods) {
+    addGoods(goods) {
       this.handler(goods)
       this.goods.unshift(goods)
       this.resetCurrentRow()
@@ -155,21 +201,49 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/less/atom/syntax-variables.less";
-.item{
-  height:72vh;
-  border-bottom: 1px solid #ebeef5;
-  .table{
-    width:100%;
-    .head{
-      color: @el-warning;
-      font-size:2.5vh;
-      th{
-        padding: 6px 0 6px 10px;
-        text-align:left;
-        line-height:3vh;
-        border-bottom: 1px solid #ebeef5;
-      }
-    }
-  }
+.goods{
+  width:100vw;
+}
+.el-table /deep/ .cell{
+    line-height:3vh;
+}
+.el-table /deep/ th{
+    color: #ffffff;
+    font-size:2.5vh;
+    background-color: #000;
+}
+.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.el-table /deep/ tr{
+    font-size:2.5vh;
+    color: #ffffff;
+    background-color: #000;
+}
+.el-table {
+    font-size:2.5vh;
+    background-color: #000;
+}
+.el-table /deep/ .el-table__body tr.current-row>td{
+  color: @el-danger;
+  font-size:3vh;
+}
+// 取消背景色
+.el-table /deep/ .el-table__body tr.current-row>td,.el-table /deep/ .el-table__body tr.hover-row>td{
+  background-color: #000;
+}
+
+// 自动移滚动条样式
+.goods ::-webkit-scrollbar{
+  width: 4px;
+  height: 4px;
+}
+.goods ::-webkit-scrollbar-thumb{
+  border-radius: 1em;
+  background-color: @syntax-wrap-guide-color;
+}
+.goods ::-webkit-scrollbar-track{
+  border-radius: 1em;
+  background-color: #000;
 }
 </style>

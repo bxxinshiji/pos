@@ -16,7 +16,8 @@ const state = {
   loginTime: new Date(),
   avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
   roles: [],
-  front_permits: []
+  front_permits: [],
+  leave: false // 暂离
 }
 
 const mutations = {

@@ -13,6 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
+          :readonly="leave"
           placeholder="用户名"
           name="username"
           type="text"
@@ -98,7 +99,9 @@ export default {
       onLine: state => state.healthy.onLine,
       isInternet: state => state.healthy.isInternet,
       isServer: state => state.healthy.isServer,
-      isSql2000: state => state.healthy.isSql2000
+      isSql2000: state => state.healthy.isSql2000,
+      leave: state => state.user.leave,
+      username: state => state.user.username
     })
   },
   watch: {
@@ -111,6 +114,9 @@ export default {
   },
   mounted() {
     this.usernameFocus()
+    if (this.leave) {
+      this.loginForm.username = this.username
+    }
     ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
       this.usernameFocus()
     })
@@ -144,6 +150,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             log.h('info', 'user/login', '用户: ' + this.loginForm.username + ' 登录成功')
             this.$router.push({ path: this.redirect || '/' })
+            this.$store.state.user.leave = false // 接触暂离锁定
             this.loading = false
           }).catch(error => {
             log.h('error', 'user/login', '用户: ' + this.loginForm.username + ' 登录失败,' + 'ERROR:' + error.message)
