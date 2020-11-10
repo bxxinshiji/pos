@@ -53,6 +53,13 @@
             <span>实际扫码金额 <b style="color:#F56C6C">{{(orderInfo.payTotal / 100).toFixed(2) }}</b> 元</span>
         </el-col>
       </el-row>
+      <el-dialog title="结账退出" :visible.sync="dialogVisible" @close="escAccounts">
+        <el-input ref="accounts" v-model="password" type="password" placeholder="请输入密码" @keyup.enter.native="accounts"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="escAccounts" >取 消</el-button>
+          <el-button type="primary" @click="accounts">确 定</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 
@@ -67,6 +74,8 @@ export default {
   name: 'terminal',
   data() {
     return {
+      dialogVisible: false,
+      password: '',
       keyboards: [
         { name: '收银台', key: '0', label: 'cashier' },
         { name: '订单查询', key: '1', label: 'order' },
@@ -145,59 +154,12 @@ export default {
           break
         case 'accounts':
           log.h('info', 'accounts', '用户: ' + this.username + ' 结账')
-          this.$confirm('结账退出 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            accountsSettle().then(response => { // 结账
-              Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
-              if (Terminal.PosCode) {
-                Terminal.Get().then(() => {
-                  Terminal.PosState = '70'
-                  Terminal.UserName = ''
-                  Terminal.UserCode = ''
-                  Terminal.PreJzDate = new Date()
-                  Terminal.Save().then(() => {
-                    log.h('info', 'accounts', '用户: ' + this.username + ' 结账成功退出')
-                    print.accounts(true).then(response => { // 打印结账数据
-                      this.$message({
-                        type: 'success',
-                        message: '结账打印成功'
-                      })
-                    }).catch((error) => {
-                      log.h('error', 'accounts', '用户: ' + this.username + ' 结账打印失败失败' + JSON.stringify(error.message))
-                      console.log(error)
-                    })
-                    this.logout()
-                  }).catch(error => {
-                    this.$message({
-                      type: 'error',
-                      message: '结账成功保存终端失败: ' + error.message
-                    })
-                    log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功保存终端失败' + JSON.stringify(error.message))
-                  })
-                }).catch(error => {
-                  this.$message({
-                    type: 'error',
-                    message: '结账成功获取终端失败: ' + error.message
-                  })
-                  log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功获取终端失败' + JSON.stringify(error.message))
-                })
-              }
-            }).catch(error => {
-              log.h('error', 'accounts', '用户: ' + this.username + ' 结账成功失败' + JSON.stringify(error.message))
-              this.$message({
-                type: 'error',
-                message: '结账失败: ' + error.message
-              })
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消关机'
-            })
-          })
+          this.removeEventListener()
+          this.dialogVisible = true
+          setTimeout(() => {
+            this.password = ''
+            this.$refs.accounts.focus() //  等待所有执行完成聚焦窗口
+          }, 0)
           break
         case 'quit':
           log.h('info', 'quit', '用户: ' + this.username + ' 退出软件')
@@ -225,6 +187,62 @@ export default {
     },
     removeEventListener() {
       document.removeEventListener('keydown', this.keydown)
+    },
+    escAccounts() {
+      this.dialogVisible = false
+      document.addEventListener('keydown', this.keydown)
+    },
+    accounts() {
+      this.dialogVisible = false
+      this.$store.dispatch('user/login', {
+        username: this.username,
+        password: this.password
+      }).then(() => {
+        log.h('info', 'user/login', '用户: ' + this.username + ' 登录成功')
+        accountsSettle().then(response => { // 结账
+          Terminal.PosCode = this.$store.state.settings.terminal // 更新终端状态
+          if (Terminal.PosCode) {
+            Terminal.Get().then(() => {
+              Terminal.PosState = '70'
+              Terminal.UserName = ''
+              Terminal.UserCode = ''
+              Terminal.PreJzDate = new Date()
+              Terminal.Save().then(() => {
+                log.h('info', 'accounts', '用户: ' + this.username + ' 结账成功退出')
+                print.accounts(true).then(response => { // 打印结账数据
+                  this.$message({
+                    type: 'success',
+                    message: '结账打印成功'
+                  })
+                }).catch((error) => {
+                  log.h('error', 'accounts', '用户: ' + this.username + ' 结账打印失败失败' + JSON.stringify(error.message))
+                })
+                this.logout()
+              }).catch(error => {
+                this.$message({
+                  type: 'error',
+                  message: '结账成功保存终端失败: ' + error.message
+                })
+                log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功保存终端失败' + JSON.stringify(error.message))
+              })
+            }).catch(error => {
+              this.$message({
+                type: 'error',
+                message: '结账成功获取终端失败: ' + error.message
+              })
+              log.h('error', 'Terminal', '用户: ' + this.username + ' 结账成功获取终端失败' + JSON.stringify(error.message))
+            })
+          }
+        }).catch(error => {
+          log.h('error', 'accounts', '用户: ' + this.username + ' 结账成功失败' + JSON.stringify(error.message))
+          this.$message({
+            type: 'error',
+            message: '结账失败: ' + error.message
+          })
+        })
+      }).catch(error => {
+        log.h('error', 'user/login', '用户: ' + this.username + ' 登录失败,' + 'ERROR:' + error.message)
+      })
     },
     async logout() {
       await this.$store.dispatch('user/logout')
