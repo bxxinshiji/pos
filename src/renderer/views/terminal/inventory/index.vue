@@ -73,8 +73,8 @@ export default {
     blur() { // 失焦点
       this.$refs.foots.blur()
     },
-    initOrder() {
-      this.$store.dispatch('terminal/changeInitOrder', 'orderPD').then(() => {
+    async initOrder() {
+      await this.$store.dispatch('terminal/changeInitOrder', 'orderPD').then(() => {
         this.$store.dispatch('terminal/changeCurrentGoods', {}) // 选中商品情况
       }).catch(error => {
         this.blur()
@@ -92,10 +92,10 @@ export default {
     getInput() {
       return this.$refs.foots.$refs.input.value
     },
-    handerInput(value) {
+    async handerInput(value) {
       // 完成订单状态清空订单
       if (this.order.status) {
-        this.initOrder()
+        await this.initOrder()
       }
       if (value) {
         this.setInput()

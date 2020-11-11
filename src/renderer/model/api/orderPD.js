@@ -36,7 +36,7 @@ export function Empty() {
 export function Create(order) {
   return new Promise((resolve, reject) => {
     Order.create(order, {
-      include: [Order.Goods, Order.Pays]
+      include: [Order.Goods]
     }).then(response => {
       resolve(response)
     }).catch(error => {

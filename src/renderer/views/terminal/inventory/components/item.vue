@@ -17,7 +17,7 @@
 <script>
 import { mapState } from 'vuex'
 import { md5Sign } from '@/utils/crypto'
-import sequelize from '@/model/order'
+import sequelize from '@/model/orderPD'
 import GoodsItem from './goods.vue'
 const Snapshots = sequelize.models.snapshot
 import log from '@/utils/log'

@@ -10,9 +10,9 @@ const mousetrap = {
   registerMousetrap() {
     Object.keys(Keyboard).map(key => {
       if (hander.hasOwnProperty(key)) { // 方式不存在的方法注册
-        Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), () => {
+        Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), async() => {
           if (this.order.status) { // 根据订单状态初始化订单
-            this.initOrder()
+            await this.initOrder()
           }
           log.h('info', 'inventory.Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
           setTimeout(() => {

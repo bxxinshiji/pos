@@ -38,6 +38,7 @@ const Goods = sequelize.define('good', {
   no: Sequelize.INTEGER, // 排列序号
   depCode: Sequelize.INTEGER // 部门编码
 }, {
+  timestamps: false
 })
 Order.Goods = Order.hasMany(Goods, {
   onUpdate: 'cascade',

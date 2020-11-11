@@ -11,7 +11,7 @@ const mousetrap = {
   registerMousetrap() {
     Object.keys(Keyboard).map(key => {
       if (hander.hasOwnProperty(key)) { // 方式不存在的方法注册
-        Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), () => {
+        Mousetrap.bindGlobal(Keyboard[key].toLowerCase(), async() => {
           if (store.state.terminal.isPay) { // 支付中禁止操作
             Message({
               type: 'warning',
@@ -19,7 +19,7 @@ const mousetrap = {
             })
           } else {
             if (this.order.status) { // 根据订单状态初始化订单
-              this.initOrder()
+              await this.initOrder()
             }
             log.h('info', 'Mousetrap.bindGlobal', JSON.stringify(key), Keyboard[key])
             setTimeout(() => {
