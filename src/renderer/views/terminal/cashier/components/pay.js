@@ -389,8 +389,6 @@ const hander = {
     })
   },
   OrderSave() {
-    console.log(this.order)
-
     OrderCreate(this.order).then(order => {
       this.order.status = true // 订单完结
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
