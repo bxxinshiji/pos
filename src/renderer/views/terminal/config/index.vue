@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <el-tabs type="border-card"  @tab-click="handleClick">
-        <el-tab-pane label="系统设置">
-            <el-form v-if="tab===0" :inline=true :model="sysForm" :rules="sysRules" ref="sysForm"  label-width="100px">
+        <el-tabs type="border-card" ref="tab" v-model="tab" @tab-click="handleClick">
+        <el-tab-pane label="系统设置" name="0">
+            <el-form v-if="tab==='0'" :inline=true :model="sysForm" :rules="sysRules" ref="sysForm"  label-width="100px">
                 <el-form-item label="服务器API" prop="api">
                     <el-input 
                       v-model="sysForm.api" 
@@ -57,8 +57,8 @@
                 </el-collapse>
             </el-form>
         </el-tab-pane>
-        <el-tab-pane label="SQL数据库">
-            <el-form v-if="tab===1" :inline=true :model="sqlForm" :rules="sqlRules" ref="sqlForm" label-width="100px">
+        <el-tab-pane label="SQL数据库" name="1">
+            <el-form v-if="tab==='1'" :inline=true :model="sqlForm" :rules="sqlRules" ref="sqlForm" label-width="100px">
                 <el-form-item label="数据库地址" prop="sql2000_host">
                     <el-input v-model="sqlForm.sql2000_host"></el-input>
                 </el-form-item>
@@ -81,17 +81,17 @@
                 </el-form-item>
             </el-form>
         </el-tab-pane>
-        <el-tab-pane label="打印机">
-          <printer v-if="tab===2"/>
+        <el-tab-pane label="打印机" name="2">
+          <printer v-if="tab==='2'"/>
         </el-tab-pane>
-        <el-tab-pane label="快捷键">
-          <keyboard v-if="tab===3"/>
+        <el-tab-pane label="快捷键" name="3">
+          <keyboard v-if="tab==='3'"/>
         </el-tab-pane>
-        <el-tab-pane label="支付快捷键">
-          <payKeyboard v-if="tab===4"/>
+        <el-tab-pane label="支付快捷键" name="4">
+          <payKeyboard v-if="tab==='4'"/>
         </el-tab-pane>
-        <el-tab-pane label="扫码支付">
-          <pay v-if="tab===5"/>
+        <el-tab-pane label="扫码支付" name="5">
+          <pay v-if="tab==='5'"/>
         </el-tab-pane>
         </el-tabs>
     </div>
@@ -113,7 +113,7 @@ export default {
   data() {
     return {
       loading: false,
-      tab: 0,
+      tab: '0',
       sqlForm: {
         sql2000_host: settings.sql2000_host,
         sql2000_port: settings.sql2000_port,
@@ -187,7 +187,11 @@ export default {
   created() {
   },
   mounted() {
+    document.addEventListener('keydown', this.keydown)
     this.$store.dispatch('terminal/unregisterGlobalShortcut') // 注销注册全局快捷键
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown)
   },
   methods: {
     submitForm(formName) {
@@ -210,7 +214,7 @@ export default {
       this.$refs[formName].resetFields()
     },
     handleClick(tab, event) {
-      this.tab = Number(tab.index)
+      this.tab = tab.index
     },
     handerOnInput(value) {
       this.sysForm.log = value.replace(/[^0-9.]/g, '')
@@ -222,6 +226,18 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    keydown(e) {
+      if (e.key === 'ArrowLeft') { // 向左
+        if (Number(this.tab) > 0) {
+          this.tab = String(Number(this.tab) - 1)
+        }
+      }
+      if (e.key === 'ArrowRight') { // 向右
+        if (Number(this.tab) < 5) {
+          this.tab = String(Number(this.tab) + 1)
+        }
+      }
     }
   },
   destroyed() {
