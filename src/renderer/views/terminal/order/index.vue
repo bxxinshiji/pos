@@ -197,9 +197,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List, Delete, UpdateOrderNo } from '@/model/api/order'
+import { List, Delete, UpdateOrderNo, AddPrint, GoodsSnapshot } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
-import { AddPrint, GoodsSnapshot } from '@/model/api/order'
 import print from '@/utils/print'
 const Order = import('@/api/order')
 import log from '@/utils/log'
