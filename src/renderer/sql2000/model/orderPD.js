@@ -8,11 +8,11 @@ import store from '@/store'
 
 const order = {
   sql: '',
-  async CreateOrderSQL(orders) {
-    for (let index = 0; index < orders.length; index++) {
-      await this.CreateOrderGoodsSQL(orders[index])
-    }
-  },
+  // async CreateOrderSQL(orders) {
+  //   for (let index = 0; index < orders.length; index++) {
+  //     await this.CreateOrderGoodsSQL(orders[index])
+  //   }
+  // },
   async CreateOrderGoodsSQL(item) {
     const XsDate = parseTime(item.dataValues.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') // 销售日期
     const XsTime = parseTime(item.dataValues.createdAt, '{h}:{i}:{s}') // 销售时间
@@ -60,13 +60,13 @@ const order = {
     }
     // 商品循环 end'
   },
-  Create(orders) {
+  Create(order) {
     return new Promise(async(resolve, reject) => {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
       this.sql = '' // 初始化 防止 sql重复
-      await this.CreateOrderSQL(orders)
+      await this.CreateOrderGoodsSQL(order)
       pool.DB.query(this.sql,
         { type: Sequelize.QueryTypes.INSERT }
       ).then(response => {

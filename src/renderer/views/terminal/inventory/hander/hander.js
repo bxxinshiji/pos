@@ -3,6 +3,8 @@ const { Op } = require('sequelize')
 import store from '@/store'
 import { All, Create, Publish } from '@/model/api/orderPD'
 import { syncOrder } from '@/api/orderPD'
+import log from '@/utils/log'
+
 const hander = {
   // 输入框聚焦
   inputFoots(self) {
@@ -19,6 +21,25 @@ const hander = {
   pay(self) {
     if (self.order.goods.length) {
       Create(self.order).then(orderRes => {
+        syncOrder(orderRes).then(() => {
+          orderRes.publish = true
+          orderRes.save().then(() => {
+            self.$refs.foots.information() // 更新info
+          }).catch(error => { // 进行二次保存防止第一次创建没有保存
+            log.h('error', 'pay.Create.syncOrder.orderRes.save', JSON.stringify(error.message) + '\n' + JSON.stringify(orderRes))
+          }) // 异步同步服务器订单
+          self.$message({
+            type: 'success',
+            message: '上传盘点订单数据成功'
+          })
+        }).catch(error => {
+          Notification({
+            title: '上传盘点订单数据错误',
+            message: error.message,
+            type: 'error',
+            duration: 15000
+          })
+        })
         self.order.status = true // 订单完结
         self.$refs.foots.information() // 更新info
       }).catch(error => {

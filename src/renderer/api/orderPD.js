@@ -3,10 +3,10 @@ const SQL2000OrderSQL = import('@/sql2000/model/orderPD')
 /**
  * syncOrder 同步订单
  */
-export function syncOrder(orders) {
+export function syncOrder(order) {
   return new Promise(async(resolve, reject) => {
     await SQL2000OrderSQL.then(async sql => {
-      await sql.default.Create(orders).then(async response => {
+      await sql.default.Create(order).then(async response => {
         resolve(response)
       }).catch(error => {
         reject(error)
