@@ -79,14 +79,14 @@ export default {
       keyboards: [
         { name: '收银台', key: '0', label: 'cashier' },
         { name: '订单查询', key: '1', label: 'order' },
-        { name: '支付查询', key: '2', label: 'pay' },
+        { name: '扫码支付', key: '2', label: 'pay' },
         { name: '盘点商品', key: '3', label: 'inventory' },
-        { name: '修改密码', key: '4', label: 'password' },
-        // { name: '系统配置', key: '5', label: 'config' },
+        { name: '盘点订单', key: '4', label: 'orderPD' },
+        { name: '修改密码', key: '5', label: 'password' },
         { name: '暂离退出', key: '6', label: 'out' },
         { name: '结账退出', key: '7', label: 'accounts' }
-        // { name: '退出软件', key: '8', label: 'quit' }
-        // { name: '关机', key: '9', label: 'off' }
+        // { name: '退出软件', key: '8', label: 'quit' },
+        // { name: '系统配置', key: '9', label: 'config' }
       ]
     }
   },
@@ -116,14 +116,14 @@ export default {
         this.keyboards = [
           // { name: '收银台', key: '0', label: 'cashier' },
           { name: '订单查询', key: '1', label: 'order' },
-          { name: '支付查询', key: '2', label: 'pay' },
+          { name: '扫码支付', key: '2', label: 'pay' },
           // { name: '盘点商品', key: '3', label: 'inventory' },
-          // { name: '修改密码', key: '4', label: 'password' },
-          { name: '系统配置', key: '5', label: 'config' },
+          { name: '盘点订单', key: '4', label: 'orderPD' },
+          // { name: '修改密码', key: '5', label: 'password' },
           { name: '暂离退出', key: '6', label: 'out' },
           { name: '结账退出', key: '7', label: 'accounts' },
-          { name: '退出软件', key: '8', label: 'quit' }
-        // { name: '关机', key: '9', label: 'off' }
+          { name: '退出软件', key: '8', label: 'quit' },
+          { name: '系统配置', key: '9', label: 'config' }
         ]
       }
     },
@@ -143,6 +143,9 @@ export default {
           break
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
+          break
+        case 'orderPD':
+          this.$router.push({ path: '/terminal/orderPD' })
           break
         case 'password':
           this.$router.push({ path: '/terminal/password' })
@@ -303,6 +306,10 @@ export default {
   .inventory{
     background: #0fb9b1;
   }
+  .orderPD{
+    background: #008B8B;
+  }
+  
 }
 .orderInfo{
   padding: 2vw;

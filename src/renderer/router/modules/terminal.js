@@ -54,6 +54,16 @@ export default {
         roles: ['terminal']
       }
     }, {
+      path: 'orderPD',
+      name: 'OrderPD',
+      component: () => import('@/views/terminal/orderPD/index'),
+      meta: {
+        title: '盘点订单',
+        icon: 'orderPD',
+        permits: ['ui_terminal_orderPD'],
+        roles: ['terminal']
+      }
+    }, {
       path: 'password',
       name: 'Password',
       component: () => import('@/views/terminal/password/index'),
