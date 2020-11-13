@@ -85,8 +85,8 @@ export default {
         { name: '修改密码', key: '5', label: 'password' },
         { name: '暂离退出', key: '6', label: 'out' },
         { name: '结账退出', key: '7', label: 'accounts' }
-        // { name: '退出软件', key: '8', label: 'quit' },
-        // { name: '系统配置', key: '9', label: 'config' }
+        // { name: '系统配置', key: '8', label: 'config' },
+        // { name: '退出软件', key: '9', label: 'quit' },
       ]
     }
   },
@@ -122,8 +122,8 @@ export default {
           // { name: '修改密码', key: '5', label: 'password' },
           { name: '暂离退出', key: '6', label: 'out' },
           { name: '结账退出', key: '7', label: 'accounts' },
-          { name: '退出软件', key: '8', label: 'quit' },
-          { name: '系统配置', key: '9', label: 'config' }
+          { name: '系统配置', key: '8', label: 'config' },
+          { name: '退出软件', key: '9', label: 'quit' }
         ]
       }
     },
