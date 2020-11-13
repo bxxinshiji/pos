@@ -126,7 +126,6 @@
           <el-col :span="8" class="orderInfo">
             <span style="color: #67C23A">订单金额: {{ currentOrder.total?(currentOrder.total / 100).toFixed(2):(0).toFixed(2) }} 元</span>
             <span style="color: #409EFF">实际收款: {{ currentOrder.getAmount?(currentOrder.getAmount / 100).toFixed(2):(0).toFixed(2) }} 元</span>
-            <span style="color: #F56C6C">收款找零: {{ ((currentOrder.getAmount - currentOrder.total) / 100).toFixed(2) }} 元</span>
             <span>商品数量: {{ currentOrder.number }}</span>
           </el-col>
           <el-col :span="8" class="orderInfo">
@@ -142,8 +141,9 @@
             </span>
           </el-col>
         </el-row>
-        <el-table :data="currentOrder.goods" size="mini" max-height="250">
+        <el-table :data="currentOrder.goods" size="mini" max-height="380">
           <el-table-column label="商品信息">
+            <el-table-column property="no" label="#" width="50"></el-table-column>
             <el-table-column property="pluCode" label="编码" width="100"></el-table-column>
             <el-table-column property="name" label="商品名称" width="130"></el-table-column>
             <el-table-column property="price" label="单价" width="100">
@@ -151,7 +151,7 @@
               {{ (scope.row.price / 100).toFixed(2) }} 元
             </template>
             </el-table-column>
-            <el-table-column property="number" label="数量" width="80"></el-table-column>
+            <el-table-column property="number" label="数量" width="60"></el-table-column>
             <el-table-column property="total" label="小计" width="100">
               <template slot-scope="scope">
                 {{ (scope.row.total / 100).toFixed(2) }} 元
