@@ -152,7 +152,9 @@ export default {
           break
         case 'out':
           log.h('info', 'quit', '用户: ' + this.username + ' 暂离退出')
-          this.$store.state.user.leave = true
+          if (this.username !== '0000') {
+            this.$store.state.user.leave = true
+          }
           this.logout()
           break
         case 'accounts':
