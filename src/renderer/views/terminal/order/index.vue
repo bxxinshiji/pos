@@ -198,7 +198,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List, Delete, UpdateOrderNo, AddPrint, GoodsSnapshot } from '@/model/api/order'
+import { List, Delete, UpdateOrderNo, AddPrint, Publish, GoodsSnapshot } from '@/model/api/order'
 import { syncOrder } from '@/api/order'
 import print from '@/utils/print'
 const Order = import('@/api/order')
@@ -335,6 +335,7 @@ export default {
       log.h('info', 'order.handerSyncOrder', JSON.stringify(currentOrder))
       syncOrder(currentOrder).then(response => { // 同步订单
         currentOrder.publish = true
+        Publish({ orderNo: currentOrder.orderNo })
         this.$notify({
           title: '订单发布成功',
           message: '订单:' + this.currentOrder.orderNo,

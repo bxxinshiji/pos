@@ -80,6 +80,20 @@ export function AddPrint(order) {
     })
   })
 }
+// Publish 发布订单
+export function Publish(where) {
+  return new Promise((resolve, reject) => {
+    Order.update({ // 本地订单状态改为报送服务器
+      publish: true
+    }, {
+      where: where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 
 // GoodsSnapshot 处理商品信息合并商品信息快照
 export async function GoodsSnapshot(goods) {
