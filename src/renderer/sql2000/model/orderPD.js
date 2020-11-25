@@ -5,6 +5,7 @@ const Sequelize = require('sequelize')
 import connection from '@/sql2000/model/connection'
 const pool = connection.Pool()
 import store from '@/store'
+import log from '@/utils/log'
 
 const order = {
   sql: '',
@@ -38,7 +39,7 @@ const order = {
       const PluCode = goods.pluCode // 商品ID
       const BarCode = goods.BarCode ? goods.BarCode : '' // 条码
       const PluName = goods.name // 商品名称
-      const PluAbbr = goods.name // 商品别名
+      const PluAbbr = goods.PluAbbrName ? goods.PluAbbrName : goods.name.substr(0, 10) // 商品别名
       const DepCode = goods.depCode // 部门ID
       const ClsCode = goods.ClsCode // 品类ID
       const SupCode = goods.SupCode // 供应商ID
@@ -72,6 +73,9 @@ const order = {
       ).then(response => {
         resolve(response)
       }).catch(error => {
+        log.h('error', 'sql2000.orderPD.Create', JSON.stringify(error.message))
+        console.log(error)
+
         reject(error)
       })
     })
