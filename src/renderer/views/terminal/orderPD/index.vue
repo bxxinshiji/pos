@@ -167,10 +167,10 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { List, Delete, UpdateOrderNo, AddPrint, GoodsSnapshot } from '@/model/api/orderPD'
+import { List, Delete, AddPrint, Publish, GoodsSnapshot } from '@/model/api/orderPD'
 import { syncOrder } from '@/api/orderPD'
 import print from '@/utils/print'
-const Order = import('@/api/orderPD')
+// const Order = import('@/api/orderPD')
 import log from '@/utils/log'
 export default {
   name: 'OrderPD',
@@ -304,6 +304,7 @@ export default {
       log.h('info', 'order.handerSyncOrder', JSON.stringify(currentOrder))
       syncOrder(currentOrder).then(response => { // 同步订单
         currentOrder.publish = true
+        Publish({ orderNo: currentOrder.orderNo })
         this.$notify({
           title: '订单发布成功',
           message: '订单:' + this.currentOrder.orderNo,
@@ -311,18 +312,18 @@ export default {
         })
         this.getList()
       }).catch(error => {
-        this.$confirm(error.message, '订单发布失败,是否确认使用新订单编号？', {
+        this.$confirm(error.message, '订单发布失败？', {
           type: 'error',
           dangerouslyUseHTMLString: true,
           center: true
         }).then(() => {
-          Order.then(o => {
-            o.OrderNo(this.terminal).then(order_no => {
-              UpdateOrderNo(currentOrder.id, order_no).then(() => {
-                this.getList()
-              })
-            })
-          })
+          // Order.then(o => {
+          //   o.OrderNo(this.terminal).then(order_no => {
+          //     UpdateOrderNo(currentOrder.id, order_no).then(() => {
+          //       this.getList()
+          //     })
+          //   })
+          // })
         }).catch(() => {
         })
       })
