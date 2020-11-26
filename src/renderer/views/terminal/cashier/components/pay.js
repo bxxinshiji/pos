@@ -339,32 +339,40 @@ const hander = {
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 开钱箱
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
-          escpos.cashdraw().then(() => {
-            Message({
-              type: 'success',
-              message: '打开钱箱成功'
+          try {
+            escpos.cashdraw().then(() => {
+              Message({
+                type: 'success',
+                message: '打开钱箱成功'
+              })
             })
-          })
+          } catch (error) {
+            log.h('error', 'OrderSaveSuccess.cashdraw', JSON.stringify(error.message))
+          }
         }
       })
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
       if (print.switch()) {
-        print.hander(order).then(response => {
-          AddPrint(order) // 增加打印次数
-          Notification({
-            title: '打印成功',
-            message: '订单:' + order.orderNo,
-            type: 'success'
+        try {
+          print.hander(order).then(response => {
+            AddPrint(order) // 增加打印次数
+            Notification({
+              title: '打印成功',
+              message: '订单:' + order.orderNo,
+              type: 'success'
+            })
+          }).catch(err => {
+            Notification({
+              title: '打印失败',
+              message: err.message,
+              type: 'error',
+              duration: 15000
+            })
           })
-        }).catch(err => {
-          Notification({
-            title: '打印失败',
-            message: err.message,
-            type: 'error',
-            duration: 15000
-          })
-        })
+        } catch (error) {
+          log.h('error', 'OrderSaveSuccess.print.hander', JSON.stringify(error.message))
+        }
       }
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 扫码支付绑定订单
