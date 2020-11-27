@@ -48,13 +48,14 @@ const escpos = {
           escpos.init()
           const devicer = escpos.devicer
           const printer = escpos.printer
-          log.h('info', 'escpos.devicer.print', JSON.stringify(devicer), JSON.stringify(printer))
+          log.h('info', 'escpos.devicer.print', JSON.stringify(devicer))
           devicer.open((err) => {
-            log.h('info', 'escpos.devicer.open', JSON.stringify(err), JSON.stringify(data))
             if (err) {
+              log.h('info', 'escpos.devicer.open', JSON.stringify(err))
               reject(err)
             } else {
               data.forEach(item => {
+                log.h('info', 'escpos.devicer.data.item', JSON.stringify(item))
                 switch (item.type) {
                   case 'text':
                     printer.text(item.contents)
