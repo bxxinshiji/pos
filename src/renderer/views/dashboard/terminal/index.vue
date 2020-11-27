@@ -57,7 +57,7 @@
         <el-input ref="accounts" v-model="password" type="password" placeholder="请输入密码" @keyup.enter.native="accountsHanlder"></el-input>
         <span slot="footer" class="dialog-footer">
           <el-button @click="escAccounts" >取 消</el-button>
-          <el-button type="primary" @click="accounts">确 定</el-button>
+          <el-button type="primary" @click="accountsHanlder">确 定</el-button>
         </span>
       </el-dialog>
   </div>

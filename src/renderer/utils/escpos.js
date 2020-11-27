@@ -42,7 +42,7 @@ const escpos = {
           escpos.init()
           const devicer = escpos.devicer
           const printer = escpos.printer
-          devicer.open(function(err) {
+          devicer.open((err) => {
             if (err) {
               reject(err)
             } else {
