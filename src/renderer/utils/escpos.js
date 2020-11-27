@@ -48,8 +48,9 @@ const escpos = {
           escpos.init()
           const devicer = escpos.devicer
           const printer = escpos.printer
+          log.h('info', 'escpos.devicer.print', JSON.stringify(devicer), JSON.stringify(printer))
           devicer.open((err) => {
-            log.h('error', 'escpos.devicer.open', JSON.stringify(devicer), JSON.stringify(printer), JSON.stringify(err))
+            log.h('info', 'escpos.devicer.open', JSON.stringify(err), JSON.stringify(data))
             if (err) {
               reject(err)
             } else {
