@@ -7,6 +7,8 @@ init.Console = require('escpos-console')
 import store from '@/store'
 const config = store.state.settings.printer
 
+import log from '@/utils/log'
+
 const escpos = {
   devicer: {},
   printer: {},
@@ -31,6 +33,10 @@ const escpos = {
       case 'Console':
         devicer = new init.Console()
         break
+    }
+    if (devicer.endpoint) { // 清空 endpoint 缓存
+      log.h('error', 'escpos.devicer.endpoint', JSON.stringify(devicer))
+      devicer.endpoint = null
     }
     escpos.devicer = devicer
     escpos.printer = new init.Printer(devicer, options) // 初始化打印机
