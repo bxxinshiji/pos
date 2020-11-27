@@ -42,25 +42,29 @@ const escpos = {
           escpos.init()
           const devicer = escpos.devicer
           const printer = escpos.printer
-          devicer.open(function() {
-            data.forEach(item => {
-              switch (item.type) {
-                case 'text':
-                  printer.text(item.contents)
-                  break
-                case 'centerText':
-                  printer.align('ct').size(2, 2).text(item.contents).align('lt').size(1, 1)
-                  break
-                case 'barcode':
-                  printer.align('CT').barcode(item.contents, 'code39', {
-                    height: 50
-                  }).align('LT')
-                  break
-              }
-            })
-            printer.cut().close() // 切纸、关闭
+          devicer.open(function(err) {
+            if (err) {
+              reject(err)
+            } else {
+              data.forEach(item => {
+                switch (item.type) {
+                  case 'text':
+                    printer.text(item.contents)
+                    break
+                  case 'centerText':
+                    printer.align('ct').size(2, 2).text(item.contents).align('lt').size(1, 1)
+                    break
+                  case 'barcode':
+                    printer.align('CT').barcode(item.contents, 'code39', {
+                      height: 50
+                    }).align('LT')
+                    break
+                }
+              })
+              printer.cut().close() // 切纸、关闭
+              resolve()
+            }
           })
-          resolve()
         } catch (err) {
           reject(err)
         }
@@ -75,11 +79,15 @@ const escpos = {
         escpos.init()
         const devicer = escpos.devicer
         const printer = escpos.printer
-        devicer.open(function() {
-          printer.cashdraw()
-          printer.cut().close() // 切纸、关闭
+        devicer.open((err) => {
+          if (err) {
+            reject(err)
+          } else {
+            printer.cashdraw()
+            printer.cut().close() // 切纸、关闭
+            resolve()
+          }
         })
-        resolve()
       } catch (err) {
         reject(err)
       }
