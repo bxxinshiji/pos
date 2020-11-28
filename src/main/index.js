@@ -16,6 +16,10 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+process.on('uncaughtException', function(error) {
+  log.h('info', 'uncaughtException', JSON.stringify(error))
+  process.exit(1)
+})
 function createWindow() {
   if (process.platform === 'darwin') {
     const template = [
