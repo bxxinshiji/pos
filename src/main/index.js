@@ -1,6 +1,7 @@
 'use strict'
 
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, dialog } from 'electron'
+import log from './log'
 
 /**
  * Set `__static` path to static files in production
@@ -57,6 +58,42 @@ function createWindow() {
   mainWindow.loadURL(winURL)
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+  log.h('info', 'createWindow', JSON.stringify(mainWindow))
+  function recordCrash(event, killed) {
+    return new Promise(resolve => {
+      log.h('error', 'recordCrash.event', JSON.stringify(event))
+      log.h('error', 'recordCrash.killed', JSON.stringify(killed))
+      resolve()
+    })
+  }
+
+  function reloadWindow(mainWin) {
+    if (mainWin.isDestroyed()) {
+      app.relaunch()
+      app.exit(0)
+    } else {
+      BrowserWindow.getAllWindows().forEach((w) => {
+        if (w.id !== mainWin.id) w.destroy()
+      })
+      mainWin.reload()
+    }
+  }
+  mainWindow.webContents.on('crashed', (event, killed) => {
+    const options = {
+      type: 'error',
+      title: '进程崩溃了',
+      message: '这个进程已经崩溃.',
+      buttons: ['重载', '退出']
+    }
+    recordCrash(event, killed).then(() => {
+      dialog.showMessageBox(options, (index) => {
+        if (index === 0) reloadWindow(mainWindow)
+        else app.quit()
+      })
+    }).catch((e) => {
+      console.log('err', e)
+    })
   })
 }
 
