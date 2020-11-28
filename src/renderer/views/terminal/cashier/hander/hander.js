@@ -68,23 +68,25 @@ const hander = {
     if (number) {
       if (self.order.goods.length > 0) {
         self.$refs.goods.setNumber(number)
-        self.setInput()
         self.$message({
           type: 'success',
           message: '修改商品数量成功'
         })
       } else {
-        self.$message({
-          type: 'error',
-          message: '修改商品不存在'
+        self.MessageBox({
+          title: '修改商品不存在',
+          message: '请输入商品后在修改商品数量'
         })
+        self.blur() // 失焦
       }
     } else {
-      self.$message({
-        type: 'warning',
-        message: '请输入修改数量'
+      self.MessageBox({
+        title: '请输入商品数量',
+        message: '输入数量商品非法!'
       })
+      self.blur() // 失焦
     }
+    self.setInput()
   },
   // 删除指定商品
   deleteGoods(self) {

@@ -12,6 +12,7 @@ const hander = {
         title: '添加商品失败',
         message: '付款流程中禁止添加商品。'
       })
+      this.blur() // 失焦
       return
     }
     this.lockGoods = true
@@ -23,6 +24,7 @@ const hander = {
             title: '商品禁止销售',
             message: '商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'
           })
+          this.blur() // 失焦
           log.h('error', 'cashier.item.addGoods', JSON.stringify('商品: ' + value + ' 已被管理员禁止销售,请联系管理员。'))
           this.lockGoods = false // 添加商品解锁
           return
@@ -44,6 +46,7 @@ const hander = {
           title: '未找到商品',
           message: '商品: ' + value + ' 信息不存在, 请重试。'
         })
+        this.blur() // 失焦
         log.h('error', 'cashier.item.addGoods', JSON.stringify('商品: ' + value + ' 信息不存在, 请重试。'))
         this.lockGoods = false // 添加商品解锁
         return
@@ -53,6 +56,7 @@ const hander = {
         title: '条码错误',
         message: error
       })
+      this.blur() // 失焦
       log.h('error', 'cashier.item.addGoods', JSON.stringify(error.message))
       this.lockGoods = false // 添加商品解锁
       return
