@@ -16,10 +16,6 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-process.on('uncaughtException', function(error) {
-  log.h('info', 'uncaughtException', JSON.stringify(error))
-  process.exit(1)
-})
 function createWindow() {
   if (process.platform === 'darwin') {
     const template = [
@@ -64,11 +60,20 @@ function createWindow() {
     mainWindow = null
   })
   log.h('info', 'createWindow', JSON.stringify(mainWindow))
+  mainWindow.webContents.openDevTools()
+  process.on('uncaughtException', (error) => {
+    log.h('error', 'uncaughtException', JSON.stringify(error))
+    process.exit(1)
+  })
   function recordCrash(event, killed) {
-    return new Promise(resolve => {
-      log.h('error', 'recordCrash.event', JSON.stringify(event))
-      log.h('error', 'recordCrash.killed', JSON.stringify(killed))
-      resolve()
+    return new Promise((resolve, reject) => {
+      try {
+        log.h('error', 'recordCrash.event', event)
+        log.h('error', 'recordCrash.killed', killed)
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 
@@ -96,7 +101,8 @@ function createWindow() {
         else app.quit()
       })
     }).catch((e) => {
-      console.log('err', e)
+      console.log(e)
+      log.h('error', 'recordCrash.catch', JSON.stringify(e))
     })
   })
 }
@@ -150,16 +156,16 @@ app.on('ready', () => {
  */
 import { globalShortcut } from 'electron'
 app.on('ready', () => {
-  let devTools = false
-  globalShortcut.register('tab', () => {
-    if (devTools) {
-      mainWindow.webContents.openDevTools()
-      devTools = false
-    } else {
-      mainWindow.webContents.closeDevTools()
-      devTools = true
-    }
-  })
+  // const devTools = false
+  // globalShortcut.register('tab', () => {
+  //   if (devTools) {
+  //     mainWindow.webContents.openDevTools()
+  //     devTools = false
+  //   } else {
+  //     mainWindow.webContents.closeDevTools()
+  //     devTools = true
+  //   }
+  // })
   globalShortcut.register('home', () => {
     mainWindow.webContents.send('main-process-home', 'home')
     mainWindow.show()

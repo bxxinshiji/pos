@@ -37,6 +37,7 @@ log.transports.file.resolvePath = () => {
   return resolvePath
 }
 log.h = async(type, scope, message) => {
+  message = JSON.parse(JSON.stringify(message))
   switch (type) {
     case 'error':
       log.scope(scope).error(message)
