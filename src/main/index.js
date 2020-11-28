@@ -59,12 +59,6 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  log.h('info', 'createWindow', JSON.stringify(mainWindow))
-  mainWindow.webContents.openDevTools()
-  process.on('uncaughtException', (error) => {
-    log.h('error', 'uncaughtException', JSON.stringify(error))
-    process.exit(1)
-  })
   function recordCrash(event, killed) {
     return new Promise((resolve, reject) => {
       try {
