@@ -64,7 +64,7 @@ const hander = {
       })
       return
     }
-    const number = self.getInput()
+    const number = Number(self.getInput()) // 转为数字防止输入0
     if (number) {
       if (self.order.goods.length > 0) {
         self.$refs.goods.setNumber(number)
