@@ -17,8 +17,11 @@
         <el-col :span="8">
             <b>今日汇总</b>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="8">
             <b style="color:#455A64">{{ date | parseTime('{y}-{m}-{d} {h}:{i}:{s} 星期{a}') }}</b>
+        </el-col>
+        <el-col :span="8">
+            <b style="color:#455A64">版本: {{ version }}</b>
         </el-col>
 
         <el-col :span="8">
@@ -28,8 +31,9 @@
           名称: <b style="color:#455A64">{{ name }}</b>
         </el-col>
         <el-col :span="8">
-            <b style="color:#455A64">版本: {{ version }}</b>
+            <b style="color:#455A64">终端号: {{ terminalId }}</b>
         </el-col>
+        
 
         <el-col :span="8">
           订单: <b style="color:#67C23A">{{orderInfo.count}}</b> 笔
@@ -98,6 +102,7 @@ export default {
     ]),
     ...mapState({
       version: state => state.settings.version,
+      terminalId: state => state.settings.terminal,
       orderInfo: state => state.terminal.orderInfo,
       date: state => state.healthy.date,
       isTotal: state => state.settings.isTotal

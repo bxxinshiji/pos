@@ -46,12 +46,15 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <el-row class="stauts"> 
+         <el-col :span="3">
+          <span class="version">终端: {{terminalId}} </span>
+        </el-col> 
         <el-col :span="2">
           <svg-icon v-bind:class="{ active: onLine }" icon-class="router" />  
         </el-col> 
-        <el-col :span="2">
+        <!-- <el-col :span="2">
           <svg-icon v-bind:class="{ active: isInternet }" icon-class="server" />  
-        </el-col> 
+        </el-col>  -->
         <el-col :span="2">
           <svg-icon v-bind:class="{ active: isServer }" icon-class="internet" />  
         </el-col> 
@@ -61,7 +64,7 @@
         <el-col :span="12">
           <span>{{ date | parseTime('{y}-{m}-{d} {h}:{i}:{s} 星期{a}') }} </span>
         </el-col> 
-        <el-col :span="4">
+        <el-col :span="3">
           <span class="version">版本: {{version}} </span>
         </el-col> 
       </el-row>
@@ -95,6 +98,7 @@ export default {
     ]),
     ...mapState({
       version: state => state.settings.version,
+      terminalId: state => state.settings.terminal,
       date: state => state.healthy.date,
       onLine: state => state.healthy.onLine,
       isInternet: state => state.healthy.isInternet,
@@ -290,7 +294,7 @@ $light_gray:#eee;
     color: @el-success
   }
   .version{
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 </style>
