@@ -18,6 +18,10 @@ const escpos = {
     var options = { encoding: 'GB18030' /* default */ }
     let devicer = {}
     switch (device) { // 设置驱动
+      case 'Win':
+        init.Win = require('escpos-win')
+        devicer = new init.Win(deviceConfig)
+        break
       case 'USB':
         devicer = new init.USB(deviceConfig)
         break
