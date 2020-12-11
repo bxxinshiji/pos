@@ -57,6 +57,7 @@ const escpos = {
               log.h('error', 'escpos.devicer.open', JSON.stringify(err))
               reject(err)
             } else {
+              printer.hardware('init') // 初始化打印机
               data.forEach(item => {
                 switch (item.type) {
                   case 'text':
