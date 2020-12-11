@@ -77,6 +77,9 @@ const escpos = {
             }
           })
         } catch (err) {
+          if (err.message === 'Can not find printer') {
+            reject(new Error('未能找到可用打印机'))
+          }
           reject(err)
         }
       } else {
