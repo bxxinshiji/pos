@@ -1,4 +1,5 @@
 const init = require('escpos')
+init.Win = require('escpos-win')
 init.USB = require('escpos-usb')
 // init.Bluetooth = require('escpos-bluetooth')
 init.Serial = require('escpos-serialport')
@@ -19,7 +20,6 @@ const escpos = {
     let devicer = {}
     switch (device) { // 设置驱动
       case 'Win':
-        init.Win = require('escpos-win')
         devicer = new init.Win(deviceConfig)
         break
       case 'USB':

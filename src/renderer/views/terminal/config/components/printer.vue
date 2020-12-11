@@ -6,6 +6,10 @@
         <el-form-item label="类型" prop="device">
           <el-select v-model="ruleForm.device" placeholder="请选择">
             <el-option
+              label="Win"
+              value="Win">
+            </el-option>
+            <el-option
               label="USB"
               value="USB">
             </el-option>
