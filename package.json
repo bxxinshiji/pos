@@ -77,7 +77,7 @@
     "escpos-network": "3.0.0-alpha.1",
     "escpos-serialport": "3.0.0-alpha.1",
     "escpos-usb": "3.0.0-alpha.1",
-    "escpos-win": "^1.0.7",
+    "escpos-win": "^1.0.8",
     "font-awesome": "^4.7.0",
     "getmac": "^1.4.6",
     "mousetrap": "^1.6.3",
