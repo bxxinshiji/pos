@@ -22,7 +22,7 @@ export async function SyncPlu(enforce = false) {
       await SQLGoods.List(updatedAt, endAt).then(async response => {
         const goods = []
         if (response) {
-          response.forEach(item => {
+          response.forEach(async item => {
             item.price = Math.round(item.price * 100)
             goods.push({
               indexes: item.pluCode,
@@ -37,6 +37,11 @@ export async function SyncPlu(enforce = false) {
               type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
               snapshot: item,
               updatedAt: item.updatedAt
+            })
+            await Goods.destroy({
+              where: {
+                indexes: item.barCode
+              }
             })
           })
           await Goods.bulkCreate(goods, { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }).then(() => {
