@@ -44,7 +44,7 @@ export async function SyncPlu(enforce = false) {
               }
             })
           })
-          await Goods.bulkCreate(goods, { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }).then(() => {
+          await Goods.bulkCreate(goods, { updateOnDuplicate: ['pluCode', 'isPack', 'barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }).then(() => {
             Message({
               showClose: true,
               message: parseTime(updatedAt) + ' - ' + parseTime(endAt) + ' 商品同步成功',
@@ -103,7 +103,7 @@ export async function SyncPlu(enforce = false) {
             })
           })
           await Goods.bulkCreate(barCodes,
-            { updateOnDuplicate: ['barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }
+            { updateOnDuplicate: ['pluCode', 'isPack', 'barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }
           ).then(() => {
             Message({
               showClose: true,
