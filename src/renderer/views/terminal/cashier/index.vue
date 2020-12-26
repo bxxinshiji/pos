@@ -125,7 +125,7 @@ export default {
     focus() { // 聚焦
       setTimeout(() => {
         this.$refs.foots.focus()
-      }, 100)// 聚焦延时
+      }, 0)// 聚焦延时
     },
     blur() { // 失焦点
       this.$refs.foots.blur()

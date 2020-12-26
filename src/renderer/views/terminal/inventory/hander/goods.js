@@ -20,12 +20,14 @@ const hander = {
           title: '未找到商品',
           message: '商品: ' + value + ' 信息不存在, 请重试。'
         })
+        this.blur() // 失焦
       }
     }).catch(error => {
       this.MessageBox({
         title: '条码错误',
         message: error
       })
+      this.blur() // 失焦
     })
   },
   getBarcodeGoods(code) { // 通过条形码获取商品

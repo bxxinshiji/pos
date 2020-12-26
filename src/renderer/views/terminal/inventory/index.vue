@@ -59,6 +59,7 @@ export default {
   },
   mounted() {
     this.focus()
+    document.addEventListener('keydown', this.keydown)
     this.initOrder()
   },
   methods: {
@@ -68,7 +69,9 @@ export default {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: true })
     },
     focus() { // 聚焦
-      this.$refs.foots.focus()
+      setTimeout(() => {
+        this.$refs.foots.focus()
+      }, 0)// 聚焦延时
     },
     blur() { // 失焦点
       this.$refs.foots.blur()
@@ -114,9 +117,15 @@ export default {
       }).then(() => {
       }).catch(() => {
       })
+    },
+    keydown(e) {
+      if (e.keyCode === 27) { // esc 自动聚焦
+        this.focus()
+      }
     }
   },
   destroyed() {
+    document.removeEventListener('keydown', this.keydown)
     this.unregisterMousetrap()// 注销按键监听
   }
 }
