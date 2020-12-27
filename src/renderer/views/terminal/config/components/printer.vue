@@ -118,15 +118,14 @@
 </template>
 
 <script>
-import store from '@/store'
-const printer = store.state.settings.printer
 import { parseTime } from '@/utils/index'
-import print from '@/utils/print'
+const printer = require('@/api/work/printer')
+
 export default {
   name: 'printer',
   data() {
     return {
-      ruleForm: printer,
+      ruleForm: this.$store.state.settings.printer,
       order: {
         userId: '0012',
         terminal: '0066',
@@ -196,28 +195,45 @@ export default {
       this.$refs[formName].resetFields()
     },
     submitPrint() {
-      print.hander(this.order).then(response => {
-        this.$message({
-          type: 'success',
-          message: '打印成功'
-        })
+      printer.print(this.order).then(response => {
+        const data = response.data
+        if (data.valid) {
+          this.$message({
+            type: 'success',
+            message: '打印成功'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '打印失败: ' + data.error
+          })
+        }
       }).catch(err => {
         this.$message({
           type: 'error',
-          message: '打印失败: ' + err.message
+          message: '打印失败请求错误: ' + err.message
         })
       })
     },
     submitAccounts() {
-      print.accounts().then(response => {
-        this.$message({
-          type: 'success',
-          message: '结账打印成功'
-        })
+      const orderInfo = this.$store.state.terminal.orderInfo
+      printer.accounts(orderInfo, this.$store.state.user.username).then(response => {
+        const data = response.data
+        if (data.valid) {
+          this.$message({
+            type: 'success',
+            message: '结账打印成功'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '结账打印成功: ' + data.error
+          })
+        }
       }).catch(err => {
         this.$message({
           type: 'error',
-          message: '结账打印失败: ' + err.message
+          message: '结账打印请求错误: ' + err.message
         })
       })
     }
