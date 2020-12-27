@@ -5,6 +5,7 @@
 </template>
 
 <script>
+console.log(456789)
 
 const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'

@@ -1,7 +1,6 @@
 'use strict'
 
 import { app, BrowserWindow, Menu, dialog } from 'electron'
-import log from './log'
 
 /**
  * Set `__static` path to static files in production
@@ -62,8 +61,6 @@ function createWindow() {
   function recordCrash(event, killed) {
     return new Promise((resolve, reject) => {
       try {
-        log.h('error', 'recordCrash.event', event)
-        log.h('error', 'recordCrash.killed', killed)
         resolve()
       } catch (error) {
         reject(error)
@@ -96,11 +93,32 @@ function createWindow() {
       })
     }).catch((e) => {
       console.log(e)
-      log.h('error', 'recordCrash.catch', JSON.stringify(e))
     })
   })
 }
+async function createWorkWindow() {
+  /**
+   * Initial window options
+   */
+  const workWindow = new BrowserWindow({
+    height: 563,
+    width: 1000,
+    // useContentSize: true,
+    // fullscreen: true,
+    // frame: false, // 无边框窗口
+    backgroundColor: '#303133', //
+    webPreferences: {
+      webSecurity: false, // 允许 electron 跨域
+      nodeIntegrationInWorker: true // 允许多线程
+    }
+  })
 
+  await workWindow.loadURL(winURL + '#work')
+  // await workWindow.hide()
+  workWindow.on('closed', () => {
+    workWindow.hide()
+  })
+}
 app.disableHardwareAcceleration() // 来禁用GPU加速。
 // 获取单实例锁
 const gotTheLock = app.requestSingleInstanceLock()
@@ -109,7 +127,10 @@ if (!gotTheLock) {
   app.quit()
 }
 
-app.on('ready', createWindow)
+app.on('ready', async() => {
+  createWindow()
+  createWorkWindow()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

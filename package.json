@@ -69,6 +69,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "electron-log": "^4.2.2",
     "electron-store": "^5.1.0",
     "element-ui": "2.7.2",
@@ -78,6 +79,7 @@
     "escpos-serialport": "3.0.0-alpha.1",
     "escpos-usb": "3.0.0-alpha.1",
     "escpos-win": "^1.0.8",
+    "express": "^4.17.1",
     "font-awesome": "^4.7.0",
     "getmac": "^1.4.6",
     "mousetrap": "^1.6.3",
