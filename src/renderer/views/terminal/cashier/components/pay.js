@@ -4,8 +4,8 @@ import { syncOrder } from '@/api/order'
 import { UpdateBuildOrderNo } from '@/model/api/payOrder'
 import { Pay as CardPay, Get as VipCardGet } from '@/api/vip_card'
 import { parseTime } from '@/utils/index'
-import print from '@/utils/print'
-import escpos from '@/utils/escpos'
+const printer = require('@/api/work/printer')
+
 import log from '@/utils/log'
 
 import { AddPrint } from '@/model/api/order'
@@ -344,26 +344,46 @@ const hander = {
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 开钱箱
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
-          escpos.cashdraw().then(() => {
-            Message({
-              type: 'success',
-              message: '打开钱箱成功'
-            })
+          printer.cashdraw().then((response) => {
+            const data = response.data
+            if (data.valid) {
+              Message({
+                type: 'success',
+                message: '打开钱箱成功'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '打开钱箱失败: ' + data.error
+              })
+            }
           }).catch(err => {
-            log.h('error', 'OrderSaveSuccess.cashdraw', JSON.stringify(err.message))
+            this.$message({
+              type: 'error',
+              message: '打开钱箱失败: ' + err.message
+            })
+            log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(err.message))
           })
         }
       })
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
-      if (print.switch()) {
-        print.hander(order).then(response => {
-          AddPrint(order) // 增加打印次数
-          Notification({
-            title: '打印成功',
-            message: '订单:' + order.orderNo,
-            type: 'success'
-          })
+      if (this.$store.state.settings.printer.switch) {
+        printer.print(order).then(response => {
+          const data = response.data
+          if (data.valid) {
+            AddPrint(order) // 增加打印次数
+            Notification({
+              title: '打印成功',
+              message: '订单:' + order.orderNo,
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: '打印失败: ' + data.error
+            })
+          }
         }).catch(err => {
           Notification({
             title: '打印失败',
@@ -371,7 +391,7 @@ const hander = {
             type: 'error',
             duration: 15000
           })
-          log.h('error', 'OrderSaveSuccess.print.hander', JSON.stringify(err.message))
+          log.h('error', 'OrderSaveSuccess.printer.print', JSON.stringify(err.message))
         })
       }
     })
