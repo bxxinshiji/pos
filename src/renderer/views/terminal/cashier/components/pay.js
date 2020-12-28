@@ -352,6 +352,7 @@ const hander = {
                 message: '打开钱箱成功'
               })
             } else {
+              log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(data.error))
               this.$message({
                 type: 'error',
                 message: '打开钱箱失败: ' + data.error
@@ -383,6 +384,7 @@ const hander = {
               type: 'error',
               message: '打印失败: ' + data.error
             })
+            log.h('error', 'OrderSaveSuccess.printer.print', JSON.stringify(data.error))
           }
         }).catch(err => {
           Notification({
