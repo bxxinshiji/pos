@@ -114,7 +114,7 @@ async function createWorkWindow() {
   })
 
   await workWindow.loadURL(winURL + '#work')
-  // await workWindow.hide()
+  await workWindow.hide()
   workWindow.webContents.openDevTools()
   workWindow.on('closed', () => {
     workWindow.hide()
