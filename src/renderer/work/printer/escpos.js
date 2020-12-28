@@ -68,7 +68,9 @@ const escpos = {
                     break
                 }
               })
-              printer.cut().close() // 切纸、关闭
+              printer.cut().close(err => {
+                reject(err)
+              }) // 切纸、关闭
               resolve(true)
             }
           })
