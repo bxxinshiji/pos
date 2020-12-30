@@ -298,7 +298,12 @@ const hander = {
               }
             }
           } else { // 退款形式
-            if (pay.type === 'cashPay' && this.order.waitPay < 0) {
+            if (this.order.waitPay < 0) {
+              this.status = 'error'
+              this.payingInfo = '正在退货中请勿进行其他操作'
+              return
+            }
+            if (pay.type === 'cashPay') {
               payInfo = {
                 payId: pay.id, // 支付方式
                 name: pay.name, // 支付方式名称
