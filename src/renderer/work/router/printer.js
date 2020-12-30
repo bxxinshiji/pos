@@ -15,7 +15,7 @@ router.post('/accounts', (req, res) => {
   printer.accounts(orderInfo, username, valid).then((r) => {
     res.send({ valid: r })
   }).catch(err => {
-    res.send({ valid: false, error: err.message })
+    res.send({ valid: false, error: err })
   })
 })
 
@@ -26,7 +26,7 @@ router.post('/print', (req, res) => {
   printer.hander(order, cashdraw, valid).then((r) => {
     res.send({ valid: r })
   }).catch(err => {
-    res.send({ valid: false, error: err.message })
+    res.send({ valid: false, error: err })
   })
 })
 
@@ -34,7 +34,7 @@ router.post('/cashdraw', (req, res) => {
   printer.cashdraw().then((r) => {
     res.send({ valid: r })
   }).catch(err => {
-    res.send({ valid: false, error: err.message })
+    res.send({ valid: false, error: err })
   })
 })
 module.exports = router
