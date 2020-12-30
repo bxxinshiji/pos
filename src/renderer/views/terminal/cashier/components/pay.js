@@ -356,9 +356,11 @@ const hander = {
       })
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
+      this.payingInfo = '订单发布打印中'
       if (print.switch()) {
         print.hander(order).then(response => {
           AddPrint(order) // 增加打印次数
+          this.payingInfo = '订单发布打印成功'
           Notification({
             title: '打印成功',
             message: '订单:' + order.orderNo,
@@ -385,9 +387,11 @@ const hander = {
       })
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 同步订单
+      this.payingInfo = '订单发布中'
       syncOrder(order).then(res => { // 同步订单信息
         order.publish = true
         order.save().then(() => {
+          this.payingInfo = '订单发布中成功'
           store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
         }).catch(error => { // 进行二次保存防止第一次创建没有保存
           log.h('error', 'syncOrder.orderRes.save', JSON.stringify(error.message) + '\n' + JSON.stringify(order))
@@ -397,8 +401,10 @@ const hander = {
     })
   },
   OrderSave() {
+    this.payingInfo = '订单保存中'
     OrderCreate(this.order).then(order => {
       this.order.status = true // 订单完结
+      this.payingInfo = '订单保存成功'
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
       this.EventEmitter.emit('OrderSaveSuccess', order)
       this.handleClose() // 关闭页面
