@@ -41,7 +41,7 @@ const escpos = {
     escpos.devicer = devicer
     escpos.printer = new init.Printer(devicer, options) // 初始化打印机
   },
-  print(data, valid = false) {
+  print(data, cashdraw = false, valid = false) {
     return new Promise((resolve, reject) => {
       if (Store.store.settings.printer.switch || valid) {
         try {
@@ -52,7 +52,10 @@ const escpos = {
             if (err) {
               reject(err)
             } else {
-              printer.hardware('init') // 初始化打印机
+              // printer.hardware('init') // 初始化打印机
+              if (cashdraw) { // 开钱箱
+                printer.cashdraw()
+              }
               data.forEach(item => {
                 switch (item.type) {
                   case 'text':

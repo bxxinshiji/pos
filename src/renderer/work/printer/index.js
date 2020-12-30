@@ -75,11 +75,11 @@ const print = {
     return Store.store.settings.printer.switch
   },
   contents: [],
-  hander(order, valid = false) {
+  hander(order, cashdraw = false, valid = false) {
     return new Promise(async(resolve, reject) => {
       this.contents = []
       this.order(order) // 计算订单
-      escpos.print(this.contents, valid).then(response => {
+      escpos.print(this.contents, cashdraw, valid).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)

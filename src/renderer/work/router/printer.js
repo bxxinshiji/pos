@@ -21,8 +21,9 @@ router.post('/accounts', (req, res) => {
 
 router.post('/print', (req, res) => {
   const order = req.body.order
+  const cashdraw = req.body.cashdraw
   const valid = req.body.valid
-  printer.hander(order, valid).then((r) => {
+  printer.hander(order, cashdraw, valid).then((r) => {
     res.send({ valid: r })
   }).catch(err => {
     res.send({ valid: false, error: err.message })

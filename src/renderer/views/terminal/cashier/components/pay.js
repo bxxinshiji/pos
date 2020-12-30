@@ -341,36 +341,15 @@ const hander = {
     }
   },
   EventOn() {
-    this.EventEmitter.on('OrderSaveSuccess', async order => { // 开钱箱
+    this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
+      let cashdraw = false
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
-          printer.cashdraw().then((response) => {
-            const data = response.data
-            if (data.valid) {
-              Message({
-                type: 'success',
-                message: '打开钱箱成功'
-              })
-            } else {
-              log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(data.error))
-              this.$message({
-                type: 'error',
-                message: '打开钱箱失败: ' + data.error
-              })
-            }
-          }).catch(err => {
-            this.$message({
-              type: 'error',
-              message: '打开钱箱失败: ' + err.message
-            })
-            log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(err.message))
-          })
+          cashdraw = true
         }
       })
-    })
-    this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
       if (this.$store.state.settings.printer.switch) {
-        printer.print(order).then(response => {
+        printer.print(order, cashdraw).then(response => {
           const data = response.data
           if (data.valid) {
             AddPrint(order) // 增加打印次数
@@ -394,6 +373,28 @@ const hander = {
             duration: 15000
           })
           log.h('error', 'OrderSaveSuccess.printer.print', JSON.stringify(err.message))
+        })
+      } else { // 只开钱箱
+        printer.cashdraw().then((response) => {
+          const data = response.data
+          if (data.valid) {
+            Message({
+              type: 'success',
+              message: '打开钱箱成功'
+            })
+          } else {
+            log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(data.error))
+            this.$message({
+              type: 'error',
+              message: '打开钱箱失败: ' + data.error
+            })
+          }
+        }).catch(err => {
+          this.$message({
+            type: 'error',
+            message: '打开钱箱失败: ' + err.message
+          })
+          log.h('error', 'OrderSaveSuccess.printer.cashdraw', JSON.stringify(err.message))
         })
       }
     })
