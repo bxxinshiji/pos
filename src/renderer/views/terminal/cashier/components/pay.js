@@ -298,7 +298,7 @@ const hander = {
               }
             }
           } else { // 退款形式
-            if (pay.type === 'cashPay') {
+            if (pay.type === 'cashPay' && this.order.waitPay < 0) {
               payInfo = {
                 payId: pay.id, // 支付方式
                 name: pay.name, // 支付方式名称
@@ -402,6 +402,8 @@ const hander = {
   },
   OrderSave() {
     this.payingInfo = '订单保存中'
+    console.log(this.order)
+
     OrderCreate(this.order).then(order => {
       this.order.status = true // 订单完结
       this.payingInfo = '订单保存成功'
