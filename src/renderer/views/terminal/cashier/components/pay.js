@@ -407,8 +407,6 @@ const hander = {
   },
   OrderSave() {
     this.payingInfo = '订单保存中'
-    console.log(this.order)
-
     OrderCreate(this.order).then(order => {
       this.order.status = true // 订单完结
       this.payingInfo = '订单保存成功'
@@ -434,6 +432,8 @@ const hander = {
   },
   handerOrder() {
     if (this.order.waitPay === 0) {
+      this.status = 'wait'
+      this.info = '订单处理中'
       this.handerPays(this.order.pays).then(() => { // 处理订单未支付
         this.OrderSave()
       }).catch(error => {
