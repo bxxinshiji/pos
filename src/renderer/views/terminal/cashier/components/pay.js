@@ -318,7 +318,7 @@ const hander = {
           if (pay.type !== 'scanPay') { // 设置付款方式
             this.method = pay.type
           }
-          if (payInfo.hasOwnProperty('payId')) {
+          if (!payInfo.hasOwnProperty('payId')) {
             this.status = 'error'
             this.payingInfo = '付款信息处理错误,请关闭重试!'
             return
