@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize')
-// import path from 'path'
-// import { exePath } from '@/utils'
-// const sequelize = new Sequelize({
-//   dialect: 'sqlite',
-//   storage: path.join(exePath('database'), '/order.sqlite'),
-//   logging: false
-//   // timezone: '+08:00'
-// })
-const sequelize = new Sequelize('sqlite::memory:')
+import path from 'path'
+import { exePath } from '@/utils'
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: path.join(exePath('database'), '/order.sqlite'),
+  logging: false
+  // timezone: '+08:00'
+})
+
 sequelize.authenticate().then(() => {
   console.log('Connection order successfully.')
 }).catch(err => {

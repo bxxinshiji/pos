@@ -54,8 +54,11 @@ export function Create(order) {
       publish: order.publish,
       print: order.hasOwnProperty('print') ? order.print : 0
     }
-    Order.create(o, {
-      include: [Order.Goods, Order.Pays]
+    Order.sequelize.transaction((t) => { // 基于事务插入数据
+      return Order.create(o, {
+        include: [Order.Goods, Order.Pays],
+        transaction: t
+      })
     }).then(response => {
       resolve(response)
     }).catch(error => {
