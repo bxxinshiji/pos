@@ -29,7 +29,32 @@ export function List(listQuery) {
 
 export function Create(order) {
   return new Promise((resolve, reject) => {
-    Order.create(order, {
+    // 优化写入数据防止大量无用数据写入
+    const goods = []
+    order.goods.forEach(g => {
+      goods.push({
+        number: g.number, // 商品数量
+        price: g.price, // 商品价格
+        total: g.total, // 小计
+        no: g.no, // 排列序号
+        depCode: g.depCode, // 部门编码
+        snapshotId: g.snapshotId // 快照ID
+      })
+    })
+    const o = {
+      goods: goods,
+      pays: JSON.parse(JSON.stringify(order.pays)),
+      orderNo: order.orderNo,
+      terminal: order.terminal,
+      userId: order.userId,
+      type: order.type,
+      number: order.number,
+      total: order.total,
+      getAmount: order.getAmount,
+      publish: order.publish,
+      print: order.hasOwnProperty('print') ? order.print : 0
+    }
+    Order.create(o, {
       include: [Order.Goods, Order.Pays]
     }).then(response => {
       resolve(response)
