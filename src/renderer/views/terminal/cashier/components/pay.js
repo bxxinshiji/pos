@@ -300,7 +300,7 @@ const hander = {
           } else { // 退款形式
             if (this.order.waitPay === 0) {
               this.status = 'error'
-              this.payingInfo = '正在退货中请勿进行其他操作'
+              this.payingInfo = '可退款金额为0'
               return
             }
             if (pay.type === 'cashPay') {
@@ -432,6 +432,7 @@ const hander = {
   },
   handerOrder() {
     if (this.order.waitPay === 0) {
+      this.lock = true
       this.status = 'warning'
       this.info = '订单处理中'
       this.handerPays(this.order.pays).then(() => { // 处理订单未支付
