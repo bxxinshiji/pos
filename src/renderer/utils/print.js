@@ -166,7 +166,7 @@ const print = {
 
     contents = contents.map(element => {
       var type = 'text'
-      element = element.replace(/{{\s*storeId\s*}}/g, settings.scanStoreName)
+      element = element.replace(/{{\s*storeId\s*}}/g, settings.scanStoreName ? settings.scanStoreName : '')
       element = element.replace(/{{\s*userId}\s*}/g, store.state.user.username)
       element = element.replace(/{{\s*terminal\s*}}/g, settings.terminal)
       if (/{{\s*pays.*}}/.test(element)) {
