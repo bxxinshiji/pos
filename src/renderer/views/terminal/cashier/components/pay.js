@@ -349,7 +349,7 @@ const hander = {
         }
       })
       if (this.$store.state.settings.printer.switch) {
-        order.goods = this.order.goods
+        order.goods = this.order.goods // 复制商品全部信息
         printer.print(order, cashdraw).then(response => {
           const data = response.data
           if (data.valid) {
