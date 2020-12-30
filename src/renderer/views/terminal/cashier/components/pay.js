@@ -349,7 +349,8 @@ const hander = {
         }
       })
       if (this.$store.state.settings.printer.switch) {
-        printer.print(this.order, cashdraw).then(response => {
+        order.goods = this.order.goods
+        printer.print(order, cashdraw).then(response => {
           const data = response.data
           if (data.valid) {
             AddPrint(order) // 增加打印次数
