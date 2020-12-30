@@ -432,7 +432,7 @@ const hander = {
   },
   handerOrder() {
     if (this.order.waitPay === 0) {
-      this.status = 'wait'
+      this.status = 'warning'
       this.info = '订单处理中'
       this.handerPays(this.order.pays).then(() => { // 处理订单未支付
         this.OrderSave()
