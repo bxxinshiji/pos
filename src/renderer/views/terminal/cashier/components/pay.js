@@ -349,8 +349,9 @@ const hander = {
         }
       })
       if (this.$store.state.settings.printer.switch) {
-        order.goods = this.order.goods // 复制商品全部信息
-        printer.print(order, cashdraw).then(response => {
+        const o = JSON.parse(JSON.stringify(order))
+        o.goods = JSON.parse(JSON.stringify(this.order.goods))// 复制商品全部信息
+        printer.print(o, cashdraw).then(response => {
           const data = response.data
           if (data.valid) {
             AddPrint(order) // 增加打印次数
