@@ -1,11 +1,9 @@
 // sync 同步数据
 import SQLGoods from '@/sql2000/model/goods'
 import SQLBarcode from '@/sql2000/model/barcode'
-import sequelize from '@/model/goods'
 import { Message } from 'element-ui'
 import { parseTime } from '@/utils/index'
-
-const Goods = sequelize.models.good
+const Goods = require('@/model/api/goods')
 
 export async function SyncPlu(enforce = false) {
   return new Promise(async(resolve, reject) => {
@@ -44,6 +42,7 @@ export async function SyncPlu(enforce = false) {
               }
             })
           })
+
           await Goods.bulkCreate(goods, { updateOnDuplicate: ['pluCode', 'isPack', 'barCode', 'depCode', 'price', 'name', 'unit', 'spec', 'type', 'snapshot', 'updatedAt'] }).then(() => {
             Message({
               showClose: true,

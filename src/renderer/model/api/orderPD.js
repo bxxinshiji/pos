@@ -35,8 +35,11 @@ export function Empty() {
 }
 export function Create(order) {
   return new Promise((resolve, reject) => {
-    Order.create(order, {
-      include: [Order.Goods]
+    Order.sequelize.transaction((t) => { // 基于事务插入数据
+      return Order.create(order, {
+        include: [Order.Goods],
+        transaction: t
+      })
     }).then(response => {
       resolve(response)
     }).catch(error => {
@@ -47,9 +50,12 @@ export function Create(order) {
 
 export function All(where = {}) {
   return new Promise((resolve, reject) => {
-    Order.findAll({
-      where: where,
-      include: [Order.Goods, Order.Pays]
+    Order.sequelize.transaction((t) => { // 基于事务插入数据
+      return Order.findAll({
+        where: where,
+        include: [Order.Goods],
+        transaction: t
+      })
     }).then(response => {
       resolve(response)
     }).catch(error => {
