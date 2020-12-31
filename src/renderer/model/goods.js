@@ -33,6 +33,7 @@ const Goods = sequelize.define('good', {
   PfPrice: { type: Sequelize.BIGINT }, // 批发价
   ClsCode: { type: Sequelize.STRING }, // 品类ID
   BrandCode: { type: Sequelize.STRING }, // 品牌ID
+  JTaxRate: { type: Sequelize.STRING }, // 品牌ID
   YhType: { type: Sequelize.STRING }, // 优惠类型
   MgType: { type: Sequelize.STRING }, // 金额管理
   IsDecimal: { type: Sequelize.STRING }, // 十进制

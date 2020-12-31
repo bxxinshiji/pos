@@ -155,7 +155,6 @@ const order = {
       this.CreateOrderSQL(item)
       await this.CreateOrderGoodsSQL(item) // 因为需要查询商品快照数据库所有异步
       await this.CreateOrderPaySQL(item)
-
       pool.DB.query(this.sql,
         { type: Sequelize.QueryTypes.INSERT }
       ).then(response => {
@@ -165,6 +164,7 @@ const order = {
           reject(error)
         })
       }).catch(error => {
+        console.log(123, error)
         if (error.message === 'Validation error') {
           this.OrderCheck(item).then(response => { // 增加订单校验
             resolve(response)
