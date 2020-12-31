@@ -121,17 +121,13 @@ export default {
     },
     // 预处理商品
     async handler(goods) {
-      // 更新快照信息
-      goods.snapshot.name = goods.name
-      goods.snapshot.spec = goods.spec
-      goods.snapshot.barCode = goods.barCode
       // 计算商品 MD5
-      const MD5 = md5Sign(JSON.stringify(goods.snapshot))
+      const MD5 = md5Sign(JSON.stringify(goods))
       goods.snapshotId = MD5
       // 创建商品快照
       Snapshots.create({
         id: MD5,
-        snapshot: goods.snapshot
+        snapshot: goods
       })
     },
     // 增加商品

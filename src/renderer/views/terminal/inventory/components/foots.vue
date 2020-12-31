@@ -38,7 +38,7 @@
               <el-col :span="12" class="good">
                 <span>单价: {{ goods.price?(goods.price / 100).toFixed(2):'' }}</span>
                 <span>小计: {{ goods.price?(goods.total / 100).toFixed(2):'' }}</span>
-                <span>部门: {{ goods.snapshot.depCode }}</span>
+                <span>部门: {{ goods.depCode }}</span>
               </el-col>
               <el-col :span="12" class="good">
                 <span>数量: {{ goods.number }}</span>

@@ -22,34 +22,15 @@ const barcodes = {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
       pool.DB.query(`
-        select 
-          a.PluCode as pluCode,
-          a.BarCode as barCode,
-          a.XgDate as updatedAt,
-          a.PluName as name,
-          a.Spec as spec,
-
-          b.PluAbbrName,
-          b.Unit as unit,
-          b.DepCode as depCode,
-          b.SupCode,
-          b.HJPrice,
-          b.SPrice as price,
-          b.WJPrice,
-          b.HyPrice,
-          b.PfPrice,
-          b.PluStatus as status,
-          b.IsWeight as type,
-          b.ClsCode,
-          b.BrandCode,
-          b.JTaxRate,
-          b.YhType,
-          b.MgType,
-          b.IsDecimal,
-          b.Tag
-        from tbmMulBar as a LEFT JOIN tBmPlu b ON a.PluCode=b.PluCode
-        WHERE a.XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And a.XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
-          ORDER BY a.XgDate Asc
+        select
+          BarCode as barCode,
+          PluCode as pluCode,
+          PluName as name,
+          Spec as spec,
+          XgDate as updatedAt
+        from tbmMulBar
+        WHERE XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+          ORDER BY XgDate Asc
       `,
       { type: Sequelize.QueryTypes.SELECT }
       ).then(response => {

@@ -18,7 +18,7 @@ const hander = {
     this.lockGoods = true
     this.getGoods(value, isPlucode).then(goods => {
       if (goods) {
-        const status = goods.snapshot.status
+        const status = goods.status
         if (status === '2' || status === '3' || status === '4' || status === 'A' || status === 'B') {
           this.MessageBox({
             title: '商品禁止销售',

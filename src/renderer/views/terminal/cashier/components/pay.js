@@ -407,7 +407,10 @@ const hander = {
   },
   OrderSave() {
     this.payingInfo = '订单保存中'
+    // console.log(this.order)
     OrderCreate(this.order).then(order => {
+      // console.log(order)
+
       this.order.status = true // 订单完结
       this.payingInfo = '订单保存成功'
       store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息

@@ -31,6 +31,8 @@ export function List(listQuery) {
 }
 
 export function Create(order) {
+  console.log(order)
+
   return new Promise((resolve, reject) => {
     Order.sequelize.transaction((t) => { // 基于事务插入数据
       return Order.create(order, {
@@ -38,6 +40,7 @@ export function Create(order) {
         transaction: t
       })
     }).then(response => {
+      console.log(response)
       resolve(response)
     }).catch(error => {
       reject(error)
