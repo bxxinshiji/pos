@@ -67,9 +67,10 @@ const hander = {
       const barcode = EAN.Decode(code)
       if (barcode.check) { // 校验条码
         if (barcode.custom) { // 是否为自定义条码(称重类)
+          const total = barcode.goods.total // 防止异步导致数据深拷贝
           this.getPlucodeGoods(barcode.goods.pluCode).then(goods => {
             if (goods) {
-              goods.total = barcode.goods.total
+              goods.total = total
             }
             resolve(goods)
           }).catch(error => {
