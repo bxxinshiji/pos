@@ -4,7 +4,6 @@ import SQLBarcode from '@/sql2000/model/barcode'
 import { Message } from 'element-ui'
 import { parseTime } from '@/utils/index'
 const Goods = require('@/model/api/goods')
-const barGoods = require('@/model/api/barGoods')
 
 export async function SyncPlu(enforce = false) {
   return new Promise(async(resolve, reject) => {
@@ -23,6 +22,7 @@ export async function SyncPlu(enforce = false) {
           response.forEach(async item => {
             item.price = Math.round(item.price * 100)
             goods.push({
+              index: item.barCode ? item.barCode : item.pluCode,
               pluCode: item.pluCode,
               barCode: item.barCode,
               depCode: item.depCode,
@@ -100,7 +100,7 @@ export async function SyncPlu(enforce = false) {
       await sync(updatedAt, endAt)
     }
     // 更新商品条码信息
-    await barGoods.findOne({
+    await Goods.findOne({
       attributes: ['updatedAt'],
       order: [['updatedAt', 'DESC']]
     }).then(res => {
@@ -111,16 +111,57 @@ export async function SyncPlu(enforce = false) {
         const barCodes = []
         if (response) {
           response.forEach(item => {
+            item.price = Math.round(item.price * 100)
             barCodes.push({
+              index: item.barCode,
               pluCode: item.pluCode,
               barCode: item.barCode,
+              depCode: item.depCode,
+              price: item.price,
               name: item.name,
+              unit: item.unit,
               spec: item.spec,
+              type: Number(item.type) ? 1 : 0, // [0普通商品 1称重商品 2 承受不定商品 3金额管理商品] 转成 0 1
+              status: item.status,
+              SupCode: item.SupCode,
+              HJPrice: item.HJPrice,
+              WJPrice: item.WJPrice,
+              HyPrice: item.HyPrice,
+              PfPrice: item.PfPrice,
+              ClsCode: item.ClsCode,
+              BrandCode: item.BrandCode,
+              JTaxRate: item.JTaxRate,
+              YhType: item.YhType,
+              MgType: item.MgType,
+              IsDecimal: item.IsDecimal,
+              Tag: item.Tag,
               updatedAt: item.updatedAt
             })
           })
-          await barGoods.bulkCreate(barCodes,
-            { updateOnDuplicate: ['pluCode', 'name', 'spec', 'updatedAt'] }
+          await Goods.bulkCreate(barCodes,
+            { updateOnDuplicate: [
+              'barCode',
+              'depCode',
+              'price',
+              'name',
+              'unit',
+              'spec',
+              'type',
+              'status',
+              'SupCode',
+              'HJPrice',
+              'WJPrice',
+              'HyPrice',
+              'PfPrice',
+              'ClsCode',
+              'BrandCode',
+              'JTaxRate',
+              'YhType',
+              'MgType',
+              'IsDecimal',
+              'Tag',
+              'updatedAt'
+            ] }
           ).then(() => {
             Message({
               showClose: true,
