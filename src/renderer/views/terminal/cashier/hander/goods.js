@@ -1,7 +1,7 @@
 
 import store from '@/store'
 
-import Goods from '@/model/goods'
+const Goods = require('@/model/api/goods')
 import { EAN } from '@/utils/barcode'
 import log from '@/utils/log'
 
