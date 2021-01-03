@@ -25,7 +25,7 @@ export function bulkCreateBar(goods, options) {
   })
 }
 
-export function findOne(options) {
+export function findOnePlu(options) {
   return new Promise((resolve, reject) => {
     Plu.sequelize.transaction((t) => { // 基于事务插入数据
       return Plu.findOne(Object.assign(options, { transaction: t }))
@@ -37,6 +37,17 @@ export function findOne(options) {
   })
 }
 
+export function findOneBar(options) {
+  return new Promise((resolve, reject) => {
+    Bar.sequelize.transaction((t) => { // 基于事务插入数据
+      return Bar.findOne(Object.assign(options, { transaction: t }))
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 export function plucodeByGoods(pluCode) {
   return new Promise((resolve, reject) => {
     Plu.sequelize.transaction((t) => {

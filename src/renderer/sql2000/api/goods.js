@@ -9,7 +9,7 @@ export async function SyncPlu(enforce = false) {
   return new Promise(async(resolve, reject) => {
     // 更新商品
     let updatedAt = new Date('2004')
-    await Goods.findOne({
+    await Goods.findOnePlu({
       attributes: ['updatedAt'],
       order: [['updatedAt', 'DESC']]
     }).then(res => {
@@ -159,7 +159,7 @@ export async function SyncPlu(enforce = false) {
       await sync(updatedAt, endAt)
     }
     // 更新商品条码信息
-    await Goods.findOne({
+    await Goods.findOneBar({
       attributes: ['updatedAt'],
       order: [['updatedAt', 'DESC']]
     }).then(res => {
