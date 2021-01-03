@@ -31,10 +31,12 @@ export function SyncPay() {
         })
         if (pays.length > 0) {
           // 重新构建数据库文件
-          await sequelize.sync({
-            force: true
-          })
-          pay.bulkCreate(pays).then(() => {
+          pay.bulkCreate(pays, {
+            updateOnDuplicate: [
+              'name',
+              'type'
+            ]
+          }).then(() => {
             resolve()
           }).catch(error => {
             reject(new Error('插入支付方式失败:' + error.message))

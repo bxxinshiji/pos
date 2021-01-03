@@ -41,6 +41,27 @@ export async function SyncTerminal(enforce = false) {
           log.h('error', 'ChgUser', JSON.stringify(error.message))
         })
       }
+      // 更新支付信息
+      if (Terminal.IsChgZfKind === '1' || enforce) {
+        status++
+        const loadingInstance = Loading.service({
+          text: '更新支付信息中...',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        await SyncPay().then(() => {
+          Terminal.IsChgZfKind = '0'
+          Terminal.Save()
+          loadingInstance.text = '支付信息更新完成'
+          setTimeout(() => {
+            status--
+            if (status === 0) {
+              loadingInstance.close()
+            }
+          }, 1000)
+        }).catch(error => {
+          log.h('error', 'ZfKind', JSON.stringify(error.message))
+        })
+      }
       // 更新商品信息
       if (Terminal.IsChgPlu === '1' || enforce) {
         status++
@@ -61,27 +82,6 @@ export async function SyncTerminal(enforce = false) {
           }, 1000)
         }).catch(error => {
           log.h('error', 'ChgPlu', JSON.stringify(error.message))
-        })
-      }
-      // 更新支付信息
-      if (Terminal.IsChgZfKind === '1' || enforce) {
-        status++
-        const loadingInstance = Loading.service({
-          text: '更新支付信息中...',
-          background: 'rgba(0, 0, 0, 0.7)'
-        })
-        await SyncPay().then(() => {
-          Terminal.IsChgZfKind = '0'
-          Terminal.Save()
-          loadingInstance.text = '支付信息更新完成'
-          setTimeout(() => {
-            status--
-            if (status === 0) {
-              loadingInstance.close()
-            }
-          }, 1000)
-        }).catch(error => {
-          log.h('error', 'ZfKind', JSON.stringify(error.message))
         })
       }
       store.dispatch('terminal/handerSyncTerminal', true) // 开启自动同步

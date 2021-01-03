@@ -18,10 +18,13 @@ export function SyncUser() {
         })
         if (users.length > 0) {
           // 重新构建数据库文件
-          await sequelize.sync({
-            force: true
-          })
-          TerminalUser.bulkCreate(users).then(() => {
+          TerminalUser.bulkCreate(users, {
+            updateOnDuplicate: [
+              'code',
+              'name',
+              'password'
+            ]
+          }).then(() => {
             resolve()
           }).catch(error => {
             reject(new Error('插入用户数据失败:' + error.message))
