@@ -107,7 +107,7 @@ export async function SyncPlu(enforce = false) {
           })
           await Goods.bulkCreateBar(barCodes, {
             updateOnDuplicate: [
-              'barCode',
+              'pluCode',
               'depCode',
               'price',
               'name',
@@ -198,7 +198,7 @@ export async function SyncPlu(enforce = false) {
           })
           await Goods.bulkCreateBar(barCodes,
             { updateOnDuplicate: [
-              'barCode',
+              'pluCode',
               'depCode',
               'price',
               'name',
