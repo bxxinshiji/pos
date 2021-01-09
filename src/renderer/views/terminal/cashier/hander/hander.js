@@ -40,6 +40,13 @@ const hander = {
       return
     }
     let amount = Math.round(self.getInput() * 100) // 四舍五入取整
+    if (amount > 100000) { // 收款金额不允许大于100万
+      amount = 0
+      self.$message({
+        type: 'warning',
+        message: '收款金额大于100万,默认等于代收款金额。'
+      })
+    }
     // 输入支付金额 (默认应收款金额)
     amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额

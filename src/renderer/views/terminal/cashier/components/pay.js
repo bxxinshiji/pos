@@ -60,11 +60,12 @@ const hander = {
     })
     switch (pay.type) {
       case 'cardPay':
-        this.model.SetPool(new Card()) // 设置现金对象池
+        this.model.SetPool(new Card()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
         this.model.Create(pay)
         break
       case 'remoteCardPay':
-        console.log('remoteCardPay')
+        this.model.SetPool(new Card()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
+        this.model.Create(pay)
         break
       case 'scanPay':
         this.model.SetPool(new Scan()) // 设置扫码对象池
@@ -120,11 +121,12 @@ const hander = {
       })
       switch (pay.type) {
         case 'cardPay':
-          this.model.SetPool(new Card()) // 设置现金对象池
+          this.model.SetPool(new Card()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
           this.model.Refund(pay)
           break
         case 'remoteCardPay':
-          console.log('remoteCardPay')
+          this.model.SetPool(new Card()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
+          this.model.Refund(pay)
           break
         case 'scanPay':
           this.model.SetPool(new Scan()) // 设置扫码对象池
