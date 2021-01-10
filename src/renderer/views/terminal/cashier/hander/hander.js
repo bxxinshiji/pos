@@ -44,8 +44,9 @@ const hander = {
       amount = 0
       self.$message({
         type: 'warning',
-        message: '收款金额大于100万,默认等于代收款金额。'
+        message: '手动收款金额不允许大于100万。'
       })
+      return
     }
     // 输入支付金额 (默认应收款金额)
     amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
