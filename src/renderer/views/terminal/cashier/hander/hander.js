@@ -40,11 +40,11 @@ const hander = {
       return
     }
     let amount = Math.round(self.getInput() * 100) // 四舍五入取整
-    if (amount > 1000000 * 100) { // 收款金额不允许大于100万
+    if (amount - waitPay > 1000 * 100) { // 不允许实际收款大于代收款1000元。
       amount = 0
       self.$message({
         type: 'warning',
-        message: '手动收款金额不允许大于100万。'
+        message: '不允许实际收款大于代收款1000元。'
       })
       return
     }
