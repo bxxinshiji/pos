@@ -28,6 +28,13 @@ const terminal = {
       ).then(response => {
         const macAddress = store.state.settings.macAddress
         const item = response[0]
+        if (!item) {
+          this.loadingInstance = Loading.service({
+            text: '终端:' + terminal.PosCode + ' 请到后台增加终端并绑定网卡地址: ' + macAddress,
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
+          return
+        }
         if (trim(item.PosName) !== trim(macAddress)) {
           this.loadingInstance = Loading.service({
             text: '终端:' + terminal.PosCode + ' 请到后台绑定终端网卡地址: ' + macAddress,
