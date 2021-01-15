@@ -40,6 +40,8 @@ const hander = {
       return
     }
     let amount = Math.round(self.getInput() * 100) // 四舍五入取整
+    // 输入支付金额 (默认应收款金额)
+    amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
     if (amount - waitPay > 1000 * 100) { // 不允许实际收款大于代收款1000元。
       amount = 0
       self.$message({
@@ -48,8 +50,6 @@ const hander = {
       })
       return
     }
-    // 输入支付金额 (默认应收款金额)
-    amount = (amount === 0 || isNaN(amount)) ? waitPay : amount
     store.dispatch('terminal/changePayAmount', amount) // 开启支付页面的收款金额
     store.dispatch('terminal/changeIsPay', true) // 开启支付页面
     self.$message({
