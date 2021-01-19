@@ -105,7 +105,7 @@ const escpos = {
               .cashdraw()
               .font('a').close((err) => {
                 return err ? reject(err) : resolve()
-              }) // 切纸、关闭
+              }) // 关闭
             resolve()
           }
         })
