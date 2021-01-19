@@ -73,7 +73,9 @@ const escpos = {
                     break
                 }
               })
-              printer.cut().close() // 切纸、关闭
+              printer.cut().close((err) => {
+                return err ? reject(err) : resolve()
+              }) // 切纸、关闭
               resolve()
             }
           })
@@ -98,8 +100,12 @@ const escpos = {
           if (err) {
             reject(err)
           } else {
-            printer.cashdraw()
-            printer.cut().close() // 切纸、关闭
+            printer
+              .style('bu')
+              .cashdraw()
+              .font('a').close((err) => {
+                return err ? reject(err) : resolve()
+              }) // 切纸、关闭
             resolve()
           }
         })
