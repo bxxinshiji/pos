@@ -95,7 +95,6 @@ const mutations = {
   },
   SET_ORDER_QUEUE: (state, value) => { // 设置订单队列数
     state.orderQueue = value
-    console.log(state.orderQueue)
   }
 
 }
