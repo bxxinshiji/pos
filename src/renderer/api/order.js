@@ -35,9 +35,9 @@ export function syncOrder(order) {
  */
 export function queueSyncOrder() {
   return new Promise((resolve, reject) => {
-    const sleep = function(time) {
-      return new Promise((resolve) => setTimeout(resolve, time))
-    }
+    // const sleep = function(time) {
+    //   return new Promise((resolve) => setTimeout(resolve, time))
+    // }
     Order.findAll({ // 每次同步10条
       offset: -1,
       limit: 10,
@@ -45,6 +45,7 @@ export function queueSyncOrder() {
       include: [Order.Goods, Order.Pays]
     }).then(async response => {
       for (let index = 0; index < response.length; index++) {
+        store.dispatch('terminal/changeOrderQueue', 1) // 增加队列订单数
         const element = response[index]
         log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
         syncOrder(element).then(res => {
@@ -54,11 +55,13 @@ export function queueSyncOrder() {
             where: { orderNo: element.orderNo }
           })
           store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+          store.dispatch('terminal/changeOrderQueue', -1) // 减少队列订单数
           // resolve(res)
         }).catch(error => {
+          store.dispatch('terminal/changeOrderQueue', -1) // 减少队列订单数
           reject(error)
         })
-        await sleep(5 * 1000) // 每个订单休息10秒后在上传
+        // await sleep(5 * 1000) // 每个订单休息10秒后在上传
       }
     }).catch(error => {
       reject(error)

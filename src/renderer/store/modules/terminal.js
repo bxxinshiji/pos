@@ -39,6 +39,7 @@ const state = {
     pays: [],
     payTotal: 0 // 实际扫码支付总金额
   },
+  orderQueue: 0, // 订单队列数
   syncTerminal: true // 是否允许同步终端
 }
 
@@ -91,7 +92,12 @@ const mutations = {
   },
   SYNC_TERMINAL: (state, value) => { // 是否允许同步终端
     state.syncTerminal = value
+  },
+  SET_ORDER_QUEUE: (state, value) => { // 设置订单队列数
+    state.orderQueue = value
+    console.log(state.orderQueue)
   }
+
 }
 
 const actions = {
@@ -284,6 +290,9 @@ const actions = {
         })
       }
     })
+  },
+  changeOrderQueue({ state, commit }, value) { // 更改订单队列数
+    commit('SET_ORDER_QUEUE', state.orderQueue + value)
   },
   unregisterGlobalShortcut() {
     // const KeyboardIndex = store.state.settings.Keyboard.index
