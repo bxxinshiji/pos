@@ -28,6 +28,17 @@ export function Create(pay) {
     })
   })
 }
+export function Delete(where) {
+  return new Promise((resolve, reject) => {
+    PayOrder.destroy({
+      where: where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 // 查找创建订单
 export function UpdateOrCreate(pay) {
   return new Promise((resolve, reject) => {

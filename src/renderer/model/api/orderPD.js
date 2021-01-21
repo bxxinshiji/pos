@@ -64,6 +64,17 @@ export function All(where = {}) {
   })
 }
 
+export function Delete(where) {
+  return new Promise((resolve, reject) => {
+    Order.destroy({
+      where: where
+    }).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 // Publish 发布订单
 export function Publish(where) {
   return new Promise((resolve, reject) => {

@@ -330,7 +330,9 @@ export default {
     },
     handerDelete(currentOrder) {
       log.h('info', 'order.handerDelete', JSON.stringify(currentOrder))
-      Delete(currentOrder).then(response => {
+      Delete({
+        orderNo: currentOrder.orderNo
+      }).then(response => {
         this.$notify({
           title: '删除发布成功',
           message: '订单:' + currentOrder.orderNo,

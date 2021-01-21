@@ -44,8 +44,10 @@ export default {
         SyncPayOrder()
       }, 60 * 1000) // 1 分钟同步一次待付款订单状态
       setInterval(() => { // 自动同步订单
-        queueSyncOrder()
-      }, 5000)
+        if (this.$store.state.healthy.isSql2000) {
+          queueSyncOrder()
+        }
+      }, 60 * 1000) // 1分钟同步一次
     },
     async logout() {
       await this.$store.dispatch('user/logout')

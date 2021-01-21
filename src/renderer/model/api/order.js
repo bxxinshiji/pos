@@ -13,6 +13,7 @@ import { pagination } from '@/utils/index'
 export function List(listQuery) {
   return new Promise((resolve, reject) => {
     const page = pagination(listQuery.limit, listQuery.page)
+    console.log(page)
     Order.sequelize.transaction((t) => { // 基于事务插入数据
       return Order.findAndCountAll({
         offset: page.offset,
@@ -45,12 +46,10 @@ export function Create(order) {
   })
 }
 
-export function Delete(order) {
+export function Delete(where) {
   return new Promise((resolve, reject) => {
     Order.destroy({
-      where: {
-        orderNo: order.orderNo
-      }
+      where: where
     }).then(response => {
       resolve(response)
     }).catch(error => {

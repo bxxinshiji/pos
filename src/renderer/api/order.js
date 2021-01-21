@@ -38,13 +38,13 @@ export function queueSyncOrder() {
     const sleep = function(time) {
       return new Promise((resolve) => setTimeout(resolve, time))
     }
-
-    Order.findAll({
+    Order.findAll({ // 每次同步5条
+      offset: -1,
+      limit: 10,
       where: { publish: false },
       include: [Order.Goods, Order.Pays]
     }).then(async response => {
       for (let index = 0; index < response.length; index++) {
-        await sleep(10 * 1000) // 每个订单休息10秒后在上传
         const element = response[index]
         log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
         syncOrder(element).then(res => {
@@ -54,10 +54,11 @@ export function queueSyncOrder() {
             where: { orderNo: element.orderNo }
           })
           store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-          resolve(res)
+          // resolve(res)
         }).catch(error => {
           reject(error)
         })
+        await sleep(5 * 1000) // 每个订单休息10秒后在上传
       }
     }).catch(error => {
       reject(error)
