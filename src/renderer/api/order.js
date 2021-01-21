@@ -38,7 +38,7 @@ export function queueSyncOrder() {
     const sleep = function(time) {
       return new Promise((resolve) => setTimeout(resolve, time))
     }
-    Order.findAll({ // 每次同步5条
+    Order.findAll({ // 每次同步10条
       offset: -1,
       limit: 10,
       where: { publish: false },
