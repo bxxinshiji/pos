@@ -35,11 +35,16 @@ export function syncOrder(order) {
  */
 export function queueSyncOrder() {
   return new Promise((resolve, reject) => {
+    const sleep = function(time) {
+      return new Promise((resolve) => setTimeout(resolve, time))
+    }
+
     Order.findAll({
       where: { publish: false },
       include: [Order.Goods, Order.Pays]
-    }).then(response => {
+    }).then(async response => {
       for (let index = 0; index < response.length; index++) {
+        await sleep(10 * 1000) // 每个订单休息10秒后在上传
         const element = response[index]
         log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
         syncOrder(element).then(res => {
