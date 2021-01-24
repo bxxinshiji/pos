@@ -44,11 +44,11 @@ export default {
         SyncPayOrder()
       }, 60 * 1000) // 1 分钟同步一次待付款订单状态
       setInterval(() => { // 自动同步订单
-        // sql2000 开启并且 队列为空才会再次执行
-        if (this.$store.state.healthy.isSql2000 && this.$store.state.terminal.orderQueue === 0) {
+        // sql2000 开启并且 大约错误时间15分钟
+        if (this.$store.state.healthy.isSql2000 && (new Date().getTime() - this.$store.state.terminal.orderQueueErrorTime) > 5 * 60 * 1000) {
           queueSyncOrder()
         }
-      }, 30 * 1000) // 0.5分钟同步一次
+      }, 5 * 1000) // 0.5分钟同步一次
     },
     async logout() {
       await this.$store.dispatch('user/logout')

@@ -39,7 +39,7 @@ const state = {
     pays: [],
     payTotal: 0 // 实际扫码支付总金额
   },
-  orderQueue: 0, // 订单队列数
+  orderQueueErrorTime: 0, // 订单队列数
   syncTerminal: true // 是否允许同步终端
 }
 
@@ -93,8 +93,9 @@ const mutations = {
   SYNC_TERMINAL: (state, value) => { // 是否允许同步终端
     state.syncTerminal = value
   },
-  SET_ORDER_QUEUE: (state, value) => { // 设置订单队列数
-    state.orderQueue = value
+  SET_ORDER_QUEUE_ERROR_TIME: (state) => { // 设置订单队列数
+    state.orderQueueErrorTime = new Date().getTime()
+    console.log(state.orderQueueErrorTime)
   }
 
 }
@@ -290,8 +291,8 @@ const actions = {
       }
     })
   },
-  changeOrderQueue({ state, commit }, value) { // 更改订单队列数
-    commit('SET_ORDER_QUEUE', state.orderQueue + value)
+  changeOrderQueueErrorTime({ commit }) { // 更改订单队列数
+    commit('SET_ORDER_QUEUE_ERROR_TIME')
   },
   unregisterGlobalShortcut() {
     // const KeyboardIndex = store.state.settings.Keyboard.index

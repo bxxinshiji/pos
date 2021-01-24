@@ -164,7 +164,6 @@ const order = {
           reject(error)
         })
       }).catch(error => {
-        console.log(123, error)
         if (error.message === 'Validation error') {
           this.OrderCheck(item).then(response => { // 增加订单校验
             resolve(response)
