@@ -48,7 +48,7 @@ export default {
         if (this.$store.state.healthy.isSql2000 && (new Date().getTime() - this.$store.state.terminal.orderQueueErrorTime) > 5 * 60 * 1000) {
           queueSyncOrder()
         }
-      }, 10 * 1000) // 0.5分钟同步一次
+      }, 30 * 1000) // 0.5分钟同步一次
     },
     async logout() {
       await this.$store.dispatch('user/logout')
