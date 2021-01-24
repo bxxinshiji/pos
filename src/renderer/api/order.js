@@ -45,21 +45,23 @@ export function queueSyncOrder() {
       include: [Order.Goods, Order.Pays]
     }).then(async response => {
       for (let index = 0; index < response.length; index++) {
-        const element = response[index]
-        log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
-        await syncOrder(element).then(res => {
-          Order.update({ // 本地订单状态改为报送服务器
-            publish: true
-          }, {
-            where: { orderNo: element.orderNo }
+        // 错误后时间等待5分钟
+        if ((new Date().getTime() - store.state.terminal.orderQueueErrorTime) > 5 * 60 * 1000) {
+          const element = response[index]
+          log.h('info', 'queueSyncOrder.element', JSON.stringify(element))
+          await syncOrder(element).then(res => {
+            Order.update({ // 本地订单状态改为报送服务器
+              publish: true
+            }, {
+              where: { orderNo: element.orderNo }
+            })
+            store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
+            // resolve(res)
+          }).catch(error => {
+            store.dispatch('terminal/changeOrderQueueErrorTime') // 失败
+            reject(error)
           })
-          store.dispatch('terminal/changeOrderInfo') // 更新订单汇总信息
-          // resolve(res)
-        }).catch(error => {
-          store.dispatch('terminal/changeOrderQueueErrorTime') // 失败
-          reject(error)
-        })
-        // await sleep(5 * 1000) // 每个订单休息10秒后在上传
+        }
       }
     }).catch(error => {
       reject(error)
