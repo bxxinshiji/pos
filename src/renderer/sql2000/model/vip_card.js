@@ -14,6 +14,8 @@ const vipCard = {
       var AmtCheck = code.substr(14, 21)
       pool.DB.query(`
         select * from tVipCardMaster WHERE CardNo=:CardNo
+        select XsAmt=IsNull(sum(XsAmt), 0) from tVipCardDetailRemoteXf where CardCode=:CardNo 
+        select ChgAmt=IsNull(sum(ChgAmt), 0) from tVipCardRemoteChg where CardCode=:CardNo 
       `,
       { replacements: { CardNo: CardNo }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
@@ -27,7 +29,7 @@ const vipCard = {
         resolve({
           cardNo: trim(item.CardNo),
           password: trim(item.Passwd),
-          amount: item.ShopAmt,
+          amount: item.ShopAmt - response[1].XsAmt, // 减去远程会员卡消费
           name: trim(item.VipName),
           id: Number(trim(item.ZfCode))
         })
