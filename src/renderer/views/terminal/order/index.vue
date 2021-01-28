@@ -166,7 +166,7 @@
         </el-table>
         <el-table :data="currentOrder.pays" size="mini" max-height="170">
           <el-table-column label="支付信息">
-            <el-table-column property="payId" label="ID" width="50"></el-table-column>
+            <el-table-column property="no" label="#" width="50"></el-table-column>
             <el-table-column property="name" label="付款方式" width="80"></el-table-column>
             <el-table-column property="amount" label="金额" width="100">
               <template slot-scope="scope">

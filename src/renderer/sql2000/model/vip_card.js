@@ -104,8 +104,9 @@ const vipCard = {
     })
   },
   // 远程会员卡支付
-  RemotePay: (code, amount, orderNo, SkNo, shopCode) => {
+  RemotePay: (code, amount, orderNo, payNo) => {
     return new Promise((resolve, reject) => {
+      const shopCode = ''
       pool.DB.query(`
         select * from tVipCardMaster WHERE CardNo=:CardNo
         select XsAmt=IsNull(sum(XsAmt), 0) from tVipCardDetailRemoteXf where CardCode=:CardNo 
@@ -119,7 +120,7 @@ const vipCard = {
             insert into tVipCardDetailRemoteXf(CardCode, ShopCode, SaleItemNo, SkNo, XsDate, XsAmt, IsCl)  values(':CardNo', ':shopCode', ':orderNo', :SkNo, getdate(), :amount, '0')
           `,
 
-          { replacements: { CardNo: code, amount: amount, orderNo: orderNo, SkNo: SkNo, shopCode: shopCode }, type: Sequelize.QueryTypes.INSERT }
+          { replacements: { CardNo: code, amount: amount, orderNo: orderNo, SkNo: payNo, shopCode: shopCode }, type: Sequelize.QueryTypes.INSERT }
           ).then(response => {
             resolve(response)
           }).catch(error => {

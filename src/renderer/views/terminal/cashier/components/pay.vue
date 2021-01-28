@@ -79,6 +79,7 @@ export default {
       payAmount: state => state.terminal.payAmount,
       scanStoreName: state => state.settings.scanStoreName,
       scanPayId: state => state.settings.scanPayId,
+      cardPayID: state => state.settings.cardPayID,
       orderTitle: state => state.settings.orderTitle,
       terminal: state => state.settings.terminal,
       username: state => state.user.username,

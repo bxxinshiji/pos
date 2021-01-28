@@ -62,6 +62,7 @@ const Pays = sequelize.define('pay', {
   type: Sequelize.STRING, // 支付方式类型
   amount: Sequelize.INTEGER, // 支付金额
   getAmount: Sequelize.INTEGER, // 收款金额
+  no: Sequelize.INTEGER, // 排列序号
   orderNo: Sequelize.STRING, // 第三方订单号
   status: Sequelize.BOOLEAN // 是否支付成功
 }, {

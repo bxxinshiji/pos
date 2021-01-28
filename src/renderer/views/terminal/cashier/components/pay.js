@@ -153,7 +153,7 @@ const hander = {
     })
   },
   cardPay(code) {
-    if (!this.scanPayId) {
+    if (!this.cardPayID) {
       this.status = 'error'
       this.payingInfo = '会员卡支付保存类型未设置'
       this.lock = false
@@ -168,7 +168,7 @@ const hander = {
       })
       return parseInt(amount)
     }
-    VipCardGet(code).then(res => {
+    VipCardGet(code, this.cardPayInfo.type).then(res => {
       log.h('info', 'cardPay.VipCardGet.then', JSON.stringify(res))
       const amount = Math.round(res.amount * 100) // 会员实际余额
       const payAmount = parseInt(this.payAmount)
@@ -190,7 +190,7 @@ const hander = {
             type: 'success',
             dangerouslyUseHTMLString: true
           }).then(() => {
-          this.handerPay(res.id, res.cardNo)
+          this.handerPay(this.cardPayID, res.cardNo)
         }).catch(() => {
           this.lock = false // 接触锁定
           this.$message({
@@ -215,6 +215,8 @@ const hander = {
     return new Promise(async(resolve, reject) => {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]
+        pay.no = index + 1
+        console.log(pay)
         if (this.order.type) { // 销货
           // 销货状态
           if ((pay.type === 'cardPay' && !pay.status) || pay.type === 'remoteCardPay' && !pay.status) { // 处理会员卡未支付订单
