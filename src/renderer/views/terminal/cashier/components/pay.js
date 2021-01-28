@@ -15,7 +15,8 @@ import { Create as OrderCreate } from '@/model/api/order'
 import config from '@/utils/pay/config' // 现金支付模块
 import Scan from '@/utils/pay/scan' // 扫码支付模块
 import Cash from '@/utils/pay/cash' // 现金支付模块
-import Card from '@/utils/pay/card' // 扫码支付模块
+import Card from '@/utils/pay/card' // 会员卡支付模块
+import RemoteCard from '@/utils/pay/RemoteCard' // 远程会员卡支付模块
 
 const hander = {
   payModelHander(pay) {
@@ -64,7 +65,7 @@ const hander = {
         this.model.Create(pay)
         break
       case 'remoteCardPay':
-        this.model.SetPool(new Card()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
+        this.model.SetPool(new RemoteCard()) // 设置会员卡对象池 // 无操作以实际结算订单操作为准
         this.model.Create(pay)
         break
       case 'scanPay':

@@ -26,7 +26,8 @@ const state = {
   logSwitch: false, // 日志开关
   depRange: '', // 设置部门范围后 pos只能经营指定部门范围内的商品
   scanStoreName: '', // 支付商户用户名
-  scanPayId: 0, //  扫码支付ID
+  scanPayId: -1, //  扫码支付ID
+  cardPayID: -1, // 会员卡支付ID
   orderTitle: '扫码支付商品',
   printer: {
     switch: true,
@@ -106,6 +107,7 @@ function init() {
   state.terminal = Store.get('settings.terminal')
   state.scanStoreName = Store.get('settings.scanStoreName')
   state.scanPayId = Store.get('settings.scanPayId')
+  state.cardPayID = Store.get('settings.cardPayID')
   const orderTitle = Store.get('settings.orderTitle')
   if (orderTitle) {
     state.orderTitle = orderTitle

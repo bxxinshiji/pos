@@ -81,7 +81,16 @@ export default {
       scanPayId: state => state.settings.scanPayId,
       orderTitle: state => state.settings.orderTitle,
       terminal: state => state.settings.terminal,
-      username: state => state.user.username
+      username: state => state.user.username,
+      cardPayInfo: state => { // 计算会员卡支付信息[配置里面可以设置]
+        let info = {}
+        state.terminal.pays.forEach(pay => {
+          if (pay.id === state.settings.cardPayID) {
+            info = pay
+          }
+        })
+        return info
+      }
     })
   },
   created() {
@@ -97,6 +106,7 @@ export default {
     this.registerMemory()
     this.registerMousetrap()
     this.EventOn() // 监听事件开启
+    console.log(this.cardPayInfo)
   },
   methods: {
     ...pay,

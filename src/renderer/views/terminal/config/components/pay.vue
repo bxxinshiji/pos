@@ -1,9 +1,9 @@
 <template>
     <el-form :inline=true  :model="ruleForm" ref="ruleForm" label-width="100px">
-                <el-form-item label="扫码商户用户名"  :prop="ruleForm.scanStoreName">
+                <el-form-item label="扫码商户名"  :prop="ruleForm.scanStoreName">
                     <el-input v-model="ruleForm.scanStoreName">></el-input>
                 </el-form-item>
-                <el-form-item label="扫码付款方式"  :prop="ruleForm.scanPayId">
+                <el-form-item label="扫码保存类型"  :prop="ruleForm.scanPayId">
                     <el-select v-model="ruleForm.scanPayId" placeholder="请选择支付">
                       <el-option
                         v-for="(item,index) in scanPay"
@@ -13,8 +13,18 @@
                       </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="订单名称"  :prop="ruleForm.orderTitle">
+                <el-form-item label="扫码订单名称"  :prop="ruleForm.orderTitle">
                     <el-input v-model="ruleForm.orderTitle">></el-input>
+                </el-form-item>
+                <el-form-item label="会员卡支付类型"  :prop="ruleForm.cardPayID">
+                    <el-select v-model="ruleForm.cardPayID" placeholder="请选择支付">
+                      <el-option
+                        v-for="(item,index) in cardPay"
+                        :key="index"
+                        :label="item.name + (item.type==='remoteCardPay'?' [远程]':' [本地]')"
+                        :value="String(item.id)">
+                      </el-option>
+                    </el-select>
                 </el-form-item>
                 <br>
                 <el-form-item>
@@ -31,10 +41,12 @@ export default {
   data() {
     return {
       scanPay: [],
+      cardPay: [],
       ruleForm: {
         scanStoreName: this.$store.state.settings.scanStoreName,
+        orderTitle: this.$store.state.settings.orderTitle,
         scanPayId: this.$store.state.settings.scanPayId,
-        orderTitle: this.$store.state.settings.orderTitle
+        cardPayID: this.$store.state.settings.cardPayID // 会员卡刷卡数据
       }
     }
   },
@@ -44,15 +56,15 @@ export default {
   },
   mounted() {
     this.getScanPay()
+    this.getCardPay()
   },
   methods: {
     getScanPay() {
-      const listQuery = {
+      Get({
         where: {
           type: 'scanPay'
         }
-      }
-      Get(listQuery).then(response => {
+      }).then(response => {
         if (response.length) {
           this.scanPay = response
         } else {
@@ -65,6 +77,27 @@ export default {
         this.$message({
           type: 'error',
           message: '查询扫码支付方式失败:' + error
+        })
+      })
+    },
+    getCardPay() {
+      Get({
+        where: {
+          type: ['cardPay', 'remoteCardPay']
+        }
+      }).then(response => {
+        if (response.length) {
+          this.cardPay = response
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '未找到查询会员卡支付方式,请联系管理员。'
+          })
+        }
+      }).catch(error => {
+        this.$message({
+          type: 'error',
+          message: '查询会员卡支付方式失败:' + error
         })
       })
     },

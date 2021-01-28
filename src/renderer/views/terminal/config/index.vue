@@ -90,7 +90,7 @@
         <el-tab-pane label="支付快捷键" name="4">
           <payKeyboard v-if="tab==='4'"/>
         </el-tab-pane>
-        <el-tab-pane label="扫码支付" name="5">
+        <el-tab-pane label="支付相关" name="5">
           <pay v-if="tab==='5'"/>
         </el-tab-pane>
         </el-tabs>
