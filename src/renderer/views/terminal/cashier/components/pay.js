@@ -153,6 +153,12 @@ const hander = {
     })
   },
   cardPay(code) {
+    if (!this.scanPayId) {
+      this.status = 'error'
+      this.payingInfo = '会员卡支付保存类型未设置'
+      this.lock = false
+      return
+    }
     const getVipAmount = (pays, cardNo) => { // 查询次会员卡已付款多少钱
       let amount = 0
       pays.forEach(pay => {
@@ -272,7 +278,7 @@ const hander = {
     }
     if (!this.scanPayId) {
       this.status = 'error'
-      this.payingInfo = '扫码付款方式未设置'
+      this.payingInfo = '扫码支付保存类型未设置'
       this.lock = false
       return
     }

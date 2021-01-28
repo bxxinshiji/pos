@@ -16,7 +16,7 @@
                 <el-form-item label="扫码订单名称"  :prop="ruleForm.orderTitle">
                     <el-input v-model="ruleForm.orderTitle">></el-input>
                 </el-form-item>
-                <el-form-item label="会员卡支付类型"  :prop="ruleForm.cardPayID">
+                <el-form-item label="会员卡保存类型"  :prop="ruleForm.cardPayID">
                     <el-select v-model="ruleForm.cardPayID" placeholder="请选择支付">
                       <el-option
                         v-for="(item,index) in cardPay"
