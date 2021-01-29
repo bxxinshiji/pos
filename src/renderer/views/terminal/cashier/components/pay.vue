@@ -107,7 +107,6 @@ export default {
     this.registerMemory()
     this.registerMousetrap()
     this.EventOn() // 监听事件开启
-    console.log(this.cardPayInfo) // debug
   },
   methods: {
     ...pay,

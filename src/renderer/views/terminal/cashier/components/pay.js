@@ -288,7 +288,6 @@ const hander = {
   handerPay(id, code = '') { // 根据付款方式ID 整合付款信息
     try {
       this.initInfo()
-      log.h('info', 'handerPay.initInfo', JSON.stringify(id)) // debug 可注释
       let payInfo = {}
       this.pays.forEach(pay => {
         if (String(pay.id) === String(id)) { // 获取使用的支付方式信息
