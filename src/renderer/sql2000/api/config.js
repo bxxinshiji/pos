@@ -29,8 +29,6 @@ export function SyncSysConfig() {
     }).catch(error => {
       reject(new Error('查询店铺编码:' + error.message))
     })
-
-    console.log(store)
     resolve()
   })
 }
