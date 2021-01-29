@@ -139,6 +139,9 @@ export function param2Obj(url) {
  * @returns {Object}
  */
 export function trim(str) {
+  if (str === null) {
+    return ''
+  }
   return str.replace(/(^\s*)|(\s*$)/g, '')
 }
 

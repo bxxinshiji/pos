@@ -2,6 +2,8 @@ const Sequelize = require('sequelize')
 import { trim } from '@/utils'
 import connection from '@/sql2000/model/connection'
 const pool = connection.Pool()
+import remoteConnection from '@/sql2000/model/remoteConnection' // 远程数据库
+const remotePool = remoteConnection.Pool()
 import store from '@/store'
 const vipCard = {
   // 查询会员卡
@@ -20,6 +22,9 @@ const vipCard = {
       { replacements: { CardNo: CardNo }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
+        if (trim(item.CardCode) !== CardNo) {
+          reject(Error('未找到此会员卡'))
+        }
         if (trim(item.AmtCheck) !== trim(AmtCheck)) {
           reject(Error('会员卡校验失败'))
         }
@@ -77,7 +82,7 @@ const vipCard = {
       }
       var CardNo = code.substr(1, 13)
       var AmtCheck = code.substr(14, 21)
-      pool.DB.query(`
+      remotePool.DB.query(`
         select * from tVipCardMaster WHERE CardNo=:CardNo
         select XsAmt=IsNull(sum(XsAmt), 0) from tVipCardDetailRemoteXf where CardCode=:CardNo 
         select ChgAmt=IsNull(sum(ChgAmt), 0) from tVipCardRemoteChg where CardCode=:CardNo 
@@ -85,6 +90,9 @@ const vipCard = {
       { replacements: { CardNo: CardNo }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
+        if (trim(item.CardCode) !== CardNo) {
+          reject(Error('未找到此会员卡'))
+        }
         if (trim(item.AmtCheck) !== trim(AmtCheck)) {
           reject(Error('会员卡校验失败'))
         }
@@ -106,8 +114,8 @@ const vipCard = {
   // 远程会员卡支付
   RemotePay: (code, amount, orderNo, payNo) => {
     return new Promise((resolve, reject) => {
-      const shopCode = ''
-      pool.DB.query(`
+      const shopCode = store.state.settings.shopCode
+      remotePool.DB.query(`
         select * from tVipCardMaster WHERE CardNo=:CardNo
         select XsAmt=IsNull(sum(XsAmt), 0) from tVipCardDetailRemoteXf where CardCode=:CardNo 
         select ChgAmt=IsNull(sum(ChgAmt), 0) from tVipCardRemoteChg where CardCode=:CardNo 
@@ -116,11 +124,10 @@ const vipCard = {
       ).then(response => {
         const item = response[0]
         if (item.ShopAmt - response[1].XsAmt >= amount) {
-          pool.DB.query(`
-            insert into tVipCardDetailRemoteXf(CardCode, ShopCode, SaleItemNo, SkNo, XsDate, XsAmt, IsCl)  values(':CardNo', ':shopCode', ':orderNo', :SkNo, getdate(), :amount, '0')
+          remotePool.DB.query(`
+            insert into tVipCardDetailRemoteXf(CardCode, ShopCode, SaleItemNo, SkNo, XsDate, XsAmt, IsCl)  values('` + code + `', '` + shopCode + `', '` + orderNo + `', '` + payNo + `', getdate(), '` + amount + `', '0')
           `,
-
-          { replacements: { CardNo: code, amount: amount, orderNo: orderNo, SkNo: payNo, shopCode: shopCode }, type: Sequelize.QueryTypes.INSERT }
+          { type: Sequelize.QueryTypes.INSERT }
           ).then(response => {
             resolve(response)
           }).catch(error => {

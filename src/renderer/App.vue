@@ -10,6 +10,7 @@ const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
 import { SyncPayOrder } from '@/api/pay'
 import { queueSyncOrder } from '@/api/order'
+import { SyncSysConfig } from '@/sql2000/api/config'
 import log from '@/utils/log'
 export default {
   name: 'App',
@@ -19,7 +20,7 @@ export default {
     this.$store.dispatch('terminal/registerGlobalShortcut') // 注册全局快捷键
     // this.logout() // 软件启动先退出
     this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: false }) // 关闭头部
-
+    SyncSysConfig()// 获取系统配置
     ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
       if (this.$store.state.terminal.isPay) { // 支付中禁止操作
         this.$message({

@@ -216,12 +216,11 @@ const hander = {
       for (let index = 0; index < pays.length; index++) {
         const pay = pays[index]
         pay.no = index + 1
-        console.log(pay)
         if (this.order.type) { // 销货
           // 销货状态
           if ((pay.type === 'cardPay' && !pay.status) || pay.type === 'remoteCardPay' && !pay.status) { // 处理会员卡未支付订单
             if (pay.code) {
-              await CardPay(pay.code, (pay.amount / 100).toFixed(2)).then(response => {
+              await CardPay(pay.code, (pay.amount / 100).toFixed(2), pay.type, this.order.orderNo, pay.no).then(response => {
                 pay.status = true
               }).catch(error => {
                 reject(error)

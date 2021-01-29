@@ -74,7 +74,16 @@ export default {
       isInputPrice: state => state.terminal.isInputPrice,
       isPay: state => state.terminal.isPay,
       order: state => state.terminal.order,
-      loadOrder: state => state.terminal.loadOrder
+      loadOrder: state => state.terminal.loadOrder,
+      cardPayInfo: state => { // 计算会员卡支付信息[配置里面可以设置]
+        let info = {}
+        state.terminal.pays.forEach(pay => {
+          if (pay.id === state.settings.cardPayID) {
+            info = pay
+          }
+        })
+        return info
+      }
     })
   },
   created() {
@@ -144,7 +153,7 @@ export default {
     },
     handerVipCardGet(code) {
       // 先查询余额
-      VipCardGet(code).then(res => {
+      VipCardGet(code, this.cardPayInfo.type).then(res => {
         this.$confirm(
           '<p>会员卡余额: <b style="color:#F56C6C">' + res.amount.toFixed(2) + ' 元</b></p>' +
         '<p>会员卡编码: <b>' + res.cardNo + '</b></p>' +

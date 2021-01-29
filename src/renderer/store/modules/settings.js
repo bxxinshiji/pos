@@ -62,11 +62,20 @@ const state = {
     '9': ''
   }, // 支付快捷键
   // sql2000
+  shopCode: '001',
   sql2000_host: '',
   sql2000_port: '1433',
   sql2000_username: '',
   sql2000_password: '',
-  sql2000_database: ''
+  sql2000_database: '',
+
+  // 远程数据库
+
+  cardRemoteSQL2000Host: '', // 会员卡远程服务器地址
+  cardRemoteSQL2000Port: '1433',
+  cardRemoteSQL2000Username: '', // 会员卡远程服务器用户名
+  cardRemoteSQL2000Password: '', // 会员卡远程服务器密码
+  cardRemoteSQL2000database: '' // 会员卡远程服务器数据库名
 }
 
 const mutations = {
@@ -152,11 +161,24 @@ function init() {
   })
 
   // sql2000
+  const shopCode = Store.get('settings.shopCode') // 店铺编码  const cardRemoteSQL2000Port = Store.get('settings.cardRemoteSQL2000Port')
+  if (shopCode) {
+    state.shopCode = shopCode
+  }
   state.sql2000_host = Store.get('settings.sql2000_host')
   state.sql2000_port = Store.get('settings.sql2000_port')
   state.sql2000_username = Store.get('settings.sql2000_username')
   state.sql2000_password = Store.get('settings.sql2000_password')
   state.sql2000_database = Store.get('settings.sql2000_database')
+  // 远程会员sql2000
+  state.cardRemoteSQL2000Host = Store.get('settings.cardRemoteSQL2000Host')
+  const cardRemoteSQL2000Port = Store.get('settings.cardRemoteSQL2000Port')
+  if (cardRemoteSQL2000Port) {
+    state.cardRemoteSQL2000Port = cardRemoteSQL2000Port
+  }
+  state.cardRemoteSQL2000Username = Store.get('settings.cardRemoteSQL2000Username')
+  state.cardRemoteSQL2000Password = Store.get('settings.cardRemoteSQL2000Password')
+  state.cardRemoteSQL2000database = Store.get('settings.cardRemoteSQL2000database')
 }
 // 初始化数据
 init()
