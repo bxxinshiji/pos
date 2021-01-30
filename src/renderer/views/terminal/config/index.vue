@@ -28,6 +28,9 @@
                     <el-form-item label="部门范围" prop="depRange">
                       <el-input v-model="sysForm.depRange" placeholder="例:100-299"></el-input>
                     </el-form-item>
+                    <el-form-item label="数据过期(天)" prop="dataExpires">
+                      <el-input v-model="sysForm.dataExpires" placeholder="多少天后自动删除[0不删除]"></el-input>
+                    </el-form-item>
                     <el-form-item label="日志开关" prop="logSwitch">
                       <el-switch v-model="sysForm.logSwitch"></el-switch>
                     </el-form-item>
@@ -146,7 +149,8 @@ export default {
         log: settings.log,
         isTotal: settings.isTotal,
         logSwitch: settings.logSwitch,
-        depRange: settings.depRange
+        depRange: settings.depRange,
+        dataExpires: settings.dataExpires
       },
       sysRules: {
         api: [

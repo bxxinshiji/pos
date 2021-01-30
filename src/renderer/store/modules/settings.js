@@ -28,6 +28,7 @@ const state = {
   scanStoreName: '', // 支付商户用户名
   scanPayId: 0, //  扫码支付ID       必须大于0
   cardPayID: 0, // 会员卡支付ID   必须大于0
+  dataExpires: 180, // 数据自动过期天数
   orderTitle: '扫码支付商品',
   printer: {
     switch: true,
@@ -117,6 +118,10 @@ function init() {
   state.scanStoreName = Store.get('settings.scanStoreName')
   state.scanPayId = Store.get('settings.scanPayId')
   state.cardPayID = Store.get('settings.cardPayID')
+  const dataExpires = Store.get('settings.dataExpires')
+  if (dataExpires) {
+    state.dataExpires = dataExpires
+  }
   const orderTitle = Store.get('settings.orderTitle')
   if (orderTitle) {
     state.orderTitle = orderTitle
