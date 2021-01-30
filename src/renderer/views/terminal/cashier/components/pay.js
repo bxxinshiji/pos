@@ -219,7 +219,7 @@ const hander = {
         pay.no = index + 1
         if (this.order.type) { // 销货
           // 销货状态
-          if ((pay.type === 'cardPay' && !pay.status) || pay.type === 'remoteCardPay' && !pay.status) { // 处理会员卡未支付订单
+          if ((pay.type === 'cardPay' || pay.type === 'remoteCardPay') && !pay.status) { // 处理会员卡未支付订单
             if (pay.code) {
               await CardPay(pay.code, (pay.amount / 100).toFixed(2), pay.type, this.order.orderNo, pay.no).then(response => {
                 pay.status = true
