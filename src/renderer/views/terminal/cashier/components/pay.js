@@ -186,7 +186,8 @@ const hander = {
           '<p>支付后余额: <b style="color:#F56C6C">' + (afterAmount / 100).toFixed(2) + ' 元</b></p>' +
           '<p>本笔支付: <b style="color:#E6A23C">' + ((beforeAmount + this.payAmount) / 100).toFixed(2) + ' 元</b></p>' +
           '<p>本次支付: <b style="color:#409EFF">' + (this.payAmount / 100).toFixed(2) + ' 元</b></p>'
-          , '会员卡支付信息', {
+          , '会员卡支付信息',
+          {
             type: 'success',
             dangerouslyUseHTMLString: true
           }).then(() => {
