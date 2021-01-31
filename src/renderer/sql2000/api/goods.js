@@ -68,8 +68,8 @@ export async function SyncPlu(enforce = false) {
                 YhType: item.YhType,
                 MgType: item.MgType,
                 IsDecimal: item.IsDecimal,
-                Tag: item.Tag,
-                updatedAt: item.updatedAt
+                Tag: item.Tag
+                // updatedAt: item.updatedAt // bar不能更新因为这是plu数据时间，如果更新会导致后面bar更新数据出错
               })
             }
           })
@@ -126,8 +126,8 @@ export async function SyncPlu(enforce = false) {
               'YhType',
               'MgType',
               'IsDecimal',
-              'Tag',
-              'updatedAt'
+              'Tag'
+              // 'updatedAt' // bar不能更新因为这是plu数据时间，如果更新会导致后面bar更新数据出错
             ]
           }).then(() => {
             Message({
