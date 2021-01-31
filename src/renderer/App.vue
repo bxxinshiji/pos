@@ -40,7 +40,6 @@ export default {
     init() {
       SyncSysConfig()// 获取系统配置
       const dataExpires = Number(this.$store.state.settings.dataExpires)
-      console.log(new Date(new Date(new Date().toLocaleDateString()).getTime() - dataExpires * 24 * 60 * 60 * 1000 - 1))
       DeleteOrder({
         createdAt: { // 获取当天订单
           [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() - dataExpires * 24 * 60 * 60 * 1000 - 1)
