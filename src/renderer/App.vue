@@ -50,8 +50,7 @@ export default {
       DeletePayOrder({
         createdAt: { // 获取当天订单
           [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() - dataExpires * 24 * 60 * 60 * 1000 - 1)
-        },
-        publish: true
+        }
       }) // 删除指定天数之前的扫码订单
       DeleteOrderPD({
         createdAt: { // 获取当天订单
