@@ -75,6 +75,7 @@ export default {
       isPay: state => state.terminal.isPay,
       order: state => state.terminal.order,
       loadOrder: state => state.terminal.loadOrder,
+      cardPayID: state => state.settings.cardPayID,
       cardPayInfo: state => { // 计算会员卡支付信息[配置里面可以设置]
         let info = {}
         state.terminal.pays.forEach(pay => {
