@@ -13,6 +13,7 @@ import { SyncPayOrder } from '@/api/pay'
 import { queueSyncOrder } from '@/api/order'
 import { SyncSysConfig } from '@/sql2000/api/config'
 import { Delete as DeleteOrder } from '@/model/api/order'
+import { Delete as DeletePayOrder } from '@/model/api/payOrder'
 import { Delete as DeleteOrderPD } from '@/model/api/orderPD'
 import log from '@/utils/log'
 export default {
@@ -46,6 +47,12 @@ export default {
         },
         publish: true
       }) // 删除指定天数之前的订单
+      DeletePayOrder({
+        createdAt: { // 获取当天订单
+          [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() - dataExpires * 24 * 60 * 60 * 1000 - 1)
+        },
+        publish: true
+      }) // 删除指定天数之前的扫码订单
       DeleteOrderPD({
         createdAt: { // 获取当天订单
           [Op.lt]: new Date(new Date(new Date().toLocaleDateString()).getTime() - 2 * dataExpires * 24 * 60 * 60 * 1000 - 1)
