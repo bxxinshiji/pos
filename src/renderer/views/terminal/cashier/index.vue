@@ -152,6 +152,13 @@ export default {
       })
     },
     handerVipCardGet(code) {
+      if (!this.cardPayID) {
+        this.MessageBox({
+          title: '会员卡支付保存类型未设置',
+          message: '请联系管理员,设置会员卡支付保存类型。'
+        })
+        return
+      }
       // 先查询余额
       VipCardGet(code, this.cardPayInfo.type).then(res => {
         this.$confirm(
