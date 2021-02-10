@@ -214,9 +214,9 @@ export default {
         if (number.test(value)) {
           this.addGoods(value, isPlucode) // isPlucode 是否允许通过 plucode 查询
         } else {
-          this.$message({
-            type: 'warning',
-            message: '输入错误请重试,输入内容:' + value
+          this.MessageBox({
+            title: '非法输入请重试',
+            message: '输入内容: ' + value
           })
         }
       }
