@@ -23,11 +23,11 @@ npm install --global --production windows-build-tools --vs2015
 # install dependencies
 npm install
 
+npm run rebuild
 # serve with hot reload at localhost:9080
 npm run dev
 
 # build electron application for production
-npm run rebuild
 npm run build
 
 # run unit & end-to-end tests

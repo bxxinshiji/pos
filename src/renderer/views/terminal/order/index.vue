@@ -455,6 +455,12 @@ export default {
   .button{
     padding: 0px 16px;
   }
+
+  .el-table /deep/ .el-table__body tr.current-row>td,.el-table /deep/ .el-table__body tr.hover-row>td{
+    color:#409EFF;
+    font-size:13px;
+    font-weight:900;
+  }
   .black-info {
     height: 40px;
     padding: 1vw;
