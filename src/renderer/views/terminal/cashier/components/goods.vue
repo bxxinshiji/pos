@@ -39,6 +39,7 @@ td{
   td{
     color: @el-danger;
     font-size:3vh;
+    font-weight:900;
   }
 }
 </style>

@@ -397,9 +397,8 @@ export default {
   .container {
       margin: 1vw;
   }
-  .el-table /deep/ .el-table__body tr.current-row>td,.el-table /deep/ .el-table__body tr.hover-row>td{
+  .el-table /deep/ .el-table__body tr.current-row>td{
     color:#409EFF;
-    font-size:13px;
     font-weight:900;
   }
   .button{
