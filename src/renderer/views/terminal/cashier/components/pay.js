@@ -290,6 +290,11 @@ const hander = {
     try {
       this.initInfo()
       let payInfo = {}
+      if (this.order.orderNo) {
+        this.status = 'error'
+        this.payingInfo = '未找到订单编号,请关闭重试!'
+        return
+      }
       this.pays.forEach(pay => {
         if (String(pay.id) === String(id)) { // 获取使用的支付方式信息
           const amount = this.payAmount >= this.order.waitPay ? this.order.waitPay : this.payAmount // 计算付款金额tatus: pay.type === 'cashPay' // 现金支付时默认支付状态成功
