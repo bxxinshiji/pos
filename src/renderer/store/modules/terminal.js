@@ -173,7 +173,7 @@ const actions = {
       waitPay = waitPay - pay.amount
       getAmount = getAmount + pay.getAmount
     })
-    commit('SET_ORDER_KEY', { key: 'number', value: number })
+    commit('SET_ORDER_KEY', { key: 'number', value: Number(number.toFixed(2)) })
     commit('SET_ORDER_KEY', { key: 'total', value: total })
     commit('SET_ORDER_KEY', { key: 'getAmount', value: getAmount })
     commit('SET_ORDER_KEY', { key: 'waitPay', value: waitPay })

@@ -290,7 +290,7 @@ const hander = {
     try {
       this.initInfo()
       let payInfo = {}
-      if (this.order.orderNo) {
+      if (!this.order.orderNo) {
         this.status = 'error'
         this.payingInfo = '未找到订单编号,请关闭重试!'
         return
