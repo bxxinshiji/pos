@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
 const ping = require('ping')
 /**
@@ -25,7 +26,12 @@ export async function isInternet() {
   return status
 }
 export async function syncDateTime(dateTime) { // 同步系统时间
+  let loadingInstance
   if (Math.abs(dateTime - new Date()) > 5 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
+    loadingInstance = Loading.service({
+      text: '时间同步中请等待...',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
     switch (process.platform) {
       case 'win32':
         require('child_process').exec('date ' + parseTime(dateTime, '{y}-{m}-{d}'))
@@ -38,6 +44,10 @@ export async function syncDateTime(dateTime) { // 同步系统时间
       default:
         console.log('暂时只支持win系统同步时间')
         break
+    }
+  } else {
+    if (loadingInstance) {
+      loadingInstance.close()
     }
   }
 }
