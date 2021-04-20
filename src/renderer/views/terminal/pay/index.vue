@@ -337,6 +337,7 @@ export default {
     padding: 0px 16px;
   }
   .el-table /deep/ .el-table__body tr.current-row>td{
+    font-size:12px;
     color:#E6A23C;
     font-weight:900;
   }

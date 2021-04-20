@@ -456,7 +456,8 @@ export default {
     padding: 0px 16px;
   }
   .el-table /deep/ .el-table__body tr.current-row>td{
-    color:#E6A23C;
+    font-size:12px;
+    color:#409EFF;
     font-weight:900;
   }
   .black-info {

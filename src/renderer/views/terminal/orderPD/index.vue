@@ -398,7 +398,8 @@ export default {
       margin: 1vw;
   }
   .el-table /deep/ .el-table__body tr.current-row>td{
-    color:#E6A23C;
+    font-size:12px;
+    color:#409EFF;
     font-weight:900;
   }
   .button{
