@@ -458,7 +458,7 @@ export default {
   .el-table /deep/ .el-table__body tr.current-row>td{
     font-size:12px;
     color:#409EFF;
-    font-weight:900;
+    // font-weight:900;
   }
   .black-info {
     height: 40px;

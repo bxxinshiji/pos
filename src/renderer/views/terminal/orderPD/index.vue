@@ -400,7 +400,7 @@ export default {
   .el-table /deep/ .el-table__body tr.current-row>td{
     font-size:12px;
     color:#409EFF;
-    font-weight:900;
+    // font-weight:900;
   }
   .button{
     padding: 0px 16px;
