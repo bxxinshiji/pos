@@ -59,11 +59,11 @@ const order = {
       const YhAmt = 0 // 优惠金额
       const SsAmt = total - YhAmt // 实收金额
       const HyPrice = goods.HyPrice // 会员价
-
       const PluCode = goods.pluCode // 商品ID
       const BarCode = goods.barCode // 商品条形码
-      const PluName = goods.name // 商品名称
-      const PluAbbr = goods.name.substr(0, 10) // 商品别名
+      // replace(/'/g, "''") 替换单引号位 ‘’ 实现sql2000插入
+      const PluName = goods.name.replace(/'/g, "''") // 商品名称
+      const PluAbbr = goods.name.substr(0, 10).replace(/'/g, "''")
       const DepCode = goods.depCode // 部门ID
       const ClsCode = goods.ClsCode // 品类ID
       const SupCode = goods.SupCode // 供应商ID
@@ -78,7 +78,7 @@ const order = {
       const BakData1 = '' // 批号
       const BakData2 = '' // 厂家
       const BakData3 = 0 // 备用信息
-
+      console.log(PluName, PluAbbr)
       this.sql = this.sql + ` INSERT INTO tXsPluItem(XsDate, XsTime,  SaleItemNo, UserCode, CurrDate, BcCode, ClerkCode, PageNo, LnNo, TranType, 
       XsType, XfType, LrType, GzXsDate, PluCode, BarCode, PluName, PluAbbr, DepCode, ClsCode, SupCode, BrandCode, Unit, Spec, 
       TaxRate, SPrice, HyPrice, FsPrice, XsCount, YsAmt, YhAmt, SsAmt, YhType, MgType, IsDecimal, Tag, BakData1, BakData2, BakData3)
