@@ -5,7 +5,6 @@ const pool = connection.Pool()
 import remoteConnection from '@/sql2000/model/remoteConnection' // 远程数据库
 const remotePool = remoteConnection.Pool()
 import store from '@/store'
-import log from '@/utils/log'
 const vipCard = {
   // 查询会员卡
   Get: (code) => {
@@ -68,8 +67,7 @@ const vipCard = {
             reject(error)
           })
         } else {
-          log.h('error', 'vip_card.Pay', JSON.stringify({ response, amount, amount1: item.ShopAmt - response[1].XsAmt }))
-          reject(Error('会员卡余额不足'))
+          reject(Error('会员卡余额不足:' + JSON.stringify(response))
         }
       }).catch(error => {
         reject(error)
