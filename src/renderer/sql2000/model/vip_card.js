@@ -137,8 +137,8 @@ const vipCard = {
             reject(error)
           })
         } else {
-          log.h('error', 'vip_card.Pay', JSON.stringify(response))
-          log.h('error', 'vip_card.Pay1', (item.ShopAmt - response[1].XsAmt))
+          log.h('error', 'vip_card.RemotePay', JSON.stringify(response))
+          log.h('error', 'vip_card.RemotePay1', (item.ShopAmt - response[1].XsAmt))
           reject(Error('会员卡余额不足'))
         }
       }).catch(error => {
