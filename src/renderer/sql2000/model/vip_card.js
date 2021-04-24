@@ -57,7 +57,7 @@ const vipCard = {
       { replacements: { CardNo: code }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
-        if ((item.ShopAmt - response[1].XsAmt).toFixed(2) >= amount) {
+        if (Number((item.ShopAmt - response[1].XsAmt).toFixed(2)) >= amount) {
           pool.DB.query(`
             update tVipCardMaster set ShopAmt = ShopAmt - :amount WHERE CardNo=:CardNo
           `,
@@ -125,7 +125,7 @@ const vipCard = {
       { replacements: { CardNo: code }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
-        if ((item.ShopAmt - response[1].XsAmt).toFixed(2) >= amount) {
+        if (Number((item.ShopAmt - response[1].XsAmt).toFixed(2)) >= amount) {
           remotePool.DB.query(`
             insert into tVipCardDetailRemoteXf(CardCode, ShopCode, SaleItemNo, SkNo, XsDate, XsAmt, IsCl)  values('` + code + `', '` + shopCode + `', '` + orderNo + `', '` + payNo + `', getdate(), '` + amount + `', '0')
           `,

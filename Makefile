@@ -8,5 +8,4 @@ tag:
 	git push --tags
 .PHONY: run
 run:
-	npm run init
 	npm run dev
