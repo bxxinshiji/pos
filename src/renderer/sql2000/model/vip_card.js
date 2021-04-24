@@ -57,7 +57,7 @@ const vipCard = {
       { replacements: { CardNo: code }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
-        if (item.ShopAmt - response[1].XsAmt >= amount) {
+        if ((item.ShopAmt - response[1].XsAmt).toFixed(2) >= amount) {
           pool.DB.query(`
             update tVipCardMaster set ShopAmt = ShopAmt - :amount WHERE CardNo=:CardNo
           `,
@@ -69,7 +69,6 @@ const vipCard = {
           })
         } else {
           log.h('error', 'vip_card.Pay', JSON.stringify(response))
-          log.h('error', 'vip_card.Pay1', (item.ShopAmt - response[1].XsAmt))
           reject(Error('会员卡余额不足'))
         }
       }).catch(error => {
@@ -126,7 +125,7 @@ const vipCard = {
       { replacements: { CardNo: code }, type: Sequelize.QueryTypes.SELECT }
       ).then(response => {
         const item = response[0]
-        if (item.ShopAmt - response[1].XsAmt >= amount) {
+        if ((item.ShopAmt - response[1].XsAmt).toFixed(2) >= amount) {
           remotePool.DB.query(`
             insert into tVipCardDetailRemoteXf(CardCode, ShopCode, SaleItemNo, SkNo, XsDate, XsAmt, IsCl)  values('` + code + `', '` + shopCode + `', '` + orderNo + `', '` + payNo + `', getdate(), '` + amount + `', '0')
           `,
@@ -138,7 +137,6 @@ const vipCard = {
           })
         } else {
           log.h('error', 'vip_card.RemotePay', JSON.stringify(response))
-          log.h('error', 'vip_card.RemotePay1', (item.ShopAmt - response[1].XsAmt))
           reject(Error('会员卡余额不足'))
         }
       }).catch(error => {
