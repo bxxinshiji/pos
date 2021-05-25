@@ -21,6 +21,10 @@ const barcodes = {
       if (!store.state.healthy.isSql2000) {
         reject(Error('服务器断开！！(SQL2000服务器断开)'))
       }
+      let depRange = `b.DepCode != ''`
+      if (store.state.settings.depRange) {
+        depRange = 'b.DepCode between ' + store.state.settings.depRange.replace('-', ' AND ') + ' '
+      }
       pool.DB.query(`
         select
           a.PluCode as pluCode,
@@ -47,7 +51,7 @@ const barcodes = {
           b.IsDecimal,
           b.Tag
         from tbmMulBar as a LEFT JOIN tBmPlu b ON a.PluCode=b.PluCode
-        WHERE a.XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And a.XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+        WHERE ` + depRange + ` a.XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And a.XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' AND b.PluStatus='1'
           ORDER BY a.XgDate Asc
       `,
       { type: Sequelize.QueryTypes.SELECT }

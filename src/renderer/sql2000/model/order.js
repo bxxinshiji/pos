@@ -61,9 +61,8 @@ const order = {
       const HyPrice = goods.HyPrice // 会员价
       const PluCode = goods.pluCode // 商品ID
       const BarCode = goods.barCode // 商品条形码
-      // replace(/'/g, "''") 替换单引号位 ‘’ 实现sql2000插入
-      const PluName = goods.name.replace(/'/g, "''") // 商品名称
-      const PluAbbr = goods.name.substr(0, 10).replace(/'/g, "''")
+      const PluName = goods.name.replace("'", "''") // 商品名称
+      const PluAbbr = goods.name.substr(0, 10).replace("'", "''")
       const DepCode = goods.depCode // 部门ID
       const ClsCode = goods.ClsCode // 品类ID
       const SupCode = goods.SupCode // 供应商ID
