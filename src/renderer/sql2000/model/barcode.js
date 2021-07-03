@@ -51,7 +51,7 @@ const barcodes = {
           b.IsDecimal,
           b.Tag
         from tbmMulBar as a LEFT JOIN tBmPlu b ON a.PluCode=b.PluCode
-        WHERE ` + depRange + ` AND b.PluStatus='1' AND PluStatus='0' And a.XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And a.XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+        WHERE ` + depRange + ` AND (PluStatus='1' OR PluStatus='0') And a.XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And a.XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
           ORDER BY a.XgDate Asc
       `,
       { type: Sequelize.QueryTypes.SELECT }

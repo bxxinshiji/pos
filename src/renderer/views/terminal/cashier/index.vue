@@ -13,6 +13,7 @@
       />
       <item
         ref="goods"
+        @cacheOrder="handerCacheOrder"
       />
       <foots
         ref="foots"
@@ -241,6 +242,9 @@ export default {
       if (e.keyCode === 27) { // esc 自动聚焦
         this.focus()
       }
+    },
+    handerCacheOrder() {
+      hander.pushPullOrder(this)
     }
   },
   destroyed() {

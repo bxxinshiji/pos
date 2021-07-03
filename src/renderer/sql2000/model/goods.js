@@ -50,7 +50,7 @@ const goods = {
             IsDecimal,
             Tag
           from tBmPlu 
-          WHERE ` + depRange + `AND PluStatus='1' AND PluStatus='0' AND XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
+          WHERE ` + depRange + `AND (PluStatus='1' OR PluStatus='0') AND XgDate >= '` + parseTime(updatedAt, '{y}-{m}-{d} {h}:{i}:{s}') + `' And XgDate < '` + parseTime(endAt, '{y}-{m}-{d} {h}:{i}:{s}') + `'
           ORDER BY XgDate Asc
       `
 

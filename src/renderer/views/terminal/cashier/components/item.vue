@@ -10,7 +10,12 @@
           <th style="min-width:100px">小计</th>
         </tr>       
         <goods-item v-for="(goods,index) in showGoods" :key="index" :active="index===(currentRow-differ)" :goods="goods"></goods-item>
-     </table>
+    </table>
+    <div class="foots">
+      <el-badge :value="cacheOrder.length" :hidden="cacheOrder.length===0?true:false">
+        <el-button type="info" class="cacheOrder" @click="handerCacheOrder">挂单/取单</el-button>
+      </el-badge>
+    </div>
   </div>
 </template>
 
@@ -36,6 +41,9 @@ export default {
   },
   computed: {
     ...mapState({
+      cacheOrder(state) {
+        return state.terminal.cacheOrder
+      },
       goods(state) {
         return state.terminal.order.goods
       },
@@ -150,6 +158,9 @@ export default {
         const currentRow = this.currentRow > 0 ? this.currentRow - 1 : 0
         this.resetCurrentRow(currentRow)
       }
+    },
+    handerCacheOrder() {
+      this.$emit('cacheOrder')
     }
   }
 }
@@ -173,5 +184,16 @@ export default {
       }
     }
   }
+}
+.foots{
+  z-index: 9999;
+  position: fixed;
+  .cacheOrder{
+    font-size: (100vh/100vw)*3vw;
+    font-weight: 900;
+  }
+
+  right: 2vw;
+  bottom: 20vh;
 }
 </style>
