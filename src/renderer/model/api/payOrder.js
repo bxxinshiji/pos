@@ -55,10 +55,10 @@ export function UpdateOrCreate(pay) {
 }
 
 // 更新订单状态
-export function StautsUpdate(orderNo, stauts) {
+export function StatusUpdate(orderNo, status) {
   return new Promise((resolve, reject) => {
     PayOrder.update({
-      stauts: stauts
+      status: status
     }, {
       where: {
         orderNo: orderNo

@@ -9,7 +9,7 @@ import config from './config.js'
 class Scan {
   constructor() {
     this.cancel = false
-    this.waitCancel = false
+    // this.waitCancel = false
     this.startTime = new Date()
     this.payModel = ''
   }
@@ -61,11 +61,11 @@ class Scan {
           })
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Query.Query.catch', JSON.stringify(error.message))
-          if (this.waitCancel) { // 从关闭等待状态进入关闭状态
-            this.cancel = true
-            this.parents.CancelEvent(true)
-            reject(error)
-          }
+          // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+          //   this.cancel = true
+          //   this.parents.CancelEvent(true)
+          //   reject(error)
+          // }
           if (error.message.indexOf('timeout of') !== -1) {
             this.parents.InfoEvent('warning', '查询超时,等待中。')
           }
@@ -87,17 +87,17 @@ class Scan {
       if (this.cancel) {
         this.parents.CancelEvent(true)
       }
-      const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
-      setTimeout(() => {
-        this.waitCancel = true
-        this.parents.InfoEvent('off', '关闭支付中...')
-      }, down)
-      this.parents.InfoEvent('waitClose', '开始关闭支付请稍等...')
+      // const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
+      // setTimeout(() => {
+      //   this.waitCancel = true
+      //   this.parents.InfoEvent('off', '关闭支付中...')
+      // }, down)
+      this.parents.InfoEvent('waitClose', '等待2分钟后重试...')
       this.parents.LogEvent('info', 'Scan.Query.Cancel', 'waitCancel')
     })
   }
   async payModelSave(payModel, response) { // 支付数据保存
-    payModel.stauts = response
+    payModel.status = response
     payModel.save().then(res => { // 二次保存防止一次保存没有成功
       this.parents.LogEvent('info', 'payModel.save.then', JSON.stringify(res))
     }).catch(error => {
@@ -149,11 +149,11 @@ class Scan {
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Refund.OpenRefund.catch', JSON.stringify(error.message))
           if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1)) { // 下单超时并且在付款状态中、非付款状态自动进入查询
-            if (this.waitCancel) { // 从关闭等待状态进入关闭状态
-              this.cancel = true
-              this.parents.CancelEvent(true)
-              reject(error)
-            }
+            // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+            //   this.cancel = true
+            //   this.parents.CancelEvent(true)
+            //   reject(error)
+            // }
             this.parents.InfoEvent('warning', '退款申请服务器超时, 等待重试。')
             await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '重新申请退款中')
@@ -191,11 +191,11 @@ class Scan {
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Create.AopF2F.catch', JSON.stringify(error.message))
           if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1)) { // 下单超时并且在付款状态中、非付款状态自动进入查询
-            if (this.waitCancel) { // 从关闭等待状态进入关闭状态
-              this.cancel = true
-              this.parents.CancelEvent(true)
-              reject(error)
-            }
+            // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+            //   this.cancel = true
+            //   this.parents.CancelEvent(true)
+            //   reject(error)
+            // }
             this.parents.InfoEvent('warning', '服务器超时, 等待重试。')
             await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '重新下单中')
@@ -221,16 +221,16 @@ class Scan {
   handerAopF2FResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const data = response.data
-      switch (data.order.stauts) {
+      switch (data.order.status) {
         case 'CLOSED':
           this.cancel = true
           resolve(config.CLOSED)
           break
         case 'USERPAYING':
-          if (this.waitCancel) { // 从关闭等待状态进入关闭状态
-            this.cancel = true
-            this.parents.CancelEvent(true)
-          }
+          // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+          //   this.cancel = true
+          //   this.parents.CancelEvent(true)
+          // }
           if (order.originalOrderNo) {
             this.parents.InfoEvent('warning', '等待管理员确认退款')
             await this.Sleep()// 等待

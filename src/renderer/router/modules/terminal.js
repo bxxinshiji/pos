@@ -24,6 +24,16 @@ export default {
         roles: ['terminal']
       }
     }, {
+      path: 'cacheOrder',
+      name: 'CacheOrder',
+      component: () => import('@/views/terminal/cacheOrder/index'),
+      meta: {
+        title: '挂单',
+        icon: 'order',
+        permits: ['ui_terminal_index'],
+        roles: ['terminal']
+      }
+    }, {
       path: 'order',
       name: 'Order',
       component: () => import('@/views/terminal/order/index'),

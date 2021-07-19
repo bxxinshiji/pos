@@ -141,7 +141,7 @@ const hander = {
             operatorId: this.username,
             terminalId: this.terminal,
             storeName: this.scanStoreName,
-            stauts: config.USERPAYING,
+            status: config.USERPAYING,
             order: this.order
           })
           break
@@ -266,7 +266,7 @@ const hander = {
         operatorId: this.username,
         terminalId: this.terminal,
         storeName: this.scanStoreName,
-        stauts: config.USERPAYING,
+        status: config.USERPAYING,
         order: this.order
       })
     })

@@ -11,7 +11,7 @@
           <svg-icon icon-class="xinshiji" />  
           <span>新世纪超市</span>
         </el-col>
-        <el-col class="stauts" :span="8">
+        <el-col class="status" :span="8">
             <el-row> 
               <svg-icon v-bind:class="{ active: onLine }" icon-class="router" />  
               <svg-icon v-bind:class="{ active: isInternet }" icon-class="internet" />  
@@ -80,7 +80,7 @@ export default {
     font-size: 5vh;
   }
 }
-.stauts{
+.status{
   height: 8vh;
   display: -webkit-flex; /* Safari */
   display: flex;

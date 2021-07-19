@@ -2,7 +2,7 @@
     <div class="floor">
       <el-row :gutter="20">
         <el-col :span="6">
-          <el-row class="stauts"> 
+          <el-row class="status"> 
               <el-col :span="12">
                 <span>状态:</span>
                 <span class="success"> 盘点 </span>
@@ -214,7 +214,7 @@ export default {
     color: @el-warning;
   }
 }
-.stauts{
+.status{
   font-size: 2.1vh;
 }
 .good{

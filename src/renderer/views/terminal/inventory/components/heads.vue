@@ -9,7 +9,7 @@
           <span>新世纪超市</span>
           <span>盘点</span>
         </el-col>
-        <el-col class="stauts" :span="7">
+        <el-col class="status" :span="7">
             <el-row> 
               <svg-icon v-bind:class="{ active: onLine }" icon-class="router" />  
               <svg-icon v-bind:class="{ active: isInternet }" icon-class="internet" />  
@@ -79,7 +79,7 @@ export default {
   }
   color: #ffffff;
 }
-.stauts{
+.status{
   height: 8vh;
   display: -webkit-flex; /* Safari */
   display: flex;

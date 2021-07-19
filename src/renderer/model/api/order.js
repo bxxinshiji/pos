@@ -188,7 +188,7 @@ export async function Info(userId) {
   await PayOrder.sum('totalAmount', { // 查询支付成功的实际金额
     where: {
       operatorId: userId,
-      stauts: 1,
+      status: 1,
       createdAt: createdAt
     }
   }).then(response => {

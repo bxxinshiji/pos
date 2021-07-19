@@ -32,7 +32,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="stauts"
+          prop="status"
           label="支付方式"
           min-width="75"
         >
@@ -44,23 +44,23 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="stauts"
+          prop="status"
           label="状态"
           min-width="70"
         >
           <template slot-scope="scope">
             <el-tag 
-              v-if="Number(scope.row.stauts)===-1"
+              v-if="Number(scope.row.status)===-1"
               size="small"
               type="danger"
             >订单关闭</el-tag>
             <el-tag 
-              v-if="Number(scope.row.stauts)===0"
+              v-if="Number(scope.row.status)===0"
               size="small"
               type="warning"
             >待付款</el-tag>
             <el-tag 
-              v-if="Number(scope.row.stauts)===1"
+              v-if="Number(scope.row.status)===1"
               size="small"
               type="success"
             >支付成功</el-tag>
@@ -107,7 +107,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { Query } from '@/api/pay'
-import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
+import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
@@ -230,18 +230,18 @@ export default {
         storeName: currentOrder.storeName
       }).then(response => { // 远程支付查询开始
         const data = response.data
-        switch (data.order.stauts) {
+        switch (data.order.status) {
           case 'CLOSED':
-            currentOrder.stauts = -1
+            currentOrder.status = -1
             this.$notify({
               type: 'error',
               title: '订单已关闭',
               message: '订单已关闭或已退款'
             })
-            StautsUpdatePayOrder(currentOrder.orderNo, -1)
+            StatusUpdatePayOrder(currentOrder.orderNo, -1)
             break
           case 'USERPAYING':
-            currentOrder.stauts = 0
+            currentOrder.status = 0
             this.$notify({
               type: 'warning',
               title: '等待用户付款中',
@@ -249,13 +249,13 @@ export default {
             })
             break
           case 'SUCCESS':
-            currentOrder.stauts = 1
+            currentOrder.status = 1
             this.$notify({
               type: 'success',
               title: '支付成功',
               message: '付款成功'
             })
-            StautsUpdatePayOrder(currentOrder.orderNo, 1)
+            StatusUpdatePayOrder(currentOrder.orderNo, 1)
             break
         }
       }).catch(error => {
@@ -275,7 +275,7 @@ export default {
         })
         return
       }
-      if (Number(currentOrder.stauts) === 1) {
+      if (Number(currentOrder.status) === 1) {
         log.h('info', 'pay.handerLoadOrder', JSON.stringify(currentOrder))
         const order = currentOrder.order
         order.pays.push({
@@ -286,7 +286,7 @@ export default {
           amount: currentOrder.totalAmount, // 支付金额
           getAmount: currentOrder.totalAmount, // 收到的钱[现金可以多少其他不允许]
           orderNo: currentOrder.orderNo, // 支付宝、微信等支付指定订单单号[UUID生成]
-          status: currentOrder.stauts // 现金支付时默认支付状态成功
+          status: currentOrder.status // 现金支付时默认支付状态成功
         })
         this.$store.dispatch('terminal/changeLoadOrder', order)
         this.$router.push({ path: '/terminal/cashier' })

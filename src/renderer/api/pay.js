@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 const { Op } = require('sequelize')
-import { List, StautsUpdate as StautsUpdatePayOrder } from '@/model/api/payOrder'
+import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
 
 export function AopF2F(data) {
   return new Promise((resolve, reject) => {
@@ -54,9 +54,9 @@ export function SyncPayOrder() { // 同步所有待付款订单状态
     where: {
       [Op.or]: [
         {
-          stauts: 0
+          status: 0
         }, { // 自动同步最近5分钟内未成功的订单
-          stauts: { [Op.ne]: 1 },
+          status: { [Op.ne]: 1 },
           createdAt: { [Op.gt]: new Date(new Date() - 5 * 60 * 1000)
           }
         }]
@@ -70,14 +70,14 @@ export function SyncPayOrder() { // 同步所有待付款订单状态
           storeName: res.storeName
         }).then(response => { // 远程支付查询开始
           const data = response.data
-          switch (data.order.stauts) {
+          switch (data.order.status) {
             case 'CLOSED':
-              StautsUpdatePayOrder(res.orderNo, -1)
+              StatusUpdatePayOrder(res.orderNo, -1)
               break
             case 'USERPAYING':
               break
             case 'SUCCESS':
-              StautsUpdatePayOrder(res.orderNo, 1)
+              StatusUpdatePayOrder(res.orderNo, 1)
               break
           }
         })

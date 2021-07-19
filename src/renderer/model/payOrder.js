@@ -28,7 +28,7 @@ sequelize.define('payOrder', {
   storeName: Sequelize.STRING, // 收款商户账号
   storeId: Sequelize.STRING, // 收款商户账号UUID
   title: Sequelize.STRING, // 订单名称
-  stauts: {
+  status: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   },
