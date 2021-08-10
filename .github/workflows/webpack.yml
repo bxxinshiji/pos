@@ -13,7 +13,6 @@ jobs:
   release:
     # The type of runner that the job will run on
     runs-on: windows-latest
-    if: contains(github.ref, 'refs/tags/v')
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -39,3 +38,4 @@ jobs:
         with:
           name: Windows_Dist
           path: Pos-Vue-win32-x64.zip
+          
