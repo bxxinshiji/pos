@@ -26,7 +26,7 @@ jobs:
         
       - name: Build
         env:
-          GH_TOKEN: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.token }}
         run: |
           npm install
           npm run rebuild
