@@ -22,7 +22,7 @@ jobs:
       - name: Install Node.js, NPM
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 10
         
       - name: Build
         run: |
