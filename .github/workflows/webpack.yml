@@ -25,6 +25,8 @@ jobs:
           node-version: 10
         
       - name: Build
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
         run: |
           npm install
           npm run rebuild
