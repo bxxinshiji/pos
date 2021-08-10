@@ -11,22 +11,31 @@ on:
       
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [windows-2019]
-
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+    if: contains(github.ref, 'refs/tags/v')
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
-
-      - name: Install Node.js, NPM and Yarn
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out branch
+        uses: actions/checkout@master
+        
+      - name: Install Node.js, NPM
         uses: actions/setup-node@v1
         with:
-          node-version: 10
-      - name: Build/release Electron app
+          node-version: 14
+        
+      - name: Build
         run: |
-          yarn install
-          yarn rebuild
-          yarn build:win
+          npm install
+          npm run rebuild
+          npm run build
+      - name: Compress Bundle
+        run: |
+          npm install -g bestzip
+          bestzip Pos-Vue-win32-x64.zip  build/win-unpacked/*
+      - name: Upload Win Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: Windows_Dist
+          path: Pos-Vue-win32-x64.zip
