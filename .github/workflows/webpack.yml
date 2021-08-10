@@ -22,11 +22,11 @@ jobs:
       - name: Install Node.js, NPM
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 14
         
       - name: Build
         env:
-          GH_TOKEN: ${{ secrets.token }}
+          GH_TOKEN: ${{ secrets.github_token }}
         run: |
           npm install
           npm run rebuild
@@ -34,10 +34,10 @@ jobs:
       - name: Compress Bundle
         run: |
           npm install -g bestzip
-          bestzip Pos-Vue-win32-x64.zip  build/win-unpacked/*
+          bestzip Pos-Vue-win32-x64.zip  build/*
       - name: Upload Win Package
         uses: actions/upload-artifact@v1
         with:
-          name: Windows_Dist
+          name: POS_Windows
           path: Pos-Vue-win32-x64.zip
           
