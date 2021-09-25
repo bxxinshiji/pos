@@ -4,8 +4,8 @@
           <el-row> 账号: {{ username }} </el-row> 
           <el-row> 名称: {{ name }} </el-row> 
         </el-col>
-        <el-col class="user" :span="4">
-          <el-row> 收款: {{ scanStoreName }} </el-row> 
+        <el-col class="payUserId" :span="4">
+          <!-- <el-row> 收款: {{ payUserId }} </el-row>  -->
         </el-col>
         <el-col class="logo" :span="8">
           <svg-icon icon-class="xinshiji" />  
@@ -40,6 +40,7 @@ export default {
     ]),
     ...mapState({
       scanStoreName: state => state.settings.scanStoreName,
+      payUserId: state => state.settings.payBcbt.userId,
       isPrinter: state => state.settings.printer.switch,
       date: state => state.healthy.date,
       onLine: state => state.healthy.onLine,
@@ -68,6 +69,16 @@ export default {
   display: flex;
   flex-direction:column;
   justify-content: flex-end;
+  width: 13vw;
+}
+.payUserId{
+  height: 8vh;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  flex-direction:column;
+  justify-content: flex-end;
+  font-size: 1.3vw;
+  width: 17vw;
 }
 .logo{
   display: -webkit-flex; /* Safari */
@@ -79,9 +90,11 @@ export default {
     margin-left: 2vh;
     font-size: 5vh;
   }
+  width: 40vw;
 }
 .status{
   height: 8vh;
+  width: 30vw;
   display: -webkit-flex; /* Safari */
   display: flex;
   flex-direction:column;
