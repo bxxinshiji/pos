@@ -106,7 +106,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { Query } from '@/api/pay'
+import { Query } from '@/api/payBcbt'
 import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
@@ -225,38 +225,55 @@ export default {
     },
     handerPayQuery(currentOrder) {
       log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
+      console.log(currentOrder)
       Query({
-        orderNo: currentOrder.orderNo,
-        storeName: currentOrder.storeName
+        outTradeNo: currentOrder.orderNo
       }).then(response => { // 远程支付查询开始
-        const data = response.data
-        switch (data.order.status) {
-          case 'CLOSED':
-            currentOrder.status = -1
-            this.$notify({
-              type: 'error',
-              title: '订单已关闭',
-              message: '订单已关闭或已退款'
-            })
-            StatusUpdatePayOrder(currentOrder.orderNo, -1)
-            break
-          case 'USERPAYING':
-            currentOrder.status = 0
-            this.$notify({
-              type: 'warning',
-              title: '等待用户付款中',
-              message: utilsPay.error.detail || '等待用户付款中'
-            })
-            break
-          case 'SUCCESS':
-            currentOrder.status = 1
-            this.$notify({
-              type: 'success',
-              title: '支付成功',
-              message: '付款成功'
-            })
-            StatusUpdatePayOrder(currentOrder.orderNo, 1)
-            break
+        const content = response.data.content
+        if (content.returnCode === 'SUCCESS') {
+          switch (content.status) {
+            case 'CLOSED':
+              currentOrder.status = -1
+              this.$notify({
+                type: 'error',
+                title: '订单已关闭',
+                message: '订单已关闭或已退款'
+              })
+              StatusUpdatePayOrder(currentOrder.orderNo, -1)
+              break
+            case 'USERPAYING':
+              currentOrder.status = 0
+              this.$notify({
+                type: 'warning',
+                title: '等待用户付款中',
+                message: utilsPay.error.detail || '等待用户付款中'
+              })
+              break
+            case 'SUCCESS':
+              currentOrder.status = 1
+              this.$notify({
+                type: 'success',
+                title: '支付成功',
+                message: '支付金额: ' + (content.totalFee / 100).toFixed(2) + ' 元'
+              })
+              StatusUpdatePayOrder(currentOrder.orderNo, 1)
+              if (content.refundFee > 0) {
+                setTimeout(() => {
+                  this.$notify({
+                    type: 'warning',
+                    title: '已退款金额',
+                    message: '退款金额: ' + (content.refundFee / 100).toFixed(2) + ' 元'
+                  })
+                }, 100)
+              }
+              break
+          }
+        } else {
+          this.$notify({
+            type: 'error',
+            title: '支付查询失败',
+            message: content.returnMsg
+          })
         }
       }).catch(error => {
         const detail = error.response.data.detail

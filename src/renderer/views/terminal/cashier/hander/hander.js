@@ -163,8 +163,8 @@ const hander = {
       store.dispatch('terminal/pushCacheOrder')
     } else {
       if (store.state.terminal.cacheOrder.length >= 1) {
-        // store.dispatch('terminal/pullCacheOrder')
-        self.$router.push({ path: '/terminal/cacheOrder' })
+        store.dispatch('terminal/pullCacheOrder')
+        // self.$router.push({ path: '/terminal/cacheOrder' })
       } else {
         Message({
           type: 'warning',

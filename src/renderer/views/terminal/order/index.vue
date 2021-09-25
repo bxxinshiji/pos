@@ -27,7 +27,7 @@
           label="数量"
           min-width="60"
         >
-         <template slot-scope="scope">
+        <template slot-scope="scope">
             {{ scope.row.number.toFixed(2) }}
           </template>
         </el-table-column>
@@ -50,7 +50,7 @@
               size="small"
               :type="scope.row.type?'success':'warning'"
             >
-             {{ scope.row.type?'销货':'退货' }}
+              {{ scope.row.type?'销货':'退货' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -192,6 +192,15 @@
           </el-table-column>
         </el-table>
       </el-dialog>
+      <el-dialog title="订单退款" :visible.sync="dialogVisible" @close="escRefund">
+        <div class="refund-title">高危操作！！！</div>
+        <div class="refund-con">扫码支付订单,支付金额将直接退还到用户账号无需找零！！！</div>
+        <el-input ref="accounts" v-model="password" type="password" placeholder="请输入操作账号密码" @keyup.enter.native="hanlderVerify"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="escRefund" >取 消</el-button>
+          <el-button type="primary" @click="hanlderVerify">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
 </template>
 
@@ -227,7 +236,9 @@ export default {
           userId: this.$store.state.user.username
         }
       },
-      loading: false
+      loading: false,
+      dialogVisible: false,
+      password: ''
     }
   },
   computed: {
@@ -379,7 +390,7 @@ export default {
       this.dialogOrderInfoVisible = true
       this.currentOrder = this.currentOrder
     },
-    async handerRefund() { // 订单退款
+    async Refund() { // 订单退款
       const order = JSON.parse(JSON.stringify(this.currentOrder)) // 防止深拷贝
       if (order.type) {
         delete order.id // 删除ID防止插入数据库错误
@@ -399,6 +410,32 @@ export default {
           message: '退货订单无法再次退货'
         })
       }
+    },
+    handerRefund() {
+      this.removeEventListener()
+      this.dialogVisible = true
+      setTimeout(() => {
+        this.password = ''
+        this.$refs.accounts.focus() //  等待所有执行完成聚焦窗口
+      }, 0)
+    },
+    hanlderVerify() {
+      this.dialogVisible = false
+      this.$store.dispatch('user/login', {
+        username: this.username,
+        password: this.password
+      }).then(() => {
+        this.Refund()
+      }).catch(error => {
+        log.h('error', 'user/login', '退款操作，用户: ' + this.username + ' 密码验证失败,' + 'ERROR:' + error.message)
+      })
+    },
+    removeEventListener() {
+      document.removeEventListener('keydown', this.keydown)
+    },
+    escRefund() {
+      this.dialogVisible = false
+      document.addEventListener('keydown', this.keydown)
     },
     keydown(e) {
       if (e.key === 'ArrowUp') { // 向上
@@ -477,5 +514,15 @@ export default {
       margin-bottom: 1vh;
       font-size: 2.1vh;
     }
+  }
+  .refund-title{
+    font-size: 3vh;
+    color: #F56C6C;
+    margin-bottom: 10px;
+  }
+  .refund-con{
+    font-size: 2vh;
+    color: #409EFF;
+    margin-bottom: 10px;
   }
 </style>

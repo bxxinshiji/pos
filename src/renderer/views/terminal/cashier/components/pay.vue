@@ -144,7 +144,7 @@ export default {
           this.lock = true
           const code = onkeydown.string
           const regVipCard = /^((;)\d{20})$/
-          if (regVipCard.test(code)) { // 储值卡正则
+          if (regVipCard.test(code)) { // 储蓄卡正则
             this.cardPay(code)
           } else {
             this.scanPay(code) // 扫码

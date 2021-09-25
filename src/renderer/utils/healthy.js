@@ -1,7 +1,10 @@
 import request from '@/utils/request'
 import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
+import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 const ping = require('ping')
+
+const ApiUrl = PayBcbtStore.get('pay.api')
 var loadingInstance
 /**
  * navigator 设备情况
@@ -59,7 +62,7 @@ export async function isServer(url = null) {
   url ? (request.defaults.baseURL = url) : null
   var status = false
   await request({
-    url: '/user-api/health/health',
+    url: ApiUrl + '/user-api/health/health',
     method: 'post',
     data: {
     }

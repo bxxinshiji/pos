@@ -13,7 +13,8 @@ import { Create as OrderCreate } from '@/model/api/order'
 
 // 支付模块
 import config from '@/utils/pay/config' // 现金支付模块
-import Scan from '@/utils/pay/scan' // 扫码支付模块
+// import Scan from '@/utils/pay/scan' // 扫码支付模块
+import ScanBcbt from '@/utils/pay/scanBcbt' // 必诚扫码支付模块
 import Cash from '@/utils/pay/cash' // 现金支付模块
 import Card from '@/utils/pay/card' // 会员卡支付模块
 import RemoteCard from '@/utils/pay/RemoteCard' // 远程会员卡支付模块
@@ -69,7 +70,8 @@ const hander = {
         this.model.Create(pay)
         break
       case 'scanPay':
-        this.model.SetPool(new Scan()) // 设置扫码对象池
+        // this.model.SetPool(new Scan()) // 设置扫码对象池
+        this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
         this.payAopF2F(pay)
         break
       case 'cashPay':
@@ -130,7 +132,8 @@ const hander = {
           this.model.Refund(pay)
           break
         case 'scanPay':
-          this.model.SetPool(new Scan()) // 设置扫码对象池
+          // this.model.SetPool(new Scan()) // 设置扫码对象池
+          this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
           this.model.Refund({ // 创建扫码支付订单
             orderNo: this.order.orderNo + '_' + index,
             originalOrderNo: pay.orderNo,

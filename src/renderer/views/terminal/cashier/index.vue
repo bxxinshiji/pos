@@ -206,9 +206,9 @@ export default {
         await this.initOrder() // 【异步等待】修复输入第一个商品条码回车有时候无反应问题无反应问题
       }
       this.setInput()
-      // 储值卡正则
+      // 储蓄卡正则
       var regVipCard = /^((;)\d{20})$/
-      if (regVipCard.test(value)) { // 储值卡查询
+      if (regVipCard.test(value)) { // 储蓄卡查询
         this.handerVipCardGet(value)
       } else if (value) { // 添加商品
         var number = /^[0-9]*$/ // 正则匹配正整数
