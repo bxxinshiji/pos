@@ -69,7 +69,6 @@ export default {
   display: flex;
   flex-direction:column;
   justify-content: flex-end;
-  width: 13vw;
 }
 .payUserId{
   height: 8vh;
@@ -78,7 +77,6 @@ export default {
   flex-direction:column;
   justify-content: flex-end;
   font-size: 1.3vw;
-  width: 17vw;
 }
 .logo{
   display: -webkit-flex; /* Safari */
@@ -90,11 +88,9 @@ export default {
     margin-left: 2vh;
     font-size: 5vh;
   }
-  width: 40vw;
 }
 .status{
   height: 8vh;
-  width: 30vw;
   display: -webkit-flex; /* Safari */
   display: flex;
   flex-direction:column;
