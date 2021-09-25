@@ -195,6 +195,7 @@
       <el-dialog title="订单退款" :visible.sync="dialogVisible" @close="escRefund">
         <div class="refund-title">高危操作！！！</div>
         <div class="refund-con">扫码支付订单,支付金额将直接退还到用户账号无需找零！！！</div>
+        <div class="refund-con">扫码支付订单,退款后及时和用户核对,以免纠纷！！！</div>
         <el-input ref="accounts" v-model="password" type="password" placeholder="请输入操作账号密码" @keyup.enter.native="hanlderVerify"></el-input>
         <span slot="footer" class="dialog-footer">
           <el-button @click="escRefund" >取 消</el-button>
