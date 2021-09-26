@@ -163,6 +163,7 @@ const order = {
           reject(error)
         })
       }).catch(error => {
+        log.h('error', 'Sql0000.order.Create.pool.DB.query', JSON.stringify(error) + JSON.stringify(this.sql))
         if (error.message === 'Validation error') {
           this.OrderCheck(item).then(response => { // 增加订单校验
             resolve(response)
