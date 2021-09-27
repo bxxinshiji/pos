@@ -31,7 +31,7 @@ const actions = {
     commit('SET_HEALTHY')
     commit('SET_INTERVAL', setInterval(() => {
       commit('SET_HEALTHY')
-    }, 5000)) // 健康监测时间 5s 默认
+    }, 20000)) // 健康监测时间 5s 默认
   },
   clearInterval({ commit }) { // 注销旧的定时器
     commit('CLEAR_INTERVAL')
