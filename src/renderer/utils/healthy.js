@@ -3,6 +3,7 @@ import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
 import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 const ping = require('ping')
+import log from '@/utils/log'
 
 const ApiUrl = PayBcbtStore.get('pay.api')
 var loadingInstance
@@ -70,7 +71,8 @@ export async function isServer(url = null) {
     status = res.data.valid
     const dateTime = new Date(res.data.time)
     syncDateTime(dateTime)
-  }).catch(() => {
+  }).catch((err) => {
+    log.h('error', 'isServer', JSON.stringify(err))
     status = false
   })
   return status
