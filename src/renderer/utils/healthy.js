@@ -3,7 +3,6 @@ import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
 import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 const ping = require('ping')
-import log from '@/utils/log'
 
 const ApiUrl = PayBcbtStore.get('pay.api')
 var loadingInstance
@@ -31,6 +30,7 @@ export async function isInternet() {
   return status
 }
 export async function syncDateTime(dateTime) { // 同步系统时间
+  console.log(123)
   if (Math.abs(dateTime - new Date()) > 5 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
     loadingInstance = Loading.service({
       text: '系统时间差过大,时间同步中请等待...',
@@ -69,10 +69,7 @@ export async function isServer(url = null) {
     }
   }).then(res => {
     status = res.data.valid
-    const dateTime = new Date(res.data.time)
-    syncDateTime(dateTime)
-  }).catch((err) => {
-    log.h('error', 'isServer', JSON.stringify(err))
+  }).catch(() => {
     status = false
   })
   return status

@@ -1,5 +1,5 @@
 import { onLine, isInternet, isServer } from '@/utils/healthy'
-import { isSql2000 } from '@/sql2000/utils/healthy'
+import { isSql2000, syncTime } from '@/sql2000/utils/healthy'
 const state = {
   date: new Date(), // 修改数据date
   onLine: false,
@@ -15,6 +15,7 @@ const mutations = {
     state.isServer = await isServer()
     state.isInternet = await isInternet()
     state.isSql2000 = await isSql2000()
+    syncTime()
   },
   SET_INTERVAL: (state, interval) => {
     state.interval = interval
