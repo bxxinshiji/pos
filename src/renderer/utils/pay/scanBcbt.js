@@ -240,7 +240,11 @@ class Scan {
         }
       } else {
         this.parents.InfoEvent('error', content.returnMsg)
-        reject(new Error(content.returnMsg))
+        this.Query(order).then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
       }
     })
   }
