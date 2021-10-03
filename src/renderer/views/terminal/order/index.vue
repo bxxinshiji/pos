@@ -395,7 +395,7 @@ export default {
       const order = JSON.parse(JSON.stringify(this.currentOrder)) // 防止深拷贝
       if (order.type) {
         delete order.id // 删除ID防止插入数据库错误
-        order.type = false // 进入退货桩体
+        order.type = false // 进入退货样式
         order.pays.forEach(pay => {
           delete pay.id // 删除ID防止插入数据库错误
           pay.status = false

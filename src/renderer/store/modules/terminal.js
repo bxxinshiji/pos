@@ -158,11 +158,11 @@ const actions = {
       } else {
         good.total = good.number * good.price
       }
-      if (!state.order.type && good.number > 0) { // 销货切换退货计算
+      if (!state.order.type && good.total > 0) { // 销货切换退货计算
         good.number = -good.number
         good.total = -good.total
       }
-      if (state.order.type && good.number < 0) { // 退货切换销货计算
+      if (state.order.type && good.total < 0) { // 退货切换销货计算
         good.number = -good.number
         good.total = -good.total
       }
