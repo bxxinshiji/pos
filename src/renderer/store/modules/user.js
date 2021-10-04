@@ -159,40 +159,36 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      commit('REMOVE_TOKEN')
-      commit('SET_ROLES')
-      resetRouter()
-      resolve()
-    //   isServer().then(server => {
-    //     if (server) {
-    //       Logout().then(() => {
-    //         commit('REMOVE_TOKEN')
-    //         commit('SET_ROLES')
-    //         resetRouter()
-    //         resolve()
-    //       }).catch(error => {
-    //         const detail = error.response.data.detail
-    //         Message({
-    //           message: detail,
-    //           type: 'error',
-    //           duration: 5 * 1000
-    //         })
-    //         reject(error)
-    //       })
-    //     } else {
-    //       commit('REMOVE_TOKEN')
-    //       commit('SET_ROLES')
-    //       resetRouter()
-    //       resolve()
-    //     }
-    //   }).catch(error => {
-    //     commit('REMOVE_TOKEN')
-    //     commit('SET_ROLES')
-    //     resetRouter()
-    //     resolve()
-    //     reject(error)
-    //   })
-    // })
+      isServer().then(server => {
+        if (server) {
+          Logout().then(() => {
+            commit('REMOVE_TOKEN')
+            commit('SET_ROLES')
+            resetRouter()
+            resolve()
+          }).catch(error => {
+            const detail = error.response.data.detail
+            Message({
+              message: detail,
+              type: 'error',
+              duration: 5 * 1000
+            })
+            reject(error)
+          })
+        } else {
+          commit('REMOVE_TOKEN')
+          commit('SET_ROLES')
+          resetRouter()
+          resolve()
+        }
+      }).catch(error => {
+        commit('REMOVE_TOKEN')
+        commit('SET_ROLES')
+        resetRouter()
+        resolve()
+        reject(error)
+      })
+    })
   },
 
   // remove token
