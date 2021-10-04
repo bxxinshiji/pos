@@ -1,12 +1,12 @@
 import { Message } from 'element-ui'
-import { Login, Logout } from '@/api/auth'
+import { Login } from '@/api/auth'
 import { Info } from '@/api/user'
 import { Login as LoginTerminal } from '@/api/terminal'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import settings from './settings'
-import { isServer } from '@/utils/healthy'
+// import { isServer } from '@/utils/healthy'
 
 const state = {
   token: getToken(),
@@ -159,35 +159,39 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      isServer().then(server => {
-        if (server) {
-          Logout().then(() => {
-            commit('REMOVE_TOKEN')
-            commit('SET_ROLES')
-            resetRouter()
-            resolve()
-          }).catch(error => {
-            const detail = error.response.data.detail
-            Message({
-              message: detail,
-              type: 'error',
-              duration: 5 * 1000
-            })
-            reject(error)
-          })
-        } else {
-          commit('REMOVE_TOKEN')
-          commit('SET_ROLES')
-          resetRouter()
-          resolve()
-        }
-      }).catch(error => {
-        commit('REMOVE_TOKEN')
-        commit('SET_ROLES')
-        resetRouter()
-        resolve()
-        reject(error)
-      })
+      commit('REMOVE_TOKEN')
+      commit('SET_ROLES')
+      resetRouter()
+      resolve()
+      // isServer().then(server => {
+      //   if (server) {
+      //     Logout().then(() => {
+      //       commit('REMOVE_TOKEN')
+      //       commit('SET_ROLES')
+      //       resetRouter()
+      //       resolve()
+      //     }).catch(error => {
+      //       const detail = error.response.data.detail
+      //       Message({
+      //         message: detail,
+      //         type: 'error',
+      //         duration: 5 * 1000
+      //       })
+      //       reject(error)
+      //     })
+      //   } else {
+      //     commit('REMOVE_TOKEN')
+      //     commit('SET_ROLES')
+      //     resetRouter()
+      //     resolve()
+      //   }
+      // }).catch(error => {
+      //   commit('REMOVE_TOKEN')
+      //   commit('SET_ROLES')
+      //   resetRouter()
+      //   resolve()
+      //   reject(error)
+      // })
     })
   },
 
