@@ -182,6 +182,10 @@ const actions = {
           resolve()
         }
       }).catch(error => {
+        commit('REMOVE_TOKEN')
+        commit('SET_ROLES')
+        resetRouter()
+        resolve()
         reject(error)
       })
     })
