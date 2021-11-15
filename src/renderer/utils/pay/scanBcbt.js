@@ -234,6 +234,16 @@ class Scan {
               reject(error)
             })
             break
+          case 'WAITING':
+            this.parents.InfoEvent('warning', '支付系统繁忙等待中')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '支付查询中')
+            this.Query(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+            break
           case 'SUCCESS':
             resolve(config.SUCCESS)
             break
@@ -291,6 +301,16 @@ class Scan {
             resolve(config.CLOSED)
             break
           case 'USERPAYING':
+            this.parents.InfoEvent('warning', '等待系统退款中')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '退款查询中')
+            this.RefundQuery(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+            break
+          case 'WAITING':
             this.parents.InfoEvent('warning', '等待系统退款中')
             await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '退款查询中')

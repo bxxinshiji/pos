@@ -166,6 +166,12 @@ const actions = {
         good.number = -good.number
         good.total = -good.total
       }
+      // 四舍五入取整
+      if (good.total > 0) {
+        good.total = Math.round(good.total)
+      } else {
+        good.total = -Math.round(-good.total) // 退货四舍五入
+      }
       number = number + good.number
       total = waitPay = total + good.total
     })
@@ -173,6 +179,8 @@ const actions = {
       waitPay = waitPay - pay.amount
       getAmount = getAmount + pay.getAmount
     })
+    total = Math.round(total)
+    waitPay = Math.round(waitPay)
     commit('SET_ORDER_KEY', { key: 'number', value: Number(number.toFixed(2)) })
     commit('SET_ORDER_KEY', { key: 'total', value: total })
     commit('SET_ORDER_KEY', { key: 'getAmount', value: getAmount })
