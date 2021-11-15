@@ -189,7 +189,6 @@ const order = {
         const total = response[0]['orderTotal'] + response[2]['payTotal']
         const goodsCount = response[1]['goodsCount']
         if (total.toFixed(2) !== (order.dataValues.total * 2 / 100).toFixed(2)) {
-          console.log(total.toFixed(2), order.dataValues.total, (order.dataValues.total * 2 / 100).toFixed(2))
           reject(new Error(`订单总价校验错误。 <br>  
           总价:` + (response[0]['orderTotal']).toFixed(2) + `元<br>
           商品总价:` + (response[2]['payTotal']).toFixed(2) + `元<br>
