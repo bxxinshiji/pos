@@ -365,6 +365,7 @@ const hander = {
   },
   EventOn() {
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 开钱箱
+      this.payingInfo = '打开钱箱中'
       order.pays.forEach(pay => { // 钱箱控制
         if (pay.name === '现金') {
           escpos.cashdraw().then(() => {
@@ -379,11 +380,11 @@ const hander = {
       })
     })
     this.EventEmitter.on('OrderSaveSuccess', async order => { // 打印机
-      this.payingInfo = '订单发布打印中'
+      this.payingInfo = '订单打印中'
       if (print.switch()) {
         print.hander(order).then(response => {
           AddPrint(order) // 增加打印次数
-          this.payingInfo = '订单发布打印成功'
+          this.payingInfo = '订单打印成功'
           Notification({
             title: '打印成功',
             message: '订单:' + order.orderNo,
