@@ -48,45 +48,43 @@ const escpos = {
   print(data, valid = false) {
     return new Promise((resolve, reject) => {
       if (config.switch || valid) {
-        setTimeout(() => {
-          try {
-            escpos.init()
-            const devicer = escpos.devicer
-            const printer = escpos.printer
-            devicer.open((err) => {
-              if (err) {
-                log.h('error', 'escpos.devicer.open', JSON.stringify(err))
-                reject(err)
-              } else {
-                printer.hardware('init') // 初始化打印机
-                data.forEach(item => {
-                  switch (item.type) {
-                    case 'text':
-                      printer.text(item.contents)
-                      break
-                    case 'centerText':
-                      printer.align('ct').size(2, 2).text(item.contents).align('lt').size(1, 1)
-                      break
-                    case 'barcode':
-                      printer.align('CT').barcode(item.contents, 'code39', {
-                        height: 50
-                      }).align('LT')
-                      break
-                  }
-                })
-                printer.cut().close((err) => {
-                  return err ? reject(err) : resolve()
-                }) // 切纸、关闭
-                resolve()
-              }
-            })
-          } catch (err) {
-            if (err.message === 'Can not find printer') {
-              reject(new Error('未能找到可用打印机'))
+        try {
+          escpos.init()
+          const devicer = escpos.devicer
+          const printer = escpos.printer
+          devicer.open((err) => {
+            if (err) {
+              log.h('error', 'escpos.devicer.open', JSON.stringify(err))
+              reject(err)
+            } else {
+              printer.hardware('init') // 初始化打印机
+              data.forEach(item => {
+                switch (item.type) {
+                  case 'text':
+                    printer.text(item.contents)
+                    break
+                  case 'centerText':
+                    printer.align('ct').size(2, 2).text(item.contents).align('lt').size(1, 1)
+                    break
+                  case 'barcode':
+                    printer.align('CT').barcode(item.contents, 'code39', {
+                      height: 50
+                    }).align('LT')
+                    break
+                }
+              })
+              printer.cut().close((err) => {
+                return err ? reject(err) : resolve()
+              }) // 切纸、关闭
+              resolve()
             }
-            reject(err)
+          })
+        } catch (err) {
+          if (err.message === 'Can not find printer') {
+            reject(new Error('未能找到可用打印机'))
           }
-        }, 500)
+          reject(err)
+        }
       } else {
         reject(new Error('打印机未开启'))
       }
@@ -94,28 +92,26 @@ const escpos = {
   },
   cashdraw() { // 开钱箱
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          escpos.init()
-          const devicer = escpos.devicer
-          const printer = escpos.printer
-          devicer.open((err) => {
-            if (err) {
-              reject(err)
-            } else {
-              printer
-                .style('bu')
-                .cashdraw()
-                .font('a').close((err) => {
-                  return err ? reject(err) : resolve()
-                }) // 关闭
-              resolve()
-            }
-          })
-        } catch (err) {
-          reject(err)
-        }
-      }, 500)
+      try {
+        escpos.init()
+        const devicer = escpos.devicer
+        const printer = escpos.printer
+        devicer.open((err) => {
+          if (err) {
+            reject(err)
+          } else {
+            printer
+              .style('bu')
+              .cashdraw()
+              .font('a').close((err) => {
+                return err ? reject(err) : resolve()
+              }) // 关闭
+            resolve()
+          }
+        })
+      } catch (err) {
+        reject(err)
+      }
     })
   }
 }
