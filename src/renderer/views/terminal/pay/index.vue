@@ -226,13 +226,15 @@ export default {
     handerPayQuery(currentOrder) {
       log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
       console.log(currentOrder)
+      const order = {
+        outTradeNo: currentOrder.orderNo,
+      }
       let QueryModel = Query
       if (currentOrder.totalAmount < 0) {
         QueryModel = RefundQuery
+        order.outRefundNo = currentOrder.orderNo
       }
-      QueryModel({
-        outTradeNo: currentOrder.orderNo
-      }).then(response => { // 远程支付查询开始
+      QueryModel(order).then(response => { // 远程支付查询开始
         const content = response.data.content
         if (content.returnCode === 'SUCCESS') {
           switch (content.status) {
