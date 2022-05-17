@@ -227,7 +227,7 @@ export default {
       log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
       console.log(currentOrder)
       let QueryModel = Query
-      if (currentOrder.) {
+      if (ccurrentOrder.totalAmount < 0) {
         QueryModel = RefundQuery
       }
       QueryModel({
