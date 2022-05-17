@@ -227,7 +227,7 @@ export default {
       log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
       console.log(currentOrder)
       const order = {
-        outTradeNo: currentOrder.orderNo,
+        outTradeNo: currentOrder.orderNo
       }
       let QueryModel = Query
       if (currentOrder.totalAmount < 0) {
