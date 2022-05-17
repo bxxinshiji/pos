@@ -106,7 +106,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { Query } from '@/api/payBcbt'
+import { Query, RefundQuery } from '@/api/payBcbt'
 import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { GetById } from '@/model/api/pay'
@@ -226,7 +226,11 @@ export default {
     handerPayQuery(currentOrder) {
       log.h('info', 'pay.handerPayQuery', JSON.stringify(currentOrder))
       console.log(currentOrder)
-      Query({
+      let QueryModel = Query
+      if (currentOrder.) {
+        QueryModel = RefundQuery
+      }
+      QueryModel({
         outTradeNo: currentOrder.orderNo
       }).then(response => { // 远程支付查询开始
         const content = response.data.content
