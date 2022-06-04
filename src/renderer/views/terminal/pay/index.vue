@@ -297,8 +297,8 @@ export default {
         log.h('info', 'pay.handerLoadOrder', JSON.stringify(currentOrder))
         const order = currentOrder.order
         order.pays.push({
-          payId: this.scanPayInfo.id, // 支付方式
-          name: this.scanPayInfo.name, // 支付方式名称
+          payId: currentOrder.storeId, // 支付方式
+          name: currentOrder.storeName, // 支付方式名称
           type: this.scanPayInfo.type, // 支付方式
           code: currentOrder.authCode, // 会员卡
           amount: currentOrder.totalAmount, // 支付金额

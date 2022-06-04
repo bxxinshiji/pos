@@ -4,9 +4,9 @@
           <el-row> 账号: {{ username }} </el-row> 
           <el-row> 名称: {{ name }} </el-row> 
         </el-col>
-        <!-- <el-col class="payUserId" :span="4">
-          <el-row> 收款: {{ payUserId }} </el-row> 
-        </el-col> -->
+        <el-col class="payUserId" :span="4">
+          <!-- <el-row> 收款: </el-row>  -->
+        </el-col>
         <el-col class="logo" :span="8">
           <svg-icon icon-class="xinshiji" />  
           <span>新世纪超市</span>

@@ -1,6 +1,6 @@
 {
   "name": "pos",
-  "version": "1.9.17",
+  "version": "1.9.18",
   "author": "bigrocs <bigrocs@qq.com>",
   "description": "桌面终端",
   "license": "MIT",
@@ -88,7 +88,7 @@
     "ping": "^0.2.2",
     "polyfill-object.fromentries": "^1.0.1",
     "sequelize": "^5.21.2",
-    "sqlite3": "^4.1.0",
+    "sqlite3": "4.1.0",
     "tedious": "^6.6.2",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
