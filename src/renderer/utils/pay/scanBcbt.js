@@ -66,15 +66,18 @@ class Scan {
           //   reject(error)
           // }
           if (error.message.indexOf('timeout of') !== -1) {
-            this.parents.InfoEvent('warning', '查询超时,等待中。')
+            this.parents.InfoEvent('warning', '查询超时,关闭后手动查询。')
           }
           await this.Sleep()// 等待
-          this.parents.InfoEvent('warning', '查询错误再次支付查询中')
-          this.Query(order).then(response => {
-            resolve(response)
-          }).catch(error => {
-            reject(error)
-          })
+          this.cancel = true
+          this.parents.CancelEvent(true)
+          reject(error)
+          // this.parents.InfoEvent('warning', '查询错误再次支付查询中')
+          // this.Query(order).then(response => {
+          //   resolve(response)
+          // }).catch(error => {
+          //   reject(error)
+          // })
         })
       } else {
         reject(new Error('支付已取消'))
