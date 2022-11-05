@@ -250,6 +250,7 @@ class Scan {
           default :
             this.parents.InfoEvent('error', content.returnMsg)
             reject(new Error(content.returnMsg))
+            break
         }
     })
   }
@@ -322,6 +323,7 @@ class Scan {
           default :
             this.parents.InfoEvent('error', content.returnMsg)
             reject(new Error(content.returnMsg))
+            break
         }
     })
   }
