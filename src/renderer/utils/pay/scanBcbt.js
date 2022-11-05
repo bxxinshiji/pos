@@ -248,9 +248,9 @@ class Scan {
             }
             break
           default :
-            this.parents.InfoEvent('error', content.returnMsg)
-            reject(new Error(content.returnMsg))
-            break
+          this.parents.InfoEvent('error', content.returnMsg)
+          reject(new Error(content.returnMsg))
+          break
         }
     })
   }
@@ -320,10 +320,10 @@ class Scan {
               resolve(config.SUCCESS)
             }
             break
-          default :
-            this.parents.InfoEvent('error', content.returnMsg)
-            reject(new Error(content.returnMsg))
-            break
+          default:
+          this.parents.InfoEvent('error', content.returnMsg)
+          reject(new Error(content.returnMsg))
+          break
         }
     })
   }
