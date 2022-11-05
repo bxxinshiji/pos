@@ -255,7 +255,7 @@ class Scan {
         this.parents.InfoEvent('error', content.returnMsg)
         this.cancel = true
         this.parents.CancelEvent(true)
-        reject(error)
+        reject(content.returnMsg)
         // this.Query(order).then(response => {
         //   resolve(response)
         // }).catch(error => {
