@@ -217,7 +217,6 @@ class Scan {
   handerQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
-      if (content.returnCode === 'SUCCESS') {
         switch (content.status) {
           case 'CLOSED':
             this.cancel = true
@@ -244,13 +243,14 @@ class Scan {
             })
             break
           case 'SUCCESS':
-            resolve(config.SUCCESS)
+            if (content.returnCode === 'SUCCESS') {
+              resolve(config.SUCCESS)
+            }
             break
+          default :
+            this.parents.InfoEvent('error', content.returnMsg)
+            reject(new Error(content.returnMsg))
         }
-      } else {
-        this.parents.InfoEvent('error', content.returnMsg)
-        reject(new Error(content.returnMsg))
-      }
     })
   }
   RefundQuery(order) { // 查询订单
@@ -289,7 +289,6 @@ class Scan {
   handerRefundQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
-      if (content.returnCode === 'SUCCESS') {
         switch (content.status) {
           case 'CLOSED':
             this.cancel = true
@@ -316,13 +315,14 @@ class Scan {
             })
             break
           case 'SUCCESS':
-            resolve(config.SUCCESS)
+            if (content.returnCode === 'SUCCESS') {
+              resolve(config.SUCCESS)
+            }
             break
+          default :
+            this.parents.InfoEvent('error', content.returnMsg)
+            reject(new Error(content.returnMsg))
         }
-      } else {
-        this.parents.InfoEvent('error', content.returnMsg)
-        reject(new Error(content.returnMsg))
-      }
     })
   }
   // Sleep 自定义异步等待函数
