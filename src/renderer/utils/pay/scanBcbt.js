@@ -217,41 +217,41 @@ class Scan {
   handerQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            this.cancel = true
-            resolve(config.CLOSED)
-            break
-          case 'USERPAYING':
-            this.parents.InfoEvent('warning', '等待用户付款中')
-            await this.Sleep()// 等待
-            this.parents.InfoEvent('warning', '支付查询中')
-            this.Query(order).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-            break
-          case 'WAITING':
-            this.parents.InfoEvent('warning', '支付系统繁忙等待中')
-            await this.Sleep()// 等待
-            this.parents.InfoEvent('warning', '支付查询中')
-            this.Query(order).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-            break
-          case 'SUCCESS':
-            if (content.returnCode === 'SUCCESS') {
-              resolve(config.SUCCESS)
-            }
-            break
-          default :
+      switch (content.status) {
+        case 'CLOSED':
+          this.cancel = true
+          resolve(config.CLOSED)
+          break
+        case 'USERPAYING':
+          this.parents.InfoEvent('warning', '等待用户付款中')
+          await this.Sleep()// 等待
+          this.parents.InfoEvent('warning', '支付查询中')
+          this.Query(order).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+          break
+        case 'WAITING':
+          this.parents.InfoEvent('warning', '支付系统繁忙等待中')
+          await this.Sleep()// 等待
+          this.parents.InfoEvent('warning', '支付查询中')
+          this.Query(order).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+          break
+        case 'SUCCESS':
+          if (content.returnCode === 'SUCCESS') {
+            resolve(config.SUCCESS)
+          }
+          break
+        default :
           this.parents.InfoEvent('error', content.returnMsg)
           reject(new Error(content.returnMsg))
           break
-        }
+      }
     })
   }
   RefundQuery(order) { // 查询订单
@@ -290,41 +290,41 @@ class Scan {
   handerRefundQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            this.cancel = true
-            resolve(config.CLOSED)
-            break
-          case 'USERPAYING':
-            this.parents.InfoEvent('warning', '等待系统退款中')
-            await this.Sleep()// 等待
-            this.parents.InfoEvent('warning', '退款查询中')
-            this.RefundQuery(order).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-            break
-          case 'WAITING':
-            this.parents.InfoEvent('warning', '等待系统退款中')
-            await this.Sleep()// 等待
-            this.parents.InfoEvent('warning', '退款查询中')
-            this.RefundQuery(order).then(response => {
-              resolve(response)
-            }).catch(error => {
-              reject(error)
-            })
-            break
-          case 'SUCCESS':
-            if (content.returnCode === 'SUCCESS') {
-              resolve(config.SUCCESS)
-            }
-            break
-          default:
+      switch (content.status) {
+        case 'CLOSED':
+          this.cancel = true
+          resolve(config.CLOSED)
+          break
+        case 'USERPAYING':
+          this.parents.InfoEvent('warning', '等待系统退款中')
+          await this.Sleep()// 等待
+          this.parents.InfoEvent('warning', '退款查询中')
+          this.RefundQuery(order).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+          break
+        case 'WAITING':
+          this.parents.InfoEvent('warning', '等待系统退款中')
+          await this.Sleep()// 等待
+          this.parents.InfoEvent('warning', '退款查询中')
+          this.RefundQuery(order).then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
+          break
+        case 'SUCCESS':
+          if (content.returnCode === 'SUCCESS') {
+            resolve(config.SUCCESS)
+          }
+          break
+        default :
           this.parents.InfoEvent('error', content.returnMsg)
           reject(new Error(content.returnMsg))
           break
-        }
+      }
     })
   }
   // Sleep 自定义异步等待函数
