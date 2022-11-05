@@ -61,7 +61,7 @@ class Scan {
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Query.Query.catch', JSON.stringify(error.message))
           if (error.message.indexOf('timeout of') !== -1) {
-            await this.Sleep(8)// 等待
+            await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '查询超时,再次支付查询中')
             this.Query(order).then(response => {
               resolve(response)
