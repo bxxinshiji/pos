@@ -68,7 +68,7 @@ class Scan {
             }).catch(error => {
               reject(error)
             })
-          }else{
+          } else {
             this.cancel = true
             this.parents.CancelEvent(true)
             reject(error)
@@ -328,7 +328,7 @@ class Scan {
   // Sleep 自定义异步等待函数
   Sleep(time) {
     time = time || config.SLEEP
-    return new Promise((resolve) => setTimeout(resolve, ctime * 1000))
+    return new Promise((resolve) => setTimeout(resolve, time * 1000))
   }
 }
 
