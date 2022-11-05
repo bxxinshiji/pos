@@ -60,24 +60,19 @@ class Scan {
           })
         }).catch(async error => {
           this.parents.LogEvent('error', 'Scan.Query.Query.catch', JSON.stringify(error.message))
-          // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
-          //   this.cancel = true
-          //   this.parents.CancelEvent(true)
-          //   reject(error)
-          // }
           if (error.message.indexOf('timeout of') !== -1) {
-            this.parents.InfoEvent('warning', '查询超时,关闭后手动查询。')
+            await this.Sleep(8)// 等待
+            this.parents.InfoEvent('warning', '查询超时,再次支付查询中')
+            this.Query(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }else{
+            this.cancel = true
+            this.parents.CancelEvent(true)
+            reject(error)
           }
-          this.cancel = true
-          this.parents.CancelEvent(true)
-          reject(error)
-          await this.Sleep()// 等待
-          // this.parents.InfoEvent('warning', '查询错误再次支付查询中')
-          // this.Query(order).then(response => {
-          //   resolve(response)
-          // }).catch(error => {
-          //   reject(error)
-          // })
         })
       } else {
         reject(new Error('支付已取消'))
@@ -206,6 +201,7 @@ class Scan {
             })
           } else {
             this.parents.InfoEvent('warning', '下单错误支付查询中')
+            await this.Sleep()// 等待
             this.Query(order).then(response => {
               resolve(response)
             }).catch(error => {
@@ -253,14 +249,7 @@ class Scan {
         }
       } else {
         this.parents.InfoEvent('error', content.returnMsg)
-        this.cancel = true
-        this.parents.CancelEvent(true)
-        reject(content.returnMsg)
-        // this.Query(order).then(response => {
-        //   resolve(response)
-        // }).catch(error => {
-        //   reject(error)
-        // })
+        reject(new Error(content.returnMsg))
       }
     })
   }
@@ -337,8 +326,9 @@ class Scan {
     })
   }
   // Sleep 自定义异步等待函数
-  Sleep() {
-    return new Promise((resolve) => setTimeout(resolve, config.SLEEP * 1000))
+  Sleep(time) {
+    time = time || config.SLEEP
+    return new Promise((resolve) => setTimeout(resolve, ctime * 1000))
   }
 }
 
