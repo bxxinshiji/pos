@@ -8,7 +8,7 @@ import config from './config.js'
 class Scan {
   constructor() {
     this.cancel = false
-    // this.waitCancel = false
+    this.waitCancel = false
     this.startTime = new Date()
     this.payModel = ''
   }
@@ -84,11 +84,11 @@ class Scan {
       if (this.cancel) {
         this.parents.CancelEvent(true)
       }
-      // const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
-      // setTimeout(() => {
-      //   this.waitCancel = true
-      //   this.parents.InfoEvent('off', '关闭支付中...')
-      // }, down)
+      const down = 20 * 1000 - (new Date() - this.startTime) // 开始支付20秒后可以关闭支付页面
+      setTimeout(() => {
+        this.waitCancel = true
+        this.parents.InfoEvent('off', '关闭支付中...')
+      }, down)
       this.parents.InfoEvent('waitClose', '等待2分钟后重试...')
       this.parents.LogEvent('info', 'Scan.Query.Cancel', 'waitCancel')
     })
@@ -224,6 +224,10 @@ class Scan {
           break
         case 'USERPAYING':
           this.parents.InfoEvent('warning', '等待用户付款中')
+          if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+            this.cancel = true
+            this.parents.CancelEvent(true)
+          }
           await this.Sleep()// 等待
           this.parents.InfoEvent('warning', '支付查询中')
           this.Query(order).then(response => {
@@ -234,6 +238,10 @@ class Scan {
           break
         case 'WAITING':
           this.parents.InfoEvent('warning', '支付系统繁忙等待中')
+          if (this.waitCancel) { // 从关闭等待状态进入关闭状态
+            this.cancel = true
+            this.parents.CancelEvent(true)
+          }
           await this.Sleep()// 等待
           this.parents.InfoEvent('warning', '支付查询中')
           this.Query(order).then(response => {
