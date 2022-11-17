@@ -33,10 +33,10 @@ class Scan {
                 goodsId: element.barCode,
                 goodsName: element.name,
                 quantity: element.number,
-                price: element.price
+                price: element.price,
               })
             }
-          });
+          })
           this.AopF2F(pay).then(response => {
             this.payModelSave(payModel, response)
             resolve(response)
