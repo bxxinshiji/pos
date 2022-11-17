@@ -30,7 +30,7 @@ export async function isInternet() {
   return status
 }
 export async function syncDateTime(dateTime) { // 同步系统时间
-  if (Math.abs(dateTime - new Date()) > 5 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
+  if (Math.abs(dateTime - new Date()) > 2 * 60 * 60 * 1000) { // 时差大于5分钟时自动校对系统时间
     loadingInstance = Loading.service({
       text: '系统时间差过大,时间同步中请等待...',
       background: 'rgba(0, 0, 0, 0.7)'
