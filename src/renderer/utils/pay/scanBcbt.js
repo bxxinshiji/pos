@@ -25,7 +25,7 @@ class Scan {
             title: payModel.title,
             totalFee: String(payModel.totalAmount),
             operatorId: payModel.operatorId,
-            terminalId: payModel.terminalId,
+            terminalId: payModel.terminalId
           }
           order.order.goods.forEach(element => {
             if (element.barCode) {
@@ -33,7 +33,7 @@ class Scan {
                 goodsId: element.barCode,
                 goodsName: element.name,
                 quantity: element.number,
-                price: element.price,
+                price: element.price
               })
             }
           })
