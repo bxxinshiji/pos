@@ -30,6 +30,9 @@ export function GetSign(content, privateKey) {
  */
 export function GetSignContent(obj, method) {
   const temp = {}
+  if (obj instanceof Array) { // 防止数组被转换成对象
+    temp = []
+  }
   Object.keys(obj).sort().forEach(key => {
     if (typeof obj[key] === 'object') {
       if (JSON.stringify(obj[key]) !== '{}') {
