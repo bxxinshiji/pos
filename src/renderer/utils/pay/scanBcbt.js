@@ -25,12 +25,12 @@ class Scan {
             title: payModel.title,
             totalFee: String(payModel.totalAmount),
             operatorId: payModel.operatorId,
-            terminalId: payModel.terminalId,
-            goodsDetail: []
+            terminalId: payModel.terminalId
           }
+          var goodsDetail = []
           order.order.goods.forEach(element => {
             if (element.barCode) {
-              pay.goodsDetail.push({
+              goodsDetail.push({
                 goodsId: element.barCode,
                 goodsName: element.name,
                 quantity: element.number,
@@ -38,6 +38,9 @@ class Scan {
               })
             }
           })
+          if (goodsDetail.length > 0) {
+            pay.goodsDetail = goodsDetail
+          }
           this.AopF2F(pay).then(response => {
             this.payModelSave(payModel, response)
             resolve(response)
