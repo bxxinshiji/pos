@@ -29,7 +29,7 @@ export function GetSign(content, privateKey) {
  * 排序并且去掉空白字段
  */
 export function GetSignContent(obj, method) {
-  const temp = {}
+  let temp = {}
   if (obj instanceof Array) { // 防止数组被转换成对象
     temp = []
   }
