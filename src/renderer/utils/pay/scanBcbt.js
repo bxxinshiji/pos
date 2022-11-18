@@ -28,16 +28,16 @@ class Scan {
             terminalId: payModel.terminalId,
             goodsDetail: []
           }
-          order.order.goods.forEach(element => {
-            if (element.barCode) {
-              pay.goodsDetail.push({
-                goodsId: element.barCode,
-                goodsName: element.name,
-                quantity: element.number,
-                price: element.price
-              })
-            }
-          })
+          // order.order.goods.forEach(element => {
+          //   if (element.barCode) {
+          //     pay.goodsDetail.push({
+          //       goodsId: element.barCode,
+          //       goodsName: element.name,
+          //       quantity: element.number,
+          //       price: element.price
+          //     })
+          //   }
+          // })
           this.AopF2F(pay).then(response => {
             this.payModelSave(payModel, response)
             resolve(response)
