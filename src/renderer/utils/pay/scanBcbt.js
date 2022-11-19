@@ -33,8 +33,8 @@ class Scan {
               goodsDetail.push({
                 goodsId: element.barCode,
                 goodsName: element.name,
-                quantity: element.number,
-                price: element.price
+                quantity: String(element.number),
+                price: String(element.price)
               })
             }
           })
