@@ -189,6 +189,7 @@ class Scan {
     return new Promise((resolve, reject) => {
       if (!this.cancel) {
         this.parents.InfoEvent('warning', '扫码支付下单中')
+        this.parents.LogEvent('info', 'AopF2F', JSON.stringify(order))
         AopF2F(order).then(response => { // 远程支付开始
           this.parents.LogEvent('info', 'Scan.Create.AopF2F.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.parents.InfoEvent('warning', '下单成功查询中')
