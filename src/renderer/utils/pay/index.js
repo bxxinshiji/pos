@@ -1,3 +1,10 @@
+/*
+ * @Author: BigRocs
+ * @Date: 2022-01-27 10:40:07
+ * @LastEditTime: 2023-05-11 14:53:43
+ * @LastEditors: BigRocs
+ * @Description: QQ: 532388887, Email:bigrocs@qq.com
+ */
 
 /**
  * pay.js 支付类
@@ -27,7 +34,7 @@ class Pay {
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
       this.Pool.Create(order).then(response => {
-        if (config.CLOSED === response) {
+        if (config.CLOSED === response.status) {
           this.InfoEvent('error', '订单已关闭')
         }
         this.ResponseEvent(response)
@@ -41,7 +48,7 @@ class Pay {
   Query(order) { // 查询订单
     return new Promise((resolve, reject) => {
       this.Pool.Query(order).then(response => {
-        if (config.CLOSED === response) {
+        if (config.CLOSED === response.status) {
           this.InfoEvent('error', '订单已关闭')
         }
         this.ResponseEvent(response)
@@ -62,7 +69,7 @@ class Pay {
   Refund(order) { // 订单退款
     return new Promise((resolve, reject) => {
       this.Pool.Refund(order).then(response => {
-        if (config.CLOSED === response) {
+        if (config.CLOSED === response.status) {
           this.InfoEvent('error', '订单已关闭')
         }
         this.ResponseEvent(response)

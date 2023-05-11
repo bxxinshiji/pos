@@ -3,6 +3,7 @@ import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import { GetSign, GetSignContent, VerifyContent } from '@/utils/sign'
 const { Op } = require('sequelize')
 import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
+import { forEach } from 'core-js/core/array'
 
 const ApiUrl = PayBcbtStore.get('pay.api')
 const SignType = 'RSA2'
@@ -10,28 +11,54 @@ const AppId = PayBcbtStore.get('pay.appId')
 const UserId = PayBcbtStore.get('pay.userId')
 const PrivateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + PayBcbtStore.get('pay.privateKey') + '\n-----END RSA PRIVATE KEY-----'
 const ServerPublicKey = '-----BEGIN PUBLIC KEY-----\n' + PayBcbtStore.get('pay.serverPublicKey') + '\n-----END PUBLIC KEY-----'
+const Users = PayBcbtStore.get('users')
 
 export function sign(content) {
   const signData = GetSignContent(content)
   return GetSign(JSON.stringify(signData), PrivateKey)
 }
-
+// 根据商品获取用户ID
+export function GetUserId(goods) {
+  let userId = ''
+  let isUser = true
+  goods.forEach(item => {
+    if (item.pluCode){
+      let dep = item.pluCode.substring(0, 3)
+      Users.forEach(user => {
+        user.depCode.forEach(code => {
+          if (dep == code) {
+            userId = user.userId
+          }else{
+            isUser = false
+          }
+        })
+      })
+    }
+  })
+  if(!isUser){
+    userId = ""
+  }
+  return userId
+}
 export function VerifySign(response) {
   return VerifyContent(JSON.stringify(GetSignContent(response.data.content)), response.data.sign, ServerPublicKey)
 }
 
-export function AopF2F(bizContent) {
+export function AopF2F(bizContent, userId) {
+  if (userId == '' || userId == undefined || userId == null) {
+    userId = UserId
+  }
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/aopF2F',
       method: 'post',
       data: {
         appId: AppId,
-        userId: UserId,
+        userId: userId,
         signType: SignType,
         sign: sign({
           appId: AppId,
-          userId: UserId,
+          userId: userId,
           signType: SignType,
           bizContent: bizContent
         }),
@@ -48,18 +75,18 @@ export function AopF2F(bizContent) {
     })
   })
 }
-export function Query(bizContent) {
+export function Query(bizContent, userId) {
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/query',
       method: 'post',
       data: {
         appId: AppId,
-        userId: UserId,
+        userId: userId,
         signType: SignType,
         sign: sign({
           appId: AppId,
-          userId: UserId,
+          userId: userId,
           signType: SignType,
           bizContent: bizContent
         }),
@@ -77,18 +104,18 @@ export function Query(bizContent) {
   })
 }
 
-export function Refund(bizContent) {
+export function Refund(bizContent, userId) {
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/refund',
       method: 'post',
       data: {
         appId: AppId,
-        userId: UserId,
+        userId: userId,
         signType: SignType,
         sign: sign({
           appId: AppId,
-          userId: UserId,
+          userId: userId,
           signType: SignType,
           bizContent: bizContent
         }),
@@ -106,18 +133,18 @@ export function Refund(bizContent) {
   })
 }
 
-export function RefundQuery(bizContent) {
+export function RefundQuery(bizContent, userId) {
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/refundQuery',
       method: 'post',
       data: {
         appId: AppId,
-        userId: UserId,
+        userId: userId,
         signType: SignType,
         sign: sign({
           appId: AppId,
-          userId: UserId,
+          userId: userId,
           signType: SignType,
           bizContent: bizContent
         }),
