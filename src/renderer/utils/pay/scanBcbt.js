@@ -2,15 +2,19 @@
 /**
  * scan.js 扫码支付类
  */
-import { AopF2F, Query, Refund, RefundQuery } from '@/api/payBcbt'
+import { AopF2F, Query, Refund, RefundQuery, GetUserId } from '@/api/payBcbt'
 import { Create as CreatePayOrder, UpdateOrCreate } from '@/model/api/payOrder'
+import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import config from './config.js'
+
+const UserPayType = PayBcbtStore.get('userPayType')
 class Scan {
   constructor() {
     this.cancel = false
     this.waitCancel = false
     this.startTime = new Date()
-    this.payModel = ''
+    this.payModel = '',
+    this.userId = ''
   }
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
@@ -41,6 +45,10 @@ class Scan {
           if (goodsDetail.length > 0) {
             pay.goodsDetail = goodsDetail
           }
+          // pluCode 前三位是部门编码
+          if (order.order.goods.length > 0) {
+            this.userId = GetUserId(order.order.goods)
+          }
           this.AopF2F(pay).then(response => {
             this.payModelSave(payModel, response)
             resolve(response)
@@ -65,7 +73,7 @@ class Scan {
       if (!this.cancel) {
         Query({
           outTradeNo: order.outTradeNo
-        }).then(response => {
+        }, this.userId).then(response => {
           this.parents.LogEvent('info', 'scan.Query', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.handerQueryResponse(response, order).then(res => {
             resolve(res)
@@ -145,7 +153,7 @@ class Scan {
     return new Promise((resolve, reject) => {
       if (!this.cancel) {
         this.parents.InfoEvent('warning', '扫码支付退款中')
-        Refund(order).then(response => { // 远程支付开始
+        Refund(order, this.userId).then(response => { // 远程支付开始
           this.payModel.method = response.data.content.method // 保存返回订单支付方式
           this.payModel.save()
           this.parents.LogEvent('info', 'Scan.Refund.Refund.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
@@ -190,7 +198,7 @@ class Scan {
       if (!this.cancel) {
         this.parents.InfoEvent('warning', '扫码支付下单中')
         this.parents.LogEvent('info', 'AopF2F', JSON.stringify(order))
-        AopF2F(order).then(response => { // 远程支付开始
+        AopF2F(order, this.userId).then(response => { // 远程支付开始
           this.parents.LogEvent('info', 'Scan.Create.AopF2F.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.parents.InfoEvent('warning', '下单成功查询中')
           this.handerQueryResponse(response, order).then(res => {
@@ -235,7 +243,12 @@ class Scan {
       switch (content.status) {
         case 'CLOSED':
           this.cancel = true
-          resolve(config.CLOSED)
+          // 自定义支付方式
+          payId = 0
+          if (this.userId != "") {
+            payId = UserPayType
+          }
+          resolve({status: config.CLOSED, payId: payId})
           break
         case 'USERPAYING':
           this.parents.InfoEvent('warning', '等待用户付款中')
@@ -267,7 +280,12 @@ class Scan {
           break
         case 'SUCCESS':
           if (content.returnCode === 'SUCCESS') {
-            resolve(config.SUCCESS)
+            // 自定义支付方式
+            payId = 0
+            if (this.userId != "") {
+              payId = UserPayType
+            }
+            resolve({status: config.SUCCESS, payId: payId})
           }
           break
         default :
@@ -280,7 +298,7 @@ class Scan {
   RefundQuery(order) { // 查询订单
     return new Promise((resolve, reject) => {
       if (!this.cancel) {
-        RefundQuery(order).then(response => {
+        RefundQuery(order, this.userId).then(response => {
           this.parents.LogEvent('info', 'scan.Query', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.handerRefundQueryResponse(response, order).then(res => {
             resolve(res)
@@ -316,7 +334,12 @@ class Scan {
       switch (content.status) {
         case 'CLOSED':
           this.cancel = true
-          resolve(config.CLOSED)
+          // 自定义支付方式
+          payId = 0
+          if (this.userId != "") {
+            payId = UserPayType
+          }
+          resolve({status: config.CLOSED, payId: payId})
           break
         case 'USERPAYING':
           this.parents.InfoEvent('warning', '等待系统退款中')
@@ -340,7 +363,12 @@ class Scan {
           break
         case 'SUCCESS':
           if (content.returnCode === 'SUCCESS') {
-            resolve(config.SUCCESS)
+            // 自定义支付方式
+            payId = 0
+            if (this.userId != "") {
+              payId = UserPayType
+            }
+            resolve({status: config.SUCCESS, payId: payId})
           }
           break
         default :
