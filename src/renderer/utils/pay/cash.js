@@ -7,12 +7,12 @@ import config from './config.js'
 class Cash {
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
-      resolve(config.SUCCESS)
+      resolve({status: config.SUCCESS, payId: 0})
     })
   }
   Query(order) { // 查询订单
     return new Promise((resolve, reject) => {
-      resolve(config.SUCCESS)
+      resolve({status: config.SUCCESS, payId: 0})
     })
   }
   Cancel(order) { // 取消订单
@@ -22,7 +22,7 @@ class Cash {
   }
   Refund(order) { // 订单退款
     return new Promise((resolve, reject) => {
-      resolve(config.SUCCESS)
+      resolve({status: config.SUCCESS, payId: 0})
     })
   }
 }

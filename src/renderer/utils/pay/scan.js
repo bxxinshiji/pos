@@ -224,7 +224,7 @@ class Scan {
       switch (data.order.status) {
         case 'CLOSED':
           this.cancel = true
-          resolve(config.CLOSED)
+          resolve({status: config.CLOSED, payId: 0})
           break
         case 'USERPAYING':
           // if (this.waitCancel) { // 从关闭等待状态进入关闭状态
@@ -247,7 +247,7 @@ class Scan {
           })
           break
         case 'SUCCESS':
-          resolve(config.SUCCESS)
+          resolve({status: config.SUCCESS, payId: 0})
           break
       }
     })
