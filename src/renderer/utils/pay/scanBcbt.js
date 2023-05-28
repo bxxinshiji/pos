@@ -240,6 +240,7 @@ class Scan {
   handerQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
+      let payId = 0
       switch (content.status) {
         case 'CLOSED':
           this.cancel = true
@@ -331,6 +332,7 @@ class Scan {
   handerRefundQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
       const content = response.data.content
+      let payId = 0
       switch (content.status) {
         case 'CLOSED':
           this.cancel = true
