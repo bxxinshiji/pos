@@ -13,7 +13,7 @@ class Scan {
     this.cancel = false
     this.waitCancel = false
     this.startTime = new Date()
-    this.payModel = '',
+    this.payModel = ''
     this.userId = ''
   }
   Create(order) { // 创建订单
@@ -239,17 +239,17 @@ class Scan {
   }
   handerQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
-      const content = response.data.content
+      const content = response.data.contents
       let payId = 0
       switch (content.status) {
         case 'CLOSED':
           this.cancel = true
           // 自定义支付方式
           payId = 0
-          if (this.userId != "") {
+          if (this.userId !== '') {
             payId = UserPayType
           }
-          resolve({status: config.CLOSED, payId: payId})
+          resolve({ status: config.CLOSED, payId: payId })
           break
         case 'USERPAYING':
           this.parents.InfoEvent('warning', '等待用户付款中')
@@ -283,10 +283,10 @@ class Scan {
           if (content.returnCode === 'SUCCESS') {
             // 自定义支付方式
             payId = 0
-            if (this.userId != "") {
+            if (this.userId !== '') {
               payId = UserPayType
             }
-            resolve({status: config.SUCCESS, payId: payId})
+            resolve({ status: config.SUCCESS, payId: payId })
           }
           break
         default :
@@ -338,10 +338,10 @@ class Scan {
           this.cancel = true
           // 自定义支付方式
           payId = 0
-          if (this.userId != "") {
+          if (this.userId !== '') {
             payId = UserPayType
           }
-          resolve({status: config.CLOSED, payId: payId})
+          resolve({ status: config.CLOSED, payId: payId })
           break
         case 'USERPAYING':
           this.parents.InfoEvent('warning', '等待系统退款中')
@@ -367,10 +367,10 @@ class Scan {
           if (content.returnCode === 'SUCCESS') {
             // 自定义支付方式
             payId = 0
-            if (this.userId != "") {
+            if (this.userId !== '') {
               payId = UserPayType
             }
-            resolve({status: config.SUCCESS, payId: payId})
+            resolve({ status: config.SUCCESS, payId: payId })
           }
           break
         default :

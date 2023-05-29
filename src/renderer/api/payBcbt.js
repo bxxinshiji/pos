@@ -3,7 +3,6 @@ import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import { GetSign, GetSignContent, VerifyContent } from '@/utils/sign'
 const { Op } = require('sequelize')
 import { List, StatusUpdate as StatusUpdatePayOrder } from '@/model/api/payOrder'
-import { forEach } from 'core-js/core/array'
 
 const ApiUrl = PayBcbtStore.get('pay.api')
 const SignType = 'RSA2'
@@ -22,21 +21,21 @@ export function GetUserId(goods) {
   let userId = ''
   let isUser = true
   goods.forEach(item => {
-    if (item.pluCode){
-      let dep = item.pluCode.substring(0, 3)
+    if (item.pluCode) {
+      const dep = item.pluCode.substring(0, 3)
       Users.forEach(user => {
         user.depCode.forEach(code => {
-          if (dep == code) {
+          if (dep === code) {
             userId = user.userId
-          }else{
+          } else {
             isUser = false
           }
         })
       })
     }
   })
-  if(!isUser){
-    userId = ""
+  if (!isUser) {
+    userId = ''
   }
   return userId
 }
@@ -45,7 +44,7 @@ export function VerifySign(response) {
 }
 
 export function AopF2F(bizContent, userId) {
-  if (userId == '' || userId == undefined || userId == null) {
+  if (userId === '' || userId === undefined || userId === null) {
     userId = UserId
   }
   return new Promise((resolve, reject) => {

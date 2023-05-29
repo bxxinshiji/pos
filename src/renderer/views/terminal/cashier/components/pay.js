@@ -22,7 +22,7 @@ import RemoteCard from '@/utils/pay/RemoteCard' // 远程会员卡支付模块
 const hander = {
   payModelHander(pay) {
     this.model.InitEventEmitter() // 初始化事件监听防止重复监听
-    this.model.On('response', async res=> { // 支付状态返回信息
+    this.model.On('response', async res => { // 支付状态返回信息
       if (res.status === config.SUCCESS) { // 支付成功
         pay.status = true
         if (pay.type === 'cardPay' || pay.type === 'remoteCardPay') { // 会员卡付款时支付状态改为未付款

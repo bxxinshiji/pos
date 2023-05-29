@@ -1,7 +1,6 @@
 const getmac = require('getmac')
 import defaultSettings from '@/settings'
 import Store from '@/utils/electron-store'
-import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import { isServer } from '@/utils/healthy'
 
 const { showSettings, fixedHeader, sidebarLogo, version } = defaultSettings
@@ -77,7 +76,7 @@ const state = {
   cardRemoteSQL2000Port: '1433',
   cardRemoteSQL2000Username: '', // 会员卡远程服务器用户名
   cardRemoteSQL2000Password: '', // 会员卡远程服务器密码
-  cardRemoteSQL2000database: '', // 会员卡远程服务器数据库名
+  cardRemoteSQL2000database: '' // 会员卡远程服务器数据库名
 
 }
 
@@ -186,7 +185,6 @@ function init() {
   state.cardRemoteSQL2000Username = Store.get('settings.cardRemoteSQL2000Username')
   state.cardRemoteSQL2000Password = Store.get('settings.cardRemoteSQL2000Password')
   state.cardRemoteSQL2000database = Store.get('settings.cardRemoteSQL2000database')
-
 }
 // 初始化数据
 init()
