@@ -77,7 +77,6 @@ const order = {
       const BakData1 = '' // 批号
       const BakData2 = '' // 厂家
       const BakData3 = 0 // 备用信息
-      console.log(PluName, PluAbbr)
       this.sql = this.sql + ` INSERT INTO tXsPluItem(XsDate, XsTime,  SaleItemNo, UserCode, CurrDate, BcCode, ClerkCode, PageNo, LnNo, TranType, 
       XsType, XfType, LrType, GzXsDate, PluCode, BarCode, PluName, PluAbbr, DepCode, ClsCode, SupCode, BrandCode, Unit, Spec, 
       TaxRate, SPrice, HyPrice, FsPrice, XsCount, YsAmt, YhAmt, SsAmt, YhType, MgType, IsDecimal, Tag, BakData1, BakData2, BakData3)

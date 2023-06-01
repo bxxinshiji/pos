@@ -2,7 +2,7 @@
 /**
  * scan.js 扫码支付类
  */
-import { AopF2F, Query, Refund, RefundQuery, GetUserId } from '@/api/payBcbt'
+import { AopF2F, Query, Refund, RefundQuery, GetUserId, IsDepIsdentical } from '@/api/payBcbt'
 import { Create as CreatePayOrder, UpdateOrCreate } from '@/model/api/payOrder'
 import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import config from './config.js'
@@ -18,7 +18,18 @@ class Scan {
   }
   Create(order) { // 创建订单
     return new Promise((resolve, reject) => {
+      this.userId = ''
       if (order.method) {
+        // pluCode 前三位是部门编码
+        if (order.order.goods.length > 0) {
+          if (!IsDepIsdentical(order.order.goods)) {
+            this.cancel = true
+            this.parents.LogEvent('error', 'Create.findCreatePayOrder.catch', '已启用部门付款，不支持部门混合付款!')
+            this.parents.InfoEvent('error', '已启用部门付款，不支持多部门混合付款!')
+            return
+          }
+          this.userId = GetUserId(order.order.goods)
+        }
         // 查找创建 PayOrder
         CreatePayOrder(order).then(payModel => {
           this.parents.LogEvent('info', 'CreatePayOrder.then', JSON.stringify(payModel))
@@ -44,10 +55,6 @@ class Scan {
           })
           if (goodsDetail.length > 0) {
             pay.goodsDetail = goodsDetail
-          }
-          // pluCode 前三位是部门编码
-          if (order.order.goods.length > 0) {
-            this.userId = GetUserId(order.order.goods)
           }
           this.AopF2F(pay).then(response => {
             this.payModelSave(payModel, response)
@@ -239,7 +246,7 @@ class Scan {
   }
   handerQueryResponse(response, order) {
     return new Promise(async(resolve, reject) => {
-      const content = response.data.contents
+      const content = response.data.content
       let payId = 0
       switch (content.status) {
         case 'CLOSED':

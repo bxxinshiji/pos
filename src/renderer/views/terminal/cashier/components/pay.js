@@ -30,6 +30,11 @@ const hander = {
         }
         if (res.payId) {
           pay.payId = res.payId // 支付方式ID
+          this.pays.forEach(item => {
+            if (item.id === String(res.payId)) {
+              pay.name = item.name
+            }
+          })
         }
         this.order.pays.push(pay) // 增加支付方式
         this.$store.dispatch('terminal/handerOrder') // 更新订单信息

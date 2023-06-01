@@ -16,26 +16,31 @@ export function sign(content) {
   const signData = GetSignContent(content)
   return GetSign(JSON.stringify(signData), PrivateKey)
 }
+// 是否所有商品部门一致
+export function IsDepIsdentical(goods) {
+  let dep = ''
+  for (let i = 0; i < goods.length; i++) {
+    const item = goods[i]
+    if (dep === '') {
+      dep = item.depCode
+    }
+    if (item.depCode !== dep) {
+      return false
+    }
+  }
+  return true
+}
 // 根据商品获取用户ID
 export function GetUserId(goods) {
   let userId = ''
-  let isUser = true
-  goods.forEach(item => {
-    if (item.pluCode) {
-      const dep = item.pluCode.substring(0, 3)
-      Users.forEach(user => {
-        user.depCode.forEach(code => {
-          if (dep === code) {
-            userId = user.userId
-          } else {
-            isUser = false
-          }
-        })
+  if (Users.length > 0 && goods.length > 0) {
+    Users.forEach(user => {
+      user.depCode.forEach(code => {
+        if (goods[0].depCode === code) {
+          userId = user.userId
+        }
       })
-    }
-  })
-  if (!isUser) {
-    userId = ''
+    })
   }
   return userId
 }
