@@ -169,7 +169,7 @@ export function RefundQuery(bizContent, userId) {
 export function SyncPayOrder() { // 同步所有待付款订单状态
   // 计算五分钟前的时间
   const fiveMinutesAgo = new Date()
-  fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 120)
+  fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 10)
   List({
     where: { // 自动同步最近5分钟内未成功的订单,
       createdAt: {
@@ -186,21 +186,39 @@ export function SyncPayOrder() { // 同步所有待付款订单状态
       let userId = ''
       rows.forEach(res => {
         userId = GetUserId(res.order.goods)
-        Query({
-          outTradeNo: res.orderNo
-        }, userId).then(response => { // 远程支付查询开始
-          const content = response.data.content
-          switch (content.order.status) {
-            case 'CLOSED':
-              StatusUpdatePayOrder(res.orderNo, -1)
-              break
-            case 'USERPAYING':
-              break
-            case 'SUCCESS':
-              StatusUpdatePayOrder(res.orderNo, 1)
-              break
-          }
-        })
+        if (res.order.number < 0) {
+          RefundQuery({
+            outRefundNo: res.orderNo
+          }, userId).then(response => { // 远程支付查询开始
+            const content = response.data.content
+            switch (content.status) {
+              case 'CLOSED':
+                StatusUpdatePayOrder(res.orderNo, -1)
+                break
+              case 'USERPAYING':
+                break
+              case 'SUCCESS':
+                StatusUpdatePayOrder(res.orderNo, 1)
+                break
+            }
+          })
+        } else {
+          Query({
+            outTradeNo: res.orderNo
+          }, userId).then(response => { // 远程支付查询开始
+            const content = response.data.content
+            switch (content.status) {
+              case 'CLOSED':
+                StatusUpdatePayOrder(res.orderNo, -1)
+                break
+              case 'USERPAYING':
+                break
+              case 'SUCCESS':
+                StatusUpdatePayOrder(res.orderNo, 1)
+                break
+            }
+          })
+        }
       })
     }
   })
