@@ -77,7 +77,11 @@ class Scan {
   }
   Query(order) { // 查询订单
     return new Promise((resolve, reject) => {
+      this.userId = ''
       if (!this.cancel) {
+        if (order.order.goods.length > 0) {
+          this.userId = GetUserId(order.order.goods)
+        }
         Query({
           outTradeNo: order.outTradeNo
         }, this.userId).then(response => {
@@ -132,6 +136,10 @@ class Scan {
   }
   Refund(order) { // 创建订单
     return new Promise((resolve, reject) => {
+      this.userId = ''
+      if (order.order.goods.length > 0) {
+        this.userId = GetUserId(order.order.goods)
+      }
       // 查找创建 PayOrder
       UpdateOrCreate(order).then(payModel => {
         this.parents.LogEvent('info', 'CreatePayOrder.then', JSON.stringify(payModel))

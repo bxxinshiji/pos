@@ -167,27 +167,30 @@ export function RefundQuery(bizContent, userId) {
 }
 
 export function SyncPayOrder() { // 同步所有待付款订单状态
+  // 计算五分钟前的时间
+  const fiveMinutesAgo = new Date()
+  fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 120)
   List({
-    where: {
+    where: { // 自动同步最近5分钟内未成功的订单,
+      createdAt: {
+        [Op.gt]: fiveMinutesAgo
+      },
       [Op.or]: [
-        {
-          status: 0
-        }, { // 自动同步最近5分钟内未成功的订单
-          status: { [Op.ne]: 1 },
-          createdAt: { [Op.gt]: new Date(new Date() - 5 * 60 * 1000)
-          }
-        }]
+        { status: 0 },
+        { status: null }
+      ]
     }
   }).then(response => {
     if (response.count > 0) {
       const rows = response.rows
+      let userId = ''
       rows.forEach(res => {
+        userId = GetUserId(res.order.goods)
         Query({
-          orderNo: res.orderNo,
-          storeName: res.storeName
-        }).then(response => { // 远程支付查询开始
-          const data = response.data
-          switch (data.order.status) {
+          outTradeNo: res.orderNo
+        }, userId).then(response => { // 远程支付查询开始
+          const content = response.data.content
+          switch (content.order.status) {
             case 'CLOSED':
               StatusUpdatePayOrder(res.orderNo, -1)
               break

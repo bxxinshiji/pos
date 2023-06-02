@@ -92,13 +92,21 @@ const hander = {
     return new Promise((resolve, reject) => {
       this.model.InitEventEmitter() // 初始化事件监听防止重复监听
       this.model.On('response', res => { // 支付状态返回信息
-        if (res === config.SUCCESS) { // 支付成功
+        if (res.status === config.SUCCESS) { // 支付成功
           if (pay.type === 'scanPay') {
             pay.getAmount = pay.amount
           } else {
             pay.getAmount = this.payAmount // 默认收到的钱
           }
           store.dispatch('terminal/changePayAmount', 0) // 防止多笔现金重复
+          if (res.payId) {
+            pay.payId = res.payId // 支付方式ID
+            this.pays.forEach(item => {
+              if (item.id === String(res.payId)) {
+                pay.name = item.name
+              }
+            })
+          }
           pay.status = true
           resolve(true)
         } else {

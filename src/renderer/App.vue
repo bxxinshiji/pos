@@ -9,7 +9,7 @@
 const { Op } = require('sequelize')
 const ipcRenderer = require('electron').ipcRenderer
 import { SyncTerminal } from '@/api/terminal'
-import { SyncPayOrder } from '@/api/pay'
+import { SyncPayOrder } from '@/api/payBcbt'
 import { queueSyncOrder } from '@/api/order'
 import { SyncSysConfig } from '@/sql2000/api/config'
 import { Delete as DeleteOrder } from '@/model/api/order'
@@ -68,7 +68,7 @@ export default {
       }, 30 * 1000)
       setInterval(() => { // 同步扫码支付订单状态
         SyncPayOrder()
-      }, 60 * 1000) // 1 分钟同步一次待付款订单状态
+      }, 5 * 1000) // 1 分钟同步一次待付款订单状态
       setInterval(() => { // 自动同步订单
         // sql2000 开启并且
         if (this.$store.state.healthy.isSql2000) {
