@@ -313,7 +313,11 @@ class Scan {
   }
   RefundQuery(order) { // 查询订单
     return new Promise((resolve, reject) => {
+      this.userId = ''
       if (!this.cancel) {
+        if (order.order.goods.length > 0) {
+          this.userId = GetUserId(order.order.goods)
+        }
         RefundQuery(order, this.userId).then(response => {
           this.parents.LogEvent('info', 'scan.Query', JSON.stringify(order) + '\n' + JSON.stringify(response))
           this.handerRefundQueryResponse(response, order).then(res => {

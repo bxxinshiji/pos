@@ -80,6 +80,9 @@ export function AopF2F(bizContent, userId) {
   })
 }
 export function Query(bizContent, userId) {
+  if (userId === '' || userId === undefined || userId === null) {
+    userId = UserId
+  }
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/query',
@@ -109,6 +112,9 @@ export function Query(bizContent, userId) {
 }
 
 export function Refund(bizContent, userId) {
+  if (userId === '' || userId === undefined || userId === null) {
+    userId = UserId
+  }
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/refund',
@@ -138,6 +144,9 @@ export function Refund(bizContent, userId) {
 }
 
 export function RefundQuery(bizContent, userId) {
+  if (userId === '' || userId === undefined || userId === null) {
+    userId = UserId
+  }
   return new Promise((resolve, reject) => {
     request({
       url: ApiUrl + '/institution-api/trades/refundQuery',
