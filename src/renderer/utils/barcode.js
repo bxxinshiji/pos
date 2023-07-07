@@ -37,6 +37,9 @@ const EAN = {
     if (code.length === 11) { // UPC-A
       code = '06' + code
     }
+    if (code.length === 12) { // PC-E
+      code = '0' + code
+    }
     // EAN-13
     this.check = Number(this.checksums(code).checksum) === Number(code[c])
     return this
