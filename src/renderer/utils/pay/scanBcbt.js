@@ -22,7 +22,7 @@ class Scan {
       this.userId = ''
       if (order.method) {
         // pluCode 前三位是部门编码
-        if (order.order.goods.length > 0 && Users.length > 0) {
+        if (order.order.goods.length > 0 && Users !== undefined) {
           if (!IsDepIsdentical(order.order.goods)) {
             this.cancel = true
             this.parents.LogEvent('error', 'Create.findCreatePayOrder.catch', '已启用部门付款，不支持部门混合付款!')
