@@ -136,7 +136,7 @@ class Scan {
   Refund(order) { // 创建订单
     return new Promise((resolve, reject) => {
       this.userId = ''
-      if (order.order.goods.length > 0) {
+      if (order.order.goods.length > 0 && Users !== undefined) {
         this.userId = GetUserId(order.order.goods)
         order.storeName = '扫码'
         order.storeId = UserPayType
