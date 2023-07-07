@@ -8,6 +8,7 @@ import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import config from './config.js'
 
 const UserPayType = PayBcbtStore.get('userPayType')
+const Users = PayBcbtStore.get('users')
 class Scan {
   constructor() {
     this.cancel = false
@@ -21,7 +22,7 @@ class Scan {
       this.userId = ''
       if (order.method) {
         // pluCode 前三位是部门编码
-        if (order.order.goods.length > 0) {
+        if (order.order.goods.length > 0 && Users.length > 0) {
           if (!IsDepIsdentical(order.order.goods)) {
             this.cancel = true
             this.parents.LogEvent('error', 'Create.findCreatePayOrder.catch', '已启用部门付款，不支持部门混合付款!')
