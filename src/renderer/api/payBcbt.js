@@ -33,7 +33,7 @@ export function IsDepIsdentical(goods) {
 // 根据商品获取用户ID
 export function GetUserId(goods) {
   let userId = ''
-  if (Users.length > 0 && goods.length > 0) {
+  if (Users !== undefined && goods.length > 0) {
     Users.forEach(user => {
       user.depCode.forEach(code => {
         if (goods[0].depCode === code) {
