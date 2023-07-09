@@ -30,10 +30,6 @@ class Scan {
             return
           }
           this.userId = GetUserId(order.order.goods)
-          if (this.userId !== '') {
-            order.storeName = '扫码'
-            order.storeId = UserPayType
-          }
         }
         // 查找创建 PayOrder
         CreatePayOrder(order).then(payModel => {
@@ -140,10 +136,6 @@ class Scan {
       this.userId = ''
       if (order.order.goods.length > 0 && Users !== undefined) {
         this.userId = GetUserId(order.order.goods)
-        if (this.userId !== '') {
-          order.storeName = '扫码'
-          order.storeId = UserPayType
-        }
       }
       // 查找创建 PayOrder
       UpdateOrCreate(order).then(payModel => {

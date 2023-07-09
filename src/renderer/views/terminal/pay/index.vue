@@ -112,6 +112,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import { GetById } from '@/model/api/pay'
 import utilsPay from '@/utils/pay'
 import log from '@/utils/log'
+import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 export default {
   name: 'Order',
   components: {
@@ -296,9 +297,18 @@ export default {
       if (Number(currentOrder.status) === 1) {
         log.h('info', 'pay.handerLoadOrder', JSON.stringify(currentOrder))
         const order = currentOrder.order
+        let payId = this.scanPayInfo.id
+        let payName = this.scanPayInfo.name
+        if (currentOrder.order.goods.length > 0) {
+          userId = GetUserId(currentOrder.order.goods)
+          if (this.userId !== '') {
+            payName = '扫码'
+            payId = PayBcbtStore.get('userPayType')
+          }
+        }
         order.pays.push({
-          payId: currentOrder.storeId, // 支付方式
-          name: currentOrder.storeName, // 支付方式名称
+          payId: payId, // 支付方式
+          name: payName, // 支付方式名称
           type: this.scanPayInfo.type, // 支付方式
           code: currentOrder.authCode, // 会员卡
           amount: currentOrder.totalAmount, // 支付金额
