@@ -300,8 +300,8 @@ export default {
         let payId = this.scanPayInfo.id
         let payName = this.scanPayInfo.name
         if (currentOrder.order.goods.length > 0) {
-          userId = GetUserId(currentOrder.order.goods)
-          if (this.userId !== '') {
+          let userId = GetUserId(currentOrder.order.goods)
+          if (userId !== '') {
             payName = '扫码'
             payId = PayBcbtStore.get('userPayType')
           }
