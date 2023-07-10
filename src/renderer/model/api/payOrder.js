@@ -1,3 +1,10 @@
+/*
+ * @Author: BigRocs
+ * @Date: 2022-01-27 10:40:07
+ * @LastEditTime: 2023-07-10 10:40:13
+ * @LastEditors: BigRocs
+ * @Description: QQ: 532388887, Email:bigrocs@qq.com
+ */
 import sequelize from '@/model/payOrder'
 const PayOrder = sequelize.models.payOrder
 import { pagination } from '@/utils/index'
@@ -74,7 +81,8 @@ export function StatusUpdate(orderNo, status) {
 export function UpdateBuildOrderNo(orderNo, buildOrderNo) {
   return new Promise((resolve, reject) => {
     PayOrder.update({
-      buildOrderNo: buildOrderNo
+      buildOrderNo: buildOrderNo,
+      status: 1
     }, {
       where: {
         orderNo: orderNo

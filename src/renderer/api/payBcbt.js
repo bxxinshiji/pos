@@ -70,17 +70,6 @@ export function AopF2F(bizContent, userId) {
       }
     }).then(response => {
       if (VerifySign(response)) {
-        const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            StatusUpdatePayOrder(bizContent.outTradeNo, -1)
-            break
-          case 'USERPAYING':
-            break
-          case 'SUCCESS':
-            StatusUpdatePayOrder(bizContent.outTradeNo, 1)
-            break
-        }
         resolve(response)
       } else {
         reject(new Error('返回数据校验失败'))
@@ -112,17 +101,6 @@ export function Query(bizContent, userId) {
       }
     }).then(response => {
       if (VerifySign(response)) {
-        const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            StatusUpdatePayOrder(bizContent.outTradeNo, -1)
-            break
-          case 'USERPAYING':
-            break
-          case 'SUCCESS':
-            StatusUpdatePayOrder(bizContent.outTradeNo, 1)
-            break
-        }
         resolve(response)
       } else {
         reject(new Error('返回数据校验失败'))
@@ -155,17 +133,6 @@ export function Refund(bizContent, userId) {
       }
     }).then(response => {
       if (VerifySign(response)) {
-        const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            StatusUpdatePayOrder(bizContent.outRefundNo, -1)
-            break
-          case 'USERPAYING':
-            break
-          case 'SUCCESS':
-            StatusUpdatePayOrder(bizContent.outRefundNo, 1)
-            break
-        }
         resolve(response)
       } else {
         reject(new Error('返回数据校验失败'))
@@ -198,17 +165,6 @@ export function RefundQuery(bizContent, userId) {
       }
     }).then(response => {
       if (VerifySign(response)) {
-        const content = response.data.content
-        switch (content.status) {
-          case 'CLOSED':
-            StatusUpdatePayOrder(bizContent.outRefundNo, -1)
-            break
-          case 'USERPAYING':
-            break
-          case 'SUCCESS':
-            StatusUpdatePayOrder(bizContent.outRefundNo, 1)
-            break
-        }
         resolve(response)
       } else {
         reject(new Error('返回数据校验失败'))
