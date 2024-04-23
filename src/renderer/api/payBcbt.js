@@ -54,7 +54,7 @@ export function AopF2F(bizContent, userId) {
   }
   return new Promise((resolve, reject) => {
     request({
-      url: ApiUrl + '/institution-api/trades/aopF2F',
+      url: ApiUrl + '/aopF2F',
       method: 'post',
       data: {
         appId: AppId,
@@ -85,7 +85,7 @@ export function Query(bizContent, userId) {
   }
   return new Promise((resolve, reject) => {
     request({
-      url: ApiUrl + '/institution-api/trades/query',
+      url: ApiUrl + '/query',
       method: 'post',
       data: {
         appId: AppId,
@@ -117,7 +117,7 @@ export function Refund(bizContent, userId) {
   }
   return new Promise((resolve, reject) => {
     request({
-      url: ApiUrl + '/institution-api/trades/refund',
+      url: ApiUrl + '/refund',
       method: 'post',
       data: {
         appId: AppId,
@@ -149,7 +149,7 @@ export function RefundQuery(bizContent, userId) {
   }
   return new Promise((resolve, reject) => {
     request({
-      url: ApiUrl + '/institution-api/trades/refundQuery',
+      url: ApiUrl + '/refundQuery',
       method: 'post',
       data: {
         appId: AppId,

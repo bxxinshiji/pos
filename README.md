@@ -1,7 +1,7 @@
 <!--
  * @Author: BigRocs
  * @Date: 2022-01-27 10:40:07
- * @LastEditTime: 2023-05-14 10:44:28
+ * @LastEditTime: 2023-07-17 08:29:38
  * @LastEditors: BigRocs
  * @Description: QQ: 532388887, Email:bigrocs@qq.com
 -->
@@ -45,7 +45,7 @@ cnpm install electron@4.2.12 -g
 
 ```
 #### Build Setup
-
+npm install --msvs_version=2015
 ``` bash
 # install dependencies
 npm install
