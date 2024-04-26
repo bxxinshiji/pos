@@ -1,3 +1,10 @@
+/*
+ * @Author: BigRocs
+ * @Date: 2022-01-27 10:40:07
+ * @LastEditTime: 2024-04-26 09:36:10
+ * @LastEditors: BigRocs
+ * @Description: QQ: 532388887, Email:bigrocs@qq.com
+ */
 import request from '@/utils/request'
 import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
@@ -59,17 +66,17 @@ export async function syncDateTime(dateTime) { // 同步系统时间
  * @returns {Promise}
  */
 export async function isServer(url = null) {
-  url ? (request.defaults.baseURL = url) : null
-  var status = false
-  await request({
-    url: ApiUrl + '/user-api/health/health',
-    method: 'post',
-    data: {
-    }
-  }).then(res => {
-    status = res.data.valid
-  }).catch(() => {
-    status = false
-  })
-  return status
+  // url ? (request.defaults.baseURL = url) : null
+  // var status = false
+  // await request({
+  //   url: ApiUrl + '/user-api/health/health',
+  //   method: 'post',
+  //   data: {
+  //   }
+  // }).then(res => {
+  //   status = res.data.valid
+  // }).catch(() => {
+  //   status = false
+  // })
+  // return status
 }
