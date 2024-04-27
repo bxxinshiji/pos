@@ -1,14 +1,14 @@
 /*
  * @Author: BigRocs
  * @Date: 2022-01-27 10:40:07
- * @LastEditTime: 2024-04-27 10:35:32
+ * @LastEditTime: 2024-04-27 10:37:08
  * @LastEditors: BigRocs
  * @Description: QQ: 532388887, Email:bigrocs@qq.com
  */
 // import request from '@/utils/request'
 import { Loading } from 'element-ui'
 import { parseTime } from '@/utils'
-import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
+// import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 const ping = require('ping')
 
 // const ApiUrl = PayBcbtStore.get('pay.api')
