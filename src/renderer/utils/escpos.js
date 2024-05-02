@@ -1,6 +1,6 @@
 const init = require('escpos')
 init.Win = require('escpos-win')
-// init.USB = require('escpos-usb')
+init.USB = require('escpos-usb')
 // init.Bluetooth = require('escpos-bluetooth')
 init.Serial = require('escpos-serialport')
 init.Network = require('escpos-network')
@@ -22,9 +22,9 @@ const escpos = {
       case 'Win':
         devicer = new init.Win(deviceConfig)
         break
-      // case 'USB':
-      //   devicer = new init.USB(deviceConfig)
-      //   break
+      case 'USB':
+        devicer = new init.USB(deviceConfig)
+        break
       case 'Serial':
         devicer = new init.Serial(deviceConfig)
         break
