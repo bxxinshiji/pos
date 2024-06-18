@@ -1,13 +1,13 @@
 /*
  * @Author: BigRocs
  * @Date: 2022-01-27 10:40:07
- * @LastEditTime: 2024-06-18 17:06:21
+ * @LastEditTime: 2024-06-18 17:20:25
  * @LastEditors: BigRocs
  * @Description: QQ: 532388887, Email:bigrocs@qq.com
  */
 import axios from 'axios'
-const https = require('https');
-// const fs = require('fs');
+const https = require('https')
+// const fs = require('fs')
 // import { Message } from 'element-ui'
 import store from '@/store'
 import localStore from '@/utils/electron-store'
