@@ -52,7 +52,7 @@ function createWindow() {
     webPreferences: {
       webSecurity: false, // 允许 electron 跨域
       nodeIntegrationInWorker: true,// 允许多线程
-      allowRunningInsecureContent: true,
+      allowRunningInsecureContent: true
     }
   })
 
