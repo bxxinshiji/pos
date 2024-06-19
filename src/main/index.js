@@ -51,7 +51,7 @@ function createWindow() {
     backgroundColor: '#303133', //
     webPreferences: {
       webSecurity: false, // 允许 electron 跨域
-      nodeIntegrationInWorker: true,// 允许多线程
+      nodeIntegrationInWorker: true, // 允许多线程
       allowRunningInsecureContent: true
     }
   })
