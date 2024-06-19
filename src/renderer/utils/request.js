@@ -1,30 +1,15 @@
-/*
- * @Author: BigRocs
- * @Date: 2022-01-27 10:40:07
- * @LastEditTime: 2024-06-18 17:22:52
- * @LastEditors: BigRocs
- * @Description: QQ: 532388887, Email:bigrocs@qq.com
- */
 import axios from 'axios'
-const https = require('https')
-// const fs = require('fs')
 // import { Message } from 'element-ui'
 import store from '@/store'
 import localStore from '@/utils/electron-store'
 import { getToken } from '@/utils/auth'
-
-const agent = new https.Agent({
-  // ca: fs.readFileSync('path/to/your/ca.crt'), // 替换为你的根证书文件路径
-  rejectUnauthorized: false // 是否拒绝未经验证的证书
-})
 
 // create an axios instance
 const service = axios.create({
   baseURL: localStore.get('settings.baseURL'), // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 10000, // request timeout
-  error: false, // 默认开启错误提示
-  httpsAgent: agent
+  error: false // 默认开启错误提示
 })
 
 // request interceptor
