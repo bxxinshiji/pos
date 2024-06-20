@@ -164,5 +164,4 @@ app.on('ready', () => {
     mainWindow.webContents.send('main-process-home', 'home')
     mainWindow.show()
   })
-  app.commandLine.appendSwitch('ignore-certificate-errors')
 })
