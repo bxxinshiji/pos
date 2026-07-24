@@ -276,6 +276,22 @@ const hander = {
       if (regWechat.test(code)) { // 微信支付
         this.method = 'wechat'
       }
+      const regUnionpay = /^62\d{17}$/
+      if (regUnionpay.test(code)) { // 云闪付支付
+        this.method = 'unionpay'
+      }
+      const regBestpay = /^5[1-2]\d{16}$/
+      if (regBestpay.test(code)) { // 翼支付
+        this.method = 'bestpay'
+      }
+      const regSdykt = /^75\d{16}$/
+      if (regSdykt.test(code)) { // 杉德一卡通支付
+        this.method = 'sdykt'
+      }
+      const regEcny = /^01\d{17}$/
+      if (regEcny.test(code)) { // 数字人民币支付
+        this.method = 'ecny'
+      }
       this.model.Create({ // 创建扫码支付订单
         orderNo: pay.orderNo,
         method: this.method,
