@@ -233,6 +233,18 @@ export default {
 .alipay{
   color: #409EFF;
 }
+.unionpay{
+  color: #E53935;
+}
+.bestpay{
+  color: #EF8222;
+}
+.sdykt{
+  color: #7B61A8;
+}
+.ecny{
+  color: #D8292F;
+}
 .remoteCardPay{
   color: #ff6f00;
 }

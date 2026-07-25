@@ -37,10 +37,11 @@
           min-width="75"
         >
           <template slot-scope="scope">
-            <span slot="label">
-              <span v-if="scope.row.method=='wechat'"><el-tag size="small" :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 微信</el-tag></span>
-              <span v-if="scope.row.method=='alipay'"><el-tag size="small" :class="scope.row.method"><svg-icon :icon-class="scope.row.method" :class="scope.row.method"/> 支付宝</el-tag></span>
-            </span>
+            <el-tag v-if="paymentMethodName(scope.row.method)" size="small" :class="scope.row.method">
+              <svg-icon :icon-class="scope.row.method" :class="scope.row.method"/>
+              {{ paymentMethodName(scope.row.method) }}
+            </el-tag>
+            <span v-else>{{ scope.row.method }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -161,6 +162,17 @@ export default {
     document.removeEventListener('keydown', this.keydown)
   },
   methods: {
+    paymentMethodName(method) {
+      const names = {
+        alipay: '支付宝',
+        wechat: '微信',
+        unionpay: '云闪付',
+        bestpay: '翼支付',
+        sdykt: '杉德一卡通',
+        ecny: '数字人民币'
+      }
+      return names[method] || ''
+    },
     initScanPayInfo() {
       GetById(this.scanPayId).then(info => {
         this.scanPayInfo.id = info.id
@@ -384,5 +396,17 @@ export default {
   }
   .alipay{
     color: #409EFF;
+  }
+  .unionpay{
+    color: #E53935;
+  }
+  .bestpay{
+    color: #EF8222;
+  }
+  .sdykt{
+    color: #7B61A8;
+  }
+  .ecny{
+    color: #D8292F;
   }
 </style>

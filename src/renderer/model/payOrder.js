@@ -17,7 +17,7 @@ sequelize.authenticate().then(() => {
 // 订单
 sequelize.define('payOrder', {
   orderNo: { type: Sequelize.STRING, unique: true }, // 订单编号
-  method: Sequelize.STRING, // 支付方式 alipay wechat
+  method: Sequelize.STRING, // 支付方式 alipay wechat unionpay bestpay sdykt ecny
   authCode: Sequelize.STRING, // 付款码
   totalAmount: {
     type: Sequelize.INTEGER,
