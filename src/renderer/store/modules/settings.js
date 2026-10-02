@@ -28,6 +28,8 @@ const state = {
   scanStoreName: '', // 支付商户用户名
   scanPayId: 0, //  扫码支付ID       必须大于0
   cardPayID: 0, // 会员卡支付ID   必须大于0
+  cloudMisPayId: 0, // 云MIS发起支付ID 必须大于0 0为不启用云MIS
+  cloudMisSn: '', // 云MIS绑定POS机SN
   dataExpires: 180, // 数据自动过期天数
   orderTitle: '扫码支付商品',
   printer: {
@@ -119,6 +121,8 @@ function init() {
   state.scanStoreName = Store.get('settings.scanStoreName')
   state.scanPayId = Store.get('settings.scanPayId')
   state.cardPayID = Store.get('settings.cardPayID')
+  state.cloudMisPayId = Store.get('settings.cloudMisPayId')
+  state.cloudMisSn = Store.get('settings.cloudMisSn')
   const dataExpires = Store.get('settings.dataExpires')
   if (dataExpires) {
     state.dataExpires = dataExpires

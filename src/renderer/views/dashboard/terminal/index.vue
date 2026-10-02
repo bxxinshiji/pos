@@ -88,7 +88,8 @@ export default {
         { name: '盘点订单', key: '4', label: 'orderPD' },
         { name: '修改密码', key: '5', label: 'password' },
         { name: '暂离退出', key: '6', label: 'out' },
-        { name: '结账退出', key: '7', label: 'accounts' }
+        { name: '结账退出', key: '7', label: 'accounts' },
+        { name: 'SN绑定', key: '8', label: 'sn' }
         // { name: '系统配置', key: '8', label: 'config' },
         // { name: '退出软件', key: '9', label: 'quit' },
       ]
@@ -145,6 +146,9 @@ export default {
           break
         case 'config':
           this.$router.push({ path: '/terminal/config' })
+          break
+        case 'sn':
+          this.$router.push({ path: '/terminal/sn' })
           break
         case 'inventory':
           this.$router.push({ path: '/terminal/inventory' })
@@ -297,6 +301,9 @@ export default {
   }
   .config{
     background:#303133;
+  }
+  .sn{
+    background:#FF9800;
   }
   .out{
     background: @el-warning;

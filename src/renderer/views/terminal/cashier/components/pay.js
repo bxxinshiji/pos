@@ -78,6 +78,17 @@ const hander = {
         this.model.Create(pay)
         break
       case 'scanPay':
+        if (this.cloudMisPayId && String(pay.payId) === String(this.cloudMisPayId)) { // 云MIS支付方式发起云MIS支付
+          if (!this.cloudMisSn) {
+            this.status = 'error'
+            this.payingInfo = '云MIS支付未绑定POS机SN,请到系统配置绑定!'
+            this.lock = false
+            break
+          }
+          this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
+          this.handerCloudMis(pay)
+          break
+        }
         // this.model.SetPool(new Scan()) // 设置扫码对象池
         this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
         this.payAopF2F(pay)
@@ -300,6 +311,26 @@ const hander = {
         totalAmount: pay.amount,
         operatorId: this.username,
         terminalId: this.terminal,
+        storeName: this.scanStoreName,
+        status: config.USERPAYING,
+        order: this.order
+      })
+    })
+  },
+  handerCloudMis(pay) {
+    return new Promise((resolve, reject) => {
+      const code = pay.code
+      // pay.orderNo = uuidv4().replace(/\-/g, '') // 云MIS支付指定订单单号[UUID生成]
+      pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
+      this.method = 'cloudMis'
+      this.model.CreateBookkeep({ // 创建云MIS支付订单
+        orderNo: pay.orderNo,
+        method: this.method,
+        authCode: code,
+        title: this.orderTitle,
+        totalAmount: pay.amount,
+        operatorId: this.username,
+        terminalId: this.cloudMisSn,
         storeName: this.scanStoreName,
         status: config.USERPAYING,
         order: this.order

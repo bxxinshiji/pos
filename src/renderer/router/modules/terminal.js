@@ -84,6 +84,16 @@ export default {
         roles: ['terminal']
       }
     }, {
+      path: 'sn',
+      name: 'Sn',
+      component: () => import('@/views/terminal/sn/index'),
+      meta: {
+        title: 'SN绑定',
+        icon: 'config',
+        permits: ['ui_terminal_index'],
+        roles: ['terminal']
+      }
+    }, {
       path: 'config',
       name: 'Config',
       component: () => import('@/views/terminal/config/index'),

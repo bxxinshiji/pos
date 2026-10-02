@@ -175,6 +175,38 @@ export function RefundQuery(bizContent, userId) {
   })
 }
 
+export function Bookkeep(bizContent, userId) { // 云MIS记账下单
+  if (userId === '' || userId === undefined || userId === null) {
+    userId = UserId
+  }
+  return new Promise((resolve, reject) => {
+    request({
+      url: ApiUrl + '/bookkeep',
+      method: 'post',
+      data: {
+        appId: AppId,
+        userId: userId,
+        signType: SignType,
+        sign: sign({
+          appId: AppId,
+          userId: userId,
+          signType: SignType,
+          bizContent: bizContent
+        }),
+        bizContent: bizContent
+      }
+    }).then(response => {
+      if (VerifySign(response)) {
+        resolve(response)
+      } else {
+        reject(new Error('返回数据校验失败'))
+      }
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export function SyncPayOrder() { // 同步所有待付款订单状态
   // 计算五分钟前的时间
   const fiveMinutesAgo = new Date()

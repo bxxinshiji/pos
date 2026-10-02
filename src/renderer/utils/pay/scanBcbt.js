@@ -2,7 +2,7 @@
 /**
  * scan.js 扫码支付类
  */
-import { AopF2F, Query, Refund, RefundQuery, GetUserId, IsDepIsdentical } from '@/api/payBcbt'
+import { AopF2F, Bookkeep, Query, Refund, RefundQuery, GetUserId, IsDepIsdentical } from '@/api/payBcbt'
 import { Create as CreatePayOrder, UpdateOrCreate } from '@/model/api/payOrder'
 import PayBcbtStore from '@/utils/pay-bcbt-electron-store'
 import config from './config.js'
@@ -74,6 +74,45 @@ class Scan {
         this.parents.LogEvent('error', 'Create.order.method', '暂不支持此付款方式 ' + JSON.stringify(order.authCode))
         this.parents.InfoEvent('error', '暂不支持此付款方式!')
       }
+    })
+  }
+  CreateBookkeep(order) { // 云MIS记账创建订单 下单到绑定POS机SN的终端
+    return new Promise((resolve, reject) => {
+      this.userId = ''
+      if (order.order.goods.length > 0 && Users !== undefined) {
+        if (!IsDepIsdentical(order.order.goods)) {
+          this.cancel = true
+          this.parents.LogEvent('error', 'CreateBookkeep.findCreatePayOrder.catch', '已启用部门付款，不支持部门混合付款!')
+          this.parents.InfoEvent('error', '已启用部门付款，不支持多部门混合付款!')
+          return
+        }
+        this.userId = GetUserId(order.order.goods)
+      }
+      // 查找创建 PayOrder
+      CreatePayOrder(order).then(payModel => {
+        this.parents.LogEvent('info', 'CreatePayOrder.then', JSON.stringify(payModel))
+        const pay = {
+          outTradeNo: payModel.orderNo,
+          method: 'card', // 后端口径: Method始终记录真实支付方式card TradeMethod只区分普通记账和云MIS
+          status: 'USERPAYING',
+          tradeMethod: 'CloudMis',
+          title: payModel.title,
+          totalFee: String(payModel.totalAmount),
+          operatorId: payModel.operatorId,
+          terminalId: payModel.terminalId
+        }
+        this.Bookkeep(pay).then(response => {
+          this.payModelSave(payModel, response)
+          resolve(response)
+        }).catch(err => {
+          this.cancel = true
+          reject(err)
+        })
+      }).catch(error => {
+        this.cancel = true
+        this.parents.LogEvent('error', 'CreateBookkeep.findCreatePayOrder.catch', JSON.stringify(error.message))
+        this.parents.InfoEvent('error', '创建订单缓存失败请重新发起支付!')
+      })
     })
   }
   Query(order) { // 查询订单
@@ -230,6 +269,48 @@ class Scan {
             await this.Sleep()// 等待
             this.parents.InfoEvent('warning', '重新下单中')
             this.AopF2F(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          } else {
+            this.parents.InfoEvent('warning', '下单错误支付查询中')
+            await this.Sleep()// 等待
+            this.Query(order).then(response => {
+              resolve(response)
+            }).catch(error => {
+              reject(error)
+            })
+          }
+        })
+      } else {
+        reject(new Error('支付已取消'))
+      }
+    })
+  }
+  Bookkeep(order) { // 云MIS记账下单 下单成功只表示订单已创建并通知终端 不代表支付成功
+    return new Promise((resolve, reject) => {
+      if (!this.cancel) {
+        this.parents.InfoEvent('warning', '云MIS支付下单中')
+        this.parents.LogEvent('info', 'Bookkeep', JSON.stringify(order))
+        Bookkeep(order, this.userId).then(response => { // 远程支付开始
+          this.parents.LogEvent('info', 'Scan.Create.Bookkeep.then', JSON.stringify(order) + '\n' + JSON.stringify(response))
+          this.parents.InfoEvent('warning', '下单成功,请引导顾客在终端完成支付')
+          if (!response.data.content.status) { // 记账接口立即返回可能没有订单状态 视为等待终端支付
+            response.data.content.status = 'USERPAYING'
+          }
+          this.handerQueryResponse(response, order).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          })
+        }).catch(async error => {
+          this.parents.LogEvent('error', 'Scan.Create.Bookkeep.catch', JSON.stringify(error.message))
+          if ((error.message.indexOf('Network Error') !== -1 || error.message.indexOf('timeout of') !== -1)) { // 下单超时自动重试 相同订单号不会重复通知终端
+            this.parents.InfoEvent('warning', '服务器超时, 等待重试。')
+            await this.Sleep()// 等待
+            this.parents.InfoEvent('warning', '重新下单中')
+            this.Bookkeep(order).then(response => {
               resolve(response)
             }).catch(error => {
               reject(error)

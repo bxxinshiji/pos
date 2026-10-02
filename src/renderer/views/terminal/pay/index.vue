@@ -169,7 +169,8 @@ export default {
         unionpay: '云闪付',
         bestpay: '翼支付',
         sdykt: '杉德一卡通',
-        ecny: '数字人民币'
+        ecny: '数字人民币',
+        cloudMis: '云MIS'
       }
       return names[method] || ''
     },
@@ -408,5 +409,8 @@ export default {
   }
   .ecny{
     color: #D8292F;
+  }
+  .cloudMis{
+    color: #FF9800;
   }
 </style>
