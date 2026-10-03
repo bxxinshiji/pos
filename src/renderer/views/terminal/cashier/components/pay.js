@@ -87,7 +87,9 @@ const hander = {
           }
           this.lock = true // 云MIS轮询期间锁定防止重复发起
           this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
-          this.handerCloudMis(pay)
+          this.handerCloudMis(pay).catch(error => { // 错误已通过支付事件显示，记录并处理异步拒绝
+            log.h('error', 'handerCloudMis.error', JSON.stringify(error.message))
+          })
           break
         }
         // this.model.SetPool(new Scan()) // 设置扫码对象池
@@ -319,23 +321,18 @@ const hander = {
     })
   },
   handerCloudMis(pay) {
-    return new Promise((resolve, reject) => {
-      const code = pay.code
-      // pay.orderNo = uuidv4().replace(/\-/g, '') // 云MIS支付指定订单单号[UUID生成]
-      pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
-      this.method = 'cloudMis'
-      this.model.CreateBookkeep({ // 创建云MIS支付订单
-        orderNo: pay.orderNo,
-        method: this.method,
-        authCode: code,
-        title: this.orderTitle,
-        totalAmount: pay.amount,
-        operatorId: this.username,
-        terminalId: this.cloudMisSn,
-        storeName: this.scanStoreName,
-        status: config.USERPAYING,
-        order: this.order
-      })
+    pay.orderNo = this.order.orderNo + parseTime(new Date(), '{h}{i}{s}{n}')
+    this.method = 'cloudMis'
+    return this.model.CreateBookkeep({ // 创建云MIS支付订单并返回最终支付结果
+      orderNo: pay.orderNo,
+      method: this.method,
+      title: this.orderTitle,
+      totalAmount: pay.amount,
+      operatorId: this.username,
+      terminalId: this.cloudMisSn, // 云MIS通过绑定的POS机SN定位收款设备
+      storeName: this.scanStoreName,
+      status: config.USERPAYING,
+      order: this.order
     })
   },
   scanPay(code) {

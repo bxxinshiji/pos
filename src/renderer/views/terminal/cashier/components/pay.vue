@@ -31,7 +31,7 @@
           </div> 
         </div>
         <span v-for="(pay,index) in pays" :key="index">
-          <el-button v-if="pay.type!='pay'" type="primary" :disabled="pay.type!='cashPay'" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>
+          <el-button v-if="pay.type!='pay'" type="primary" :disabled="lock || (pay.type!='cashPay' && pay.type!='scanPay')" @click="handerPay(pay.id)"> {{ pay.key }} {{ pay.name }}</el-button>
         </span>
       </el-alert>
     </span>

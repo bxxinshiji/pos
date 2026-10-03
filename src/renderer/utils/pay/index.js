@@ -45,6 +45,18 @@ class Pay {
       })
     })
   }
+  CreateBookkeep(order) { // 发起云MIS支付并通过事件返回最终结果或错误
+    return Promise.resolve().then(() => this.Pool.CreateBookkeep(order)).then(response => {
+      if (config.CLOSED === response.status) {
+        this.InfoEvent('error', '订单已关闭')
+      }
+      this.ResponseEvent(response)
+      return response
+    }).catch(error => {
+      this.InfoEvent('error', error.message)
+      throw error
+    })
+  }
   Query(order) { // 查询订单
     return new Promise((resolve, reject) => {
       this.Pool.Query(order).then(response => {

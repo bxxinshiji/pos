@@ -84,6 +84,7 @@ class Scan {
           this.cancel = true
           this.parents.LogEvent('error', 'CreateBookkeep.findCreatePayOrder.catch', '已启用部门付款，不支持部门混合付款!')
           this.parents.InfoEvent('error', '已启用部门付款，不支持多部门混合付款!')
+          reject(new Error('已启用部门付款，不支持多部门混合付款!'))
           return
         }
         this.userId = GetUserId(order.order.goods)
@@ -112,6 +113,7 @@ class Scan {
         this.cancel = true
         this.parents.LogEvent('error', 'CreateBookkeep.findCreatePayOrder.catch', JSON.stringify(error.message))
         this.parents.InfoEvent('error', '创建订单缓存失败请重新发起支付!')
+        reject(error)
       })
     })
   }
