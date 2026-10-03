@@ -78,13 +78,14 @@ const hander = {
         this.model.Create(pay)
         break
       case 'scanPay':
-        if (this.cloudMisPayId && String(pay.payId) === String(this.cloudMisPayId)) { // 云MIS支付方式发起云MIS支付
+        if (!pay.code) { // 快捷键发起无付款码，直接发起云MIS支付
           if (!this.cloudMisSn) {
             this.status = 'error'
             this.payingInfo = '云MIS支付未绑定POS机SN,请到系统配置绑定!'
             this.lock = false
             break
           }
+          this.lock = true // 云MIS轮询期间锁定防止重复发起
           this.model.SetPool(new ScanBcbt()) // 设置扫码对象池
           this.handerCloudMis(pay)
           break

@@ -26,16 +26,6 @@
                       </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="云MIS发起类型"  :prop="ruleForm.cloudMisPayId">
-                    <el-select v-model="ruleForm.cloudMisPayId" placeholder="不启用云MIS支付" clearable>
-                      <el-option
-                        v-for="(item,index) in scanPay"
-                        :key="index"
-                        :label="item.name"
-                        :value="String(item.id)">
-                      </el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="POS机SN绑定"  :prop="ruleForm.cloudMisSn">
                     <el-input v-model="ruleForm.cloudMisSn" placeholder="聚焦后扫码枪扫描SN条码自动录入,再扫自动更换,清空保存即解绑" @focus="$event.target.select()"></el-input>
                 </el-form-item>
@@ -60,7 +50,6 @@ export default {
         orderTitle: this.$store.state.settings.orderTitle,
         scanPayId: this.$store.state.settings.scanPayId,
         cardPayID: this.$store.state.settings.cardPayID, // 会员卡刷卡数据
-        cloudMisPayId: this.$store.state.settings.cloudMisPayId, // 云MIS发起支付方式
         cloudMisSn: this.$store.state.settings.cloudMisSn // 云MIS绑定POS机SN
       }
     }
@@ -119,13 +108,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ruleForm.cloudMisPayId && String(this.ruleForm.cloudMisPayId) === String(this.ruleForm.scanPayId)) { // 云MIS发起类型与扫码保存类型相同时 付款码扫码会被误拦截为云MIS
-            this.$message({
-              type: 'error',
-              message: '云MIS发起类型不允许与扫码保存类型相同!'
-            })
-            return false
-          }
           Object.keys(this.ruleForm).forEach(key => {
             this.$store.dispatch('settings/changeSetting', { key, value: this.ruleForm[key] })
           })

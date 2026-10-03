@@ -80,7 +80,6 @@ export default {
       scanStoreName: state => state.settings.scanStoreName,
       scanPayId: state => state.settings.scanPayId,
       cardPayID: state => state.settings.cardPayID,
-      cloudMisPayId: state => state.settings.cloudMisPayId,
       cloudMisSn: state => state.settings.cloudMisSn,
       orderTitle: state => state.settings.orderTitle,
       terminal: state => state.settings.terminal,
