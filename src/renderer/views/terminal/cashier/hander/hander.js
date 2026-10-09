@@ -160,6 +160,14 @@ const hander = {
   },
   pushPullOrder(self) { // 挂单取单
     if (self.order.goods.length > 0) {
+      // 订单尚未生成单号时禁止挂起，保留当前购物车等待初始化完成。
+      if (!String(self.order.orderNo || '').trim()) {
+        self.$alert('当前订单没有单号，请等待单号生成后再挂单。', '无法挂单', {
+          type: 'error',
+          confirmButtonText: '确定'
+        }).catch(() => {})
+        return
+      }
       store.dispatch('terminal/pushCacheOrder')
     } else {
       if (store.state.terminal.cacheOrder.length >= 1) {
