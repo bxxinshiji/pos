@@ -16,6 +16,7 @@ import { Delete as DeleteOrder } from '@/model/api/order'
 import { Delete as DeletePayOrder } from '@/model/api/payOrder'
 import { Delete as DeleteOrderPD } from '@/model/api/orderPD'
 import log from '@/utils/log'
+import { triggerPaymentShortcut } from '@/utils/keyboardShortcuts'
 export default {
   name: 'App',
   mounted() {
@@ -25,6 +26,7 @@ export default {
     // this.logout() // 软件启动先退出
     this.$store.dispatch('settings/changeSetting', { key: 'isHeader', value: false }) // 关闭头部
     ipcRenderer.on('main-process-home', (event, arg) => { // 主进程快捷键主页
+      if (this.$store.state.terminal.isPay && triggerPaymentShortcut('home')) return
       if (this.$store.state.terminal.isPay) { // 支付中禁止操作
         this.$message({
           type: 'warning',

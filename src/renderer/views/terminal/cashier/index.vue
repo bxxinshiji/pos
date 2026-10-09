@@ -54,6 +54,7 @@ import Fixed from './components/fixed.vue'
 import Pay from './components/pay.vue'
 import InputPrice from './components/inputPrice.vue'
 import onkeydown from '@/utils/onkeydown'
+import { isPaymentShortcutEvent } from '@/utils/keyboardShortcuts'
 
 // import { Pay, Refund } from '@/api/pay'
 import { Get as VipCardGet } from '@/api/vip_card'
@@ -102,6 +103,11 @@ export default {
     }
     this.$store.dispatch('terminal/changeInitPays') // 初始化付款信息
     onkeydown.isScanner('Enter', (res) => {
+      // 支付快捷键消费的 Enter 松开时，不再作为商品输入处理。
+      if (this._skipScannerEnter) {
+        this._skipScannerEnter = false
+        return
+      }
       if (this.$refs.foots) {
         this.handerInput(this.$refs.foots.input, !res)
       }
@@ -239,6 +245,12 @@ export default {
       this.$refs.goods.addGoods(cacheGoods)
     },
     keydown(e) {
+      const paymentShortcut = isPaymentShortcutEvent(e)
+      if (e.keyCode === 13) {
+        // 长按 Enter 时保留已消费标记，直到松开后再恢复商品输入。
+        this._skipScannerEnter = paymentShortcut || (e.repeat && this._skipScannerEnter)
+      }
+      if (paymentShortcut) return
       if (e.keyCode === 27) { // esc 自动聚焦
         this.focus()
       }

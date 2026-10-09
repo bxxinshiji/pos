@@ -39,13 +39,10 @@
 
 <script>
 
-const Mousetrap = require('mousetrap')
-require('@/utils/mousetrap-global-bind')
+import { registerShortcuts, unregisterShortcuts, isPaymentShortcutEvent } from '@/utils/keyboardShortcuts'
 
 const events = require('events')
 import { mapState } from 'vuex'
-import store from '@/store'
-const payKeyboard = store.state.settings.payKeyboard
 import log from '@/utils/log'
 
 import pay from './pay'
@@ -117,9 +114,11 @@ export default {
       this.startTime = new Date()
     },
     registerMousetrap() { // 注册快捷键
-      Object.keys(payKeyboard).map(key => {
+      const payKeyboard = this.$store.state.settings.payKeyboard
+      const bindings = Object.create(null)
+      Object.keys(payKeyboard).forEach(key => {
         if (payKeyboard[key]) {
-          Mousetrap.bindGlobal(payKeyboard[key].toLowerCase(), () => {
+          bindings[payKeyboard[key]] = () => {
             log.h('info', 'Pay.Mousetrap', '【' + payKeyboard[key] + '】' + key)
             if (this.lock) {
               this.$message({
@@ -129,13 +128,15 @@ export default {
             } else {
               this.handerPay(key)
             }
-          })
+          }
         }
       })
+      registerShortcuts(this, bindings, 1)
     },
     registerMemory() { // 注册键盘监听
       onkeydown.string = ''
-      onkeydown.register(/[0-9;]/, 'Enter', () => {
+      this._releasePayMemory = onkeydown.register(/[0-9;]/, 'Enter', event => {
+        if (isPaymentShortcutEvent(event)) return
         if (this.lock) {
           this.$message({
             type: 'error',
@@ -154,18 +155,18 @@ export default {
       })
     },
     unregisterMousetrap() {
-      onkeydown.unregister() // 注销键盘监听
-      Object.keys(payKeyboard).map(key => { // 注销快捷键
-        if (payKeyboard[key]) {
-          Mousetrap.unbindGlobal(payKeyboard[key].toLowerCase())
-        }
-      })
+      unregisterShortcuts(this)
+      if (this._releasePayMemory) {
+        this._releasePayMemory()
+        this._releasePayMemory = null
+      }
     },
     handleClose() {
       this.unregisterMousetrap() // 注销所有键盘监听和快捷键
       this.$store.dispatch('terminal/changeIsPay', false) // 关闭支付页面
     },
     keydown(e) {
+      if (isPaymentShortcutEvent(e)) return
       if (e.keyCode === 27) { // esc关闭消息
         this.model.On('cancel', cancel => { // 支付页面关闭监听
           if (cancel) {

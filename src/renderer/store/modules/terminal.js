@@ -1,8 +1,8 @@
 import store from '@/store'
 import router from '@/router'
 import { MessageBox, Message } from 'element-ui'
-const Mousetrap = require('mousetrap')
-require('@/utils/mousetrap-global-bind')
+import { registerShortcuts, unregisterShortcuts } from '@/utils/keyboardShortcuts'
+const globalShortcutOwner = {}
 const OrderModel = import('@/model/api/order')
 const Order = import('@/api/order')
 import Pay from '@/model/pay'
@@ -266,47 +266,48 @@ const actions = {
   registerGlobalShortcut() {
     const log = require('@/utils/log').default
     const shutDown = store.state.settings.Keyboard.shutDown
-    Mousetrap.bindGlobal(shutDown.toLowerCase(), () => { // 主页 快捷键
-      if (store.state.terminal.isPay) { // 支付中禁止操作
-        Message({
-          type: 'warning',
-          message: '支付锁定中,请勿进行其他操作!'
-        })
-      } else {
-        MessageBox.confirm('关闭计算机 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async() => {
-          // 先退出在关机
-          await store.dispatch('user/logout')
-          router.push(`/login`)
-          log.h('info', 'store.modules.terminal', shutDown + ' 关机')
-          switch (process.platform) {
-            case 'win32':
-              require('child_process').exec('shutdown /s /t 0')
-              break
-            default:
-              require('child_process').exec('sudo shutdown -h now')
-              break
-          }
-        }).catch(() => {
+    const bindings = Object.create(null)
+    if (shutDown) {
+      bindings[shutDown] = () => { // 关机快捷键
+        if (store.state.terminal.isPay) { // 支付中禁止操作
           Message({
-            type: 'info',
-            message: '已取消关机'
+            type: 'warning',
+            message: '支付锁定中,请勿进行其他操作!'
           })
-        })
+        } else {
+          MessageBox.confirm('关闭计算机 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(async() => {
+            // 先退出再关机。
+            await store.dispatch('user/logout')
+            router.push(`/login`)
+            log.h('info', 'store.modules.terminal', shutDown + ' 关机')
+            switch (process.platform) {
+              case 'win32':
+                require('child_process').exec('shutdown /s /t 0')
+                break
+              default:
+                require('child_process').exec('sudo shutdown -h now')
+                break
+            }
+          }).catch(() => {
+            Message({
+              type: 'info',
+              message: '已取消关机'
+            })
+          })
+        }
       }
-    })
+    }
+    registerShortcuts(globalShortcutOwner, bindings)
   },
   changeOrderQueueErrorTime({ commit }) { // 更改订单队列数
     commit('SET_ORDER_QUEUE_ERROR_TIME')
   },
   unregisterGlobalShortcut() {
-    // const KeyboardIndex = store.state.settings.Keyboard.index
-    // Mousetrap.unbindGlobal(KeyboardIndex)
-    const shutDown = store.state.settings.Keyboard.shutDown
-    Mousetrap.unbindGlobal(shutDown.toLowerCase())
+    unregisterShortcuts(globalShortcutOwner)
   }
 }
 export default {

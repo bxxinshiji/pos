@@ -4,7 +4,7 @@ const onkeydown = {
   keyCode: 0,
   string: '',
   register(reg, onkey, hander) {
-    document.onkeydown = (event) => {
+    const listener = (event) => {
       onkeydown.key = event.key
       onkeydown.keyCode = event.keyCode
       // 记忆字符串 只能记录长度为1的按键
@@ -13,9 +13,14 @@ const onkeydown = {
       }
       // 执行并清空记忆
       if (onkeydown.key === onkey) {
-        hander()
+        hander(event)
         onkeydown.string = ''
       }
+    }
+    document.onkeydown = listener
+    // 只清理本次监听，旧支付页重复关闭不影响新支付页。
+    return () => {
+      if (document.onkeydown === listener) document.onkeydown = undefined
     }
   },
   unregister() {
